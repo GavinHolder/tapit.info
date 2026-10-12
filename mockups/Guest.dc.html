@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Guest concierge</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Figtree',sans-serif}
+a{color:inherit;text-decoration:none}
+button{font-family:'Figtree',sans-serif}
+.h{font-family:'Bricolage Grotesque',sans-serif;letter-spacing:-0.02em}
+</style>
+</helmet>
+
+<div style="width:390px;height:1180px;box-sizing:border-box;background:#EEF3F0;color:#10262B;overflow:hidden;position:relative">
+  <div style="background:#12343B;color:#fff;padding:28px 20px 56px;position:relative;overflow:hidden">
+    <svg aria-hidden="true" viewBox="0 0 420 400" style="position:absolute;right:-120px;top:-110px;width:380px;height:360px">
+      <g fill="none" stroke="#2F6A64" stroke-width="1.2" vector-effect="non-scaling-stroke">
+        <path d="M200 40 C 290 30 370 90 380 170 C 392 260 330 340 240 360 C 150 380 60 330 40 240 C 22 150 90 50 200 40 Z"/>
+        <path transform="translate(210 200) scale(.8) rotate(8) translate(-210 -200)" d="M200 40 C 290 30 370 90 380 170 C 392 260 330 340 240 360 C 150 380 60 330 40 240 C 22 150 90 50 200 40 Z"/>
+        <path transform="translate(210 200) scale(.6) rotate(16) translate(-210 -200)" d="M200 40 C 290 30 370 90 380 170 C 392 260 330 340 240 360 C 150 380 60 330 40 240 C 22 150 90 50 200 40 Z"/>
+        <path transform="translate(210 200) scale(.4) rotate(26) translate(-210 -200)" d="M200 40 C 290 30 370 90 380 170 C 392 260 330 340 240 360 C 150 380 60 330 40 240 C 22 150 90 50 200 40 Z"/>
+      </g>
+    </svg>
+    <div style="position:relative;display:flex;justify-content:space-between;align-items:center;margin-bottom:28px">
+      <div style="width:44px;height:44px;border-radius:12px;background:#C8F560;color:#0B1F24;display:flex;align-items:center;justify-content:center;font-weight:800;font-family:'Bricolage Grotesque',sans-serif;font-size:14px" role="img" aria-label="Host logo placeholder">[logo]</div>
+      <a href="Profile.dc.html" aria-label="Your explorer profile" style="width:44px;height:44px;border-radius:50%;border:1.5px solid #5E8A86;display:flex;align-items:center;justify-content:center">
+        <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-5 15-5 16 0"/></svg>
+      </a>
+    </div>
+    <div style="position:relative;color:#C8F560;font-weight:600;font-size:14px">Good morning, welcome to</div>
+    <h1 class="h" style="position:relative;margin:4px 0 8px;font-size:38px;line-height:1;font-weight:800">Kleinmond Sea Lodge</h1>
+    <div style="position:relative;color:#B7CFCB;font-size:15px">Room 4. Checking out Sunday 10:30</div>
+  </div>
+
+  <div style="margin:-32px 16px 0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;position:relative">
+    <button type="button" style="min-height:76px;border:0;border-radius:18px;background:#fff;color:#10262B;font-weight:600;font-size:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;box-shadow:0 8px 20px rgba(11,31,36,.12)"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1E5A55" stroke-width="1.8" stroke-linecap="round"><path d="M3 9c5-5 13-5 18 0M6 13c3-3 9-3 12 0M9.5 17c1.5-1.5 3.5-1.5 5 0"/><circle cx="12" cy="20" r="1" fill="#1E5A55"/></svg>Wi-Fi</button>
+    <button type="button" style="min-height:76px;border:0;border-radius:18px;background:#fff;color:#10262B;font-weight:600;font-size:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;box-shadow:0 8px 20px rgba(11,31,36,.12)"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1E5A55" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.4-4.2A8 8 0 1 1 8.4 18.8z"/></svg>WhatsApp</button>
+    <button type="button" style="min-height:76px;border:0;border-radius:18px;background:#fff;color:#10262B;font-weight:600;font-size:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;box-shadow:0 8px 20px rgba(11,31,36,.12)"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1E5A55" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.5 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></svg>Review</button>
+    <button type="button" style="min-height:76px;border:0;border-radius:18px;background:#fff;color:#10262B;font-weight:600;font-size:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;box-shadow:0 8px 20px rgba(11,31,36,.12)"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1E5A55" stroke-width="1.8" stroke-linecap="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>Call</button>
+  </div>
+
+  <div role="tablist" aria-label="Sections" style="margin:20px 16px 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;background:#DCE6E1;border-radius:999px;padding:5px">
+    <button type="button" role="tab" onClick="{{goStay}}" style="{{tabStay}}">Your stay</button>
+    <button type="button" role="tab" onClick="{{goExplore}}" style="{{tabExplore}}">Explore</button>
+    <button type="button" role="tab" onClick="{{goOffers}}" style="{{tabOffers}}">Offers</button>
+  </div>
+
+  <div style="padding:20px 16px 0;display:grid;gap:12px">
+    <sc-if value="{{isStay}}" hint-placeholder-val="{{ true }}">
+      <div style="background:#fff;border-radius:20px;padding:18px">
+        <div class="h" style="font-size:20px;font-weight:600;margin-bottom:12px">Breakfast</div>
+        <div style="display:flex;justify-content:space-between;color:#4B6368;line-height:1.9"><span>Weekdays</span><span style="color:#10262B;font-weight:600">07:30 to 09:30</span></div>
+        <div style="display:flex;justify-content:space-between;color:#4B6368;line-height:1.9"><span>Weekends</span><span style="color:#10262B;font-weight:600">08:00 to 10:00</span></div>
+      </div>
+      <div style="background:#fff;border-radius:20px;padding:18px">
+        <div class="h" style="font-size:20px;font-weight:600;margin-bottom:8px">House notes</div>
+        <p style="margin:0;color:#4B6368;line-height:1.55">Quiet hours from 22:00. Braai area is behind the garden. Ask Anel at reception for beach towels.</p>
+      </div>
+      <div style="background:#fff;border-radius:20px;padding:18px;display:flex;justify-content:space-between;align-items:center;gap:12px">
+        <div><div class="h" style="font-size:20px;font-weight:600">Check-out</div><div style="color:#4B6368;margin-top:2px">Sunday 10:30. Late check-out on request.</div></div>
+        <button type="button" style="min-height:44px;padding:0 16px;border-radius:999px;border:1.5px solid #1E5A55;background:transparent;color:#1E5A55;font-weight:600;cursor:pointer">Ask</button>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{isExplore}}" hint-placeholder-val="{{ false }}">
+      <div style="background:#0B1F24;color:#fff;border-radius:24px;overflow:hidden">
+        <svg role="img" aria-label="Featured trail preview with route over ridges" viewBox="0 0 360 150" style="display:block;width:100%;height:auto"><rect width="360" height="150" fill="#12343B"/><path d="M0 110 L50 80 L90 96 L150 40 L200 80 L250 30 L310 78 L360 56 L360 150 L0 150Z" fill="#1E5A55"/><path d="M0 132 L70 100 L130 116 L200 76 L260 108 L320 90 L360 104 L360 150 L0 150Z" fill="#2F6A64"/><path d="M30 134 C70 112 90 118 130 96 C170 74 180 80 214 56 C240 38 250 44 266 30" fill="none" stroke="#C8F560" stroke-width="3" stroke-linecap="round"/><circle cx="266" cy="30" r="6" fill="#C8F560"/></svg>
+        <div style="padding:16px 18px 18px">
+          <div style="color:#C8F560;font-weight:600;font-size:13px">Featured trail</div>
+          <div class="h" style="font-size:24px;font-weight:600;margin:2px 0 4px">Palmiet River to the Hangklip ridge</div>
+          <div style="color:#B7CFCB;font-size:14px;margin-bottom:14px">12 km. About 4 hours. Moderate.</div>
+          <a href="Trip.dc.html" style="display:flex;align-items:center;justify-content:center;min-height:48px;border-radius:999px;background:#C8F560;color:#0B1F24;font-weight:600">Fly the route in 3D</a>
+        </div>
+      </div>
+      <div style="background:#fff;border-radius:20px;padding:16px;display:flex;gap:14px;align-items:center">
+        <div role="img" aria-label="Photo placeholder" style="width:64px;height:64px;border-radius:14px;background:#C9D8D2;flex:none"></div>
+        <div style="flex:1;min-width:0"><div class="h" style="font-weight:600;font-size:18px">Palmiet e-bike tour</div><div style="color:#4B6368;font-size:14px">3 hours. Guided. From [R price]</div></div>
+        <button type="button" style="min-height:44px;padding:0 16px;border-radius:999px;border:0;background:#0B1F24;color:#fff;font-weight:600;cursor:pointer">Book</button>
+      </div>
+      <div style="background:#fff;border-radius:20px;padding:16px;display:flex;gap:14px;align-items:center">
+        <div role="img" aria-label="Photo placeholder" style="width:64px;height:64px;border-radius:14px;background:#C9D8D2;flex:none"></div>
+        <div style="flex:1;min-width:0"><div class="h" style="font-weight:600;font-size:18px">Harbour restaurant</div><div style="color:#4B6368;font-size:14px">Seafood. 4 min drive</div></div>
+        <button type="button" style="min-height:44px;padding:0 16px;border-radius:999px;border:1.5px solid #0B1F24;background:transparent;color:#0B1F24;font-weight:600;cursor:pointer">View</button>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{isOffers}}" hint-placeholder-val="{{ false }}">
+      <div style="background:#F4B63F;color:#2A1E00;border-radius:24px;padding:20px;position:relative">
+        <div style="font-weight:600;font-size:13px">Voucher from a partner</div>
+        <div class="h" style="font-size:26px;font-weight:800;margin:4px 0 6px">Free coffee with any breakfast</div>
+        <div style="font-size:14px;margin-bottom:14px">Show this at the counter. Valid this week.</div>
+        <button type="button" style="min-height:48px;width:100%;border-radius:999px;border:0;background:#2A1E00;color:#fff;font-weight:600;cursor:pointer">Claim voucher</button>
+      </div>
+      <div style="background:#fff;border-radius:20px;padding:18px;display:flex;justify-content:space-between;align-items:center;gap:12px">
+        <div><div class="h" style="font-size:18px;font-weight:600">10% off wine tasting</div><div style="color:#4B6368;font-size:14px">Explorer Club members</div></div>
+        <a href="Club.dc.html" style="min-height:44px;display:inline-flex;align-items:center;padding:0 16px;border-radius:999px;border:1.5px solid #1E5A55;color:#1E5A55;font-weight:600">Join</a>
+      </div>
+    </sc-if>
+  </div>
+
+  <div style="position:absolute;left:16px;right:16px;bottom:20px;background:#0B1F24;color:#fff;border-radius:22px;padding:14px 16px;display:flex;align-items:center;gap:14px">
+    <div style="width:44px;height:44px;border-radius:50%;background:#C8F560;color:#0B1F24;display:flex;align-items:center;justify-content:center;font-weight:800;font-family:'Bricolage Grotesque',sans-serif">2/5</div>
+    <div style="flex:1;min-width:0"><div style="font-weight:600">Kogelberg Explorer</div><div style="color:#B7CFCB;font-size:13px">Visit 3 more partners to unlock a prize</div></div>
+    <a href="Profile.dc.html" aria-label="Open passport" style="min-height:44px;display:inline-flex;align-items:center;color:#C8F560;font-weight:600">Open</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1180}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { tab: 'stay' }; }
+  tabStyle(on) {
+    const base = 'min-height:44px;border:0;border-radius:999px;font-weight:600;font-size:15px;cursor:pointer;';
+    return on ? base + 'background:#0B1F24;color:#fff' : base + 'background:transparent;color:#2E4A4F';
+  }
+  renderVals() {
+    const t = this.state.tab;
+    return {
+      isStay: t === 'stay', isExplore: t === 'explore', isOffers: t === 'offers',
+      tabStay: this.tabStyle(t === 'stay'), tabExplore: this.tabStyle(t === 'explore'), tabOffers: this.tabStyle(t === 'offers'),
+      goStay: () => this.setState({ tab: 'stay' }),
+      goExplore: () => this.setState({ tab: 'explore' }),
+      goOffers: () => this.setState({ tab: 'offers' })
+    };
+  }
+}
+</script>
+</body>
+</html>
