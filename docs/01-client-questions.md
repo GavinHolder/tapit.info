@@ -43,5 +43,5 @@ Deadline for pilot: **end of November 2026**. Answers marked ★ block design or
 28. Is there a budget for map/tile services and for an external penetration test?
 
 ## G. 3D / "adventure" ambition
-29. ★ Is 3D terrain required for the November pilot, or acceptable as phase 2? (We recommend a 2D branded map now with 3D as a progressive upgrade.)
+29. ★ 3D = replaying a trip over 3D terrain plus phone tracking (not a 3D UI). Pilot gets a featured-trail flyover from admin-uploaded GPX; user tracking is phase 2. Agreed?
 30. Do we have GPX/route data for the trails, and are the rights cleared?

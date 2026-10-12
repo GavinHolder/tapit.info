@@ -69,3 +69,23 @@ flowchart LR
 1. Client answers `01-client-questions.md` (★ items first).
 2. Visual direction agreed (palette, tone, how much 3D).
 3. Clickable mockups: landing, guest page, CMS editor, admin dashboard, ledger.
+
+## 7. Trip replay & tracking (clarified scope)
+
+**What is wanted:** 3D is not the whole UI. It is one feature: open a past trip and watch the route replay over 3D terrain (camera follows the hiker), plus recording the trip from the user's phone.
+
+**Pilot (November):** "Featured trail flyover" on the guest page. Admin uploads a GPX; the page plays the 3D replay. Same viewer component as later user trips, no tracking or login needed.
+
+**Phase 2:** user trips.
+- Record: browser Geolocation `watchPosition` while the page is open, screen kept awake. Points buffered in IndexedDB and synced when signal returns.
+- Import: GPX from Garmin/Strava/watches (more reliable than browser tracking).
+- Replay: MapLibre raster-DEM terrain, pitched camera following the line, progress line, elevation profile scrubber, 2D/3D toggle.
+
+**Constraints:**
+- Web pages cannot track reliably in the background (iOS Safari especially). Reliable background tracking needs a native wrapper (Capacitor) – a later decision.
+- Mountain signal is poor: record offline, sync later. Offline map tiles are a separate piece of work.
+- Self-host tiles on the VPS as PMTiles (basemap + DEM) to avoid per-request fees. Satellite imagery licensing is the cost trap; avoid it.
+- Location trails are personal information under POPIA (they can reveal where someone stays). Needs explicit opt-in, retention limits, delete-my-trips, and a "not a safety device" notice.
+- Trips need an account: passwordless email login, created only when a user chooses to save a trip.
+
+**Data model:** `trips`, `track_points` (PostGIS geometry + time + accuracy), `routes` (curated GPX), `stamps`. Postgres with PostGIS on the VPS.
