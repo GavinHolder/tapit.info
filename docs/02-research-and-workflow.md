@@ -67,5 +67,5 @@ flowchart LR
 
 ## 6. Next
 1. Client answers `01-client-questions.md` (★ items first).
-2. Visual direction agreed (Section 7 of the mockup brief).
+2. Visual direction agreed (palette, tone, how much 3D).
 3. Clickable mockups: landing, guest page, CMS editor, admin dashboard, ledger.
