@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Explorer Club and vouchers</title>
+<title>Wallet partner perks and vouchers</title>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -22,29 +22,29 @@ button{font-family:'Figtree',sans-serif}
   <div style="background:#0B1F24;color:#fff;padding:24px 20px 24px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
       <a href="Profile.dc.html" aria-label="Back to profile" style="width:44px;height:44px;border-radius:50%;border:1.5px solid #3B6B68;display:flex;align-items:center;justify-content:center"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></a>
-      <div style="padding:6px 14px;border-radius:999px;background:#F4B63F;color:#2A1E00;font-weight:600;font-size:13px">Insider member</div>
+      <div style="padding:6px 14px;border-radius:999px;background:#F4B63F;color:#2A1E00;font-weight:600;font-size:13px">Partner perks</div>
     </div>
-    <h1 class="h" style="margin:0 0 6px;font-size:34px;line-height:1;font-weight:800">Explorer Club</h1>
-    <p style="margin:0 0 18px;color:#B7CFCB;font-size:15px">Your vouchers, perks and points in one wallet.</p>
+    <h1 class="h" style="margin:0 0 6px;font-size:34px;line-height:1;font-weight:800">Wallet</h1>
+    <p style="margin:0 0 18px;color:#B7CFCB;font-size:15px">Vouchers and perks from partner businesses, in one place.</p>
     <div style="background:#12343B;border-radius:20px;padding:16px;display:flex;justify-content:space-between;align-items:center">
-      <div><div style="font-size:12px;color:#B7CFCB">Points balance</div><div class="h" style="font-size:32px;font-weight:800;color:#F4B63F">1 240</div></div>
-      <div style="text-align:right"><div style="font-size:12px;color:#B7CFCB">Next reward at 1 500</div><div style="width:130px;height:6px;border-radius:3px;background:#2F6A64;margin-top:8px"><div style="width:83%;height:6px;border-radius:3px;background:#F4B63F"></div></div></div>
+      <div><div style="font-size:12px;color:#B7CFCB">Passport stamps</div><div class="h" style="font-size:32px;font-weight:800;color:#C8F560">2 of 5</div></div>
+      <div style="text-align:right"><div style="font-size:12px;color:#B7CFCB">3 stamps to the prize</div><div style="width:130px;height:6px;border-radius:3px;background:#2F6A64;margin-top:8px"><div style="width:40%;height:6px;border-radius:3px;background:#C8F560"></div></div></div>
     </div>
   </div>
 
   <div role="tablist" aria-label="Wallet sections" style="margin:16px 16px 0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;background:#DCE6E1;border-radius:999px;padding:5px">
     <button type="button" role="tab" onClick="{{goVouchers}}" style="{{tabVouchers}}">Vouchers</button>
-    <button type="button" role="tab" onClick="{{goPlans}}" style="{{tabPlans}}">Membership</button>
+    <button type="button" role="tab" onClick="{{goPlans}}" style="{{tabPlans}}">Partners</button>
   </div>
 
   <div style="padding:16px 16px 0;display:grid;gap:12px">
     <sc-if value="{{isVouchers}}" hint-placeholder-val="{{ true }}">
       <div style="background:#fff;border-radius:22px;display:flex;overflow:hidden">
         <div style="flex:1;min-width:0;padding:18px">
-          <div style="font-size:12px;font-weight:600;color:#1E5A55">Harbour restaurant. Member perk</div>
+          <div style="font-size:12px;font-weight:600;color:#1E5A55">Harbour restaurant</div>
           <div class="h" style="font-size:22px;font-weight:800;margin:4px 0 4px">Free dessert</div>
           <div style="font-size:13px;color:#4B6368;margin-bottom:12px">With any main course. Expires 30 Nov.</div>
-          <button type="button" style="min-height:44px;padding:0 20px;border-radius:999px;border:0;background:#0B1F24;color:#fff;font-weight:600;cursor:pointer">Redeem</button>
+          <button type="button" style="min-height:44px;padding:0 20px;border-radius:999px;border:0;background:#0B1F24;color:#fff;font-weight:600;cursor:pointer">Show code</button>
         </div>
         <div style="width:96px;border-left:2px dashed #C9D8D2;display:flex;align-items:center;justify-content:center;background:#F6F9F7" role="img" aria-label="QR code placeholder"><div style="width:60px;height:60px;background:#0B1F24;border-radius:6px"></div></div>
       </div>
@@ -52,8 +52,8 @@ button{font-family:'Figtree',sans-serif}
         <div style="flex:1;min-width:0;padding:18px">
           <div style="font-size:12px;font-weight:600;color:#1E5A55">Palmiet e-bike tour</div>
           <div class="h" style="font-size:22px;font-weight:800;margin:4px 0 4px">15% off your next ride</div>
-          <div style="font-size:13px;color:#4B6368;margin-bottom:12px">Insider price. Booking code applied.</div>
-          <button type="button" style="min-height:44px;padding:0 20px;border-radius:999px;border:0;background:#0B1F24;color:#fff;font-weight:600;cursor:pointer">Use when booking</button>
+          <div style="font-size:13px;color:#4B6368;margin-bottom:12px">Quote the code when you book with the operator.</div>
+          <button type="button" style="min-height:44px;padding:0 20px;border-radius:999px;border:0;background:#0B1F24;color:#fff;font-weight:600;cursor:pointer">Show code</button>
         </div>
         <div style="width:96px;border-left:2px dashed #C9D8D2;display:flex;align-items:center;justify-content:center;background:#F6F9F7" role="img" aria-label="QR code placeholder"><div style="width:60px;height:60px;background:#0B1F24;border-radius:6px"></div></div>
       </div>
@@ -62,33 +62,24 @@ button{font-family:'Figtree',sans-serif}
         <div class="h" style="font-size:22px;font-weight:800;margin:4px 0">Unlocks at 5 stamps</div>
         <div style="font-size:13px">3 stamps to go.</div>
       </div>
-      <div style="background:#fff;border-radius:22px;padding:18px">
-        <h2 class="h" style="margin:0 0 10px;font-size:18px;font-weight:600">Recent points</h2>
-        <div style="display:flex;justify-content:space-between;line-height:2;font-size:14px"><span style="color:#4B6368">E-bike tour booked</span><span style="font-weight:600;color:#1E5A55">+300</span></div>
-        <div style="display:flex;justify-content:space-between;line-height:2;font-size:14px"><span style="color:#4B6368">Stamp: Harbour restaurant</span><span style="font-weight:600;color:#1E5A55">+100</span></div>
-        <div style="display:flex;justify-content:space-between;line-height:2;font-size:14px"><span style="color:#4B6368">Free dessert redeemed</span><span style="font-weight:600">-200</span></div>
-      </div>
+      <p style="margin:0;font-size:12px;line-height:1.45;color:#4B6368">Vouchers are issued and honoured by each business. TapIt does not handle payment for them.</p>
     </sc-if>
 
     <sc-if value="{{isPlans}}" hint-placeholder-val="{{ false }}">
-      <div style="background:#fff;border-radius:22px;padding:18px">
-        <div class="h" style="font-size:20px;font-weight:600">Explorer</div>
-        <div style="font-size:13px;color:#4B6368;margin:2px 0 8px">Free. Stamps, saved trips, public vouchers.</div>
-        <div style="font-size:13px;font-weight:600;color:#4B6368">Your previous plan</div>
-      </div>
       <div style="background:#0B1F24;color:#fff;border-radius:22px;padding:18px;border:2px solid #C8F560">
-        <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="h" style="font-size:22px;font-weight:600">Insider</span><span style="font-size:12px;font-weight:600;color:#C8F560">Current plan</span></div>
-        <div class="h" style="font-size:26px;font-weight:800;margin:4px 0 8px">[R price] <span style="font-size:14px;font-weight:500;color:#B7CFCB">per year</span></div>
-        <div style="font-size:14px;color:#B7CFCB;line-height:1.7">Member discounts at partners<br>Freebies and early event access<br>1 point per R10 spent</div>
-        <div style="font-size:12px;color:#8FB0AC;margin-top:10px">Renews 14 March 2027</div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="h" style="font-size:20px;font-weight:600">[Palmiet e-bike] riders club</span><span style="font-size:12px;font-weight:600;color:#C8F560">Member</span></div>
+        <div style="font-size:14px;color:#B7CFCB;line-height:1.6;margin:8px 0 12px">Ride discounts and a free helmet hire. Perks and points are managed by the operator.</div>
+        <a href="#manage" style="display:flex;align-items:center;justify-content:center;min-height:48px;border-radius:999px;border:1.5px solid #5E8A86;color:#fff;font-weight:600">Manage on partner site</a>
       </div>
       <div style="background:#F4B63F;color:#2A1E00;border-radius:22px;padding:18px">
-        <div class="h" style="font-size:22px;font-weight:600">VIP</div>
-        <div class="h" style="font-size:26px;font-weight:800;margin:4px 0 8px">[R price] <span style="font-size:14px;font-weight:500">per year</span></div>
-        <div style="font-size:14px;line-height:1.7;margin-bottom:14px">Everything in Insider<br>Upgrades and priority booking<br>2 points per R10 spent<br>Private partner offers</div>
-        <button type="button" style="min-height:48px;width:100%;border-radius:999px;border:0;background:#2A1E00;color:#fff;font-weight:600;cursor:pointer">Upgrade to VIP</button>
+        <div class="h" style="font-size:20px;font-weight:600">[Harbour restaurant] VIP table</div>
+        <div style="font-size:14px;line-height:1.6;margin:8px 0 12px">Priority booking and chef specials. Price and terms are set by the restaurant.</div>
+        <a href="#join" style="display:flex;align-items:center;justify-content:center;min-height:48px;border-radius:999px;background:#2A1E00;color:#fff;font-weight:600">Join on partner site</a>
       </div>
-      <p style="margin:0;font-size:12px;line-height:1.45;color:#4B6368">Payments are processed by [payment provider]. Membership terms and refund policy apply. TapIt does not store your card details.</p>
+      <div style="background:#fff;border-radius:22px;padding:18px">
+        <div class="h" style="font-size:18px;font-weight:600;margin-bottom:6px">How partner programmes work</div>
+        <p style="margin:0;font-size:14px;line-height:1.55;color:#4B6368">You join and pay on the business's own checkout. Their terms and refund policy apply. TapIt only shows the offer and records where you came from.</p>
+      </div>
     </sc-if>
   </div>
 </div>

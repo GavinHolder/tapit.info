@@ -18,108 +18,88 @@ button{font-family:'Figtree',sans-serif}
 </style>
 </helmet>
 
-<div style="width:390px;height:1180px;box-sizing:border-box;background:#0B1F24;color:#fff;overflow:hidden;position:relative">
-  <div style="position:absolute;left:0;right:0;top:0;height:760px;background:#12343B">
-    <sc-if value="{{is3d}}" hint-placeholder-val="{{ true }}">
-      <svg role="img" aria-label="3D terrain view of the trail with the hiker marker moving along the route" viewBox="0 0 390 760" style="position:absolute;inset:0;width:100%;height:100%">
-        <rect width="390" height="760" fill="#12343B"/>
-        <path d="M0 330 L60 280 L110 300 L180 220 L240 270 L300 200 L390 260 L390 760 L0 760Z" fill="#1A4A4B"/>
-        <path d="M0 400 L70 340 L130 372 L210 290 L280 350 L340 300 L390 340 L390 760 L0 760Z" fill="#1E5A55"/>
-        <path d="M0 480 L80 410 L150 450 L230 370 L310 440 L390 400 L390 760 L0 760Z" fill="#256F68"/>
-        <path d="M0 580 L90 500 L170 548 L260 462 L340 540 L390 520 L390 760 L0 760Z" fill="#2F6A64"/>
-        <path d="M0 680 L100 600 L190 650 L280 570 L390 640 L390 760 L0 760Z" fill="#3B7C74"/>
-        <g fill="none" stroke="#0B1F24" stroke-opacity=".25" stroke-width="1">
-          <path d="M0 360 L60 310 L110 330 L180 250 L240 300 L300 230 L390 290"/>
-          <path d="M0 440 L70 380 L130 412 L210 330 L280 390 L340 340 L390 380"/>
-          <path d="M0 530 L80 455 L150 495 L230 415 L310 485 L390 445"/>
-          <path d="M0 630 L90 550 L170 598 L260 512 L340 590 L390 570"/>
-        </g>
-        <path d="M40 720 C90 670 100 690 150 640 C200 590 190 600 240 540 C290 480 270 470 300 410 C320 370 300 340 310 300" fill="none" stroke="#071417" stroke-opacity=".5" stroke-width="9" stroke-linecap="round"/>
-        <path d="M40 710 C90 660 100 680 150 630 C200 580 190 590 240 530 C290 470 270 460 300 400 C320 360 300 330 310 290" fill="none" stroke="#C8F560" stroke-width="5" stroke-linecap="round"/>
-        <path d="M240 530 C290 470 270 460 300 400 C320 360 300 330 310 290" fill="none" stroke="#fff" stroke-opacity=".28" stroke-width="5" stroke-linecap="round" stroke-dasharray="1 9"/>
-        <line x1="240" y1="530" x2="240" y2="470" stroke="#fff" stroke-width="2"/>
-        <circle cx="240" cy="530" r="16" fill="#C8F560" fill-opacity=".3"/>
-        <circle cx="240" cy="530" r="9" fill="#fff" stroke="#0B1F24" stroke-width="3"/>
-        <g transform="translate(140 600)"><rect x="-40" y="-44" width="80" height="30" rx="15" fill="#0B1F24"/><text x="0" y="-24" text-anchor="middle" font-family="Figtree" font-weight="600" font-size="13" fill="#fff">Stamp earned</text><circle cx="0" cy="-2" r="5" fill="#F4B63F"/></g>
-      </svg>
-    </sc-if>
-    <sc-if value="{{is2d}}" hint-placeholder-val="{{ false }}">
-      <svg role="img" aria-label="Flat map of the trail with the hiker marker" viewBox="0 0 390 760" style="position:absolute;inset:0;width:100%;height:100%">
-        <rect width="390" height="760" fill="#E3ECE7"/>
-        <g fill="none" stroke="#B9CCC4" stroke-width="1.2">
-          <path d="M-20 120 C80 60 200 130 300 70 C340 46 380 60 420 40"/>
-          <path d="M-20 220 C90 160 200 240 310 170 C350 146 380 160 420 140"/>
-          <path d="M-20 330 C100 270 210 350 320 280 C360 256 390 270 420 250"/>
-          <path d="M-20 450 C110 390 220 470 330 400 C360 380 390 390 420 370"/>
-          <path d="M-20 580 C120 520 230 600 340 530 C370 510 400 520 420 500"/>
-        </g>
-        <path d="M-20 650 C70 620 120 700 220 660 C300 626 330 700 420 690 L420 760 L-20 760Z" fill="#B7D3DE"/>
-        <path d="M40 620 C90 570 100 590 150 540 C200 490 190 500 240 440 C290 380 270 370 300 310 C320 270 300 240 310 200" fill="none" stroke="#0B1F24" stroke-width="5" stroke-linecap="round"/>
-        <circle cx="240" cy="440" r="9" fill="#C8F560" stroke="#0B1F24" stroke-width="3"/>
-        <circle cx="40" cy="620" r="6" fill="#0B1F24"/>
-      </svg>
-    </sc-if>
+<div style="width:390px;height:1180px;box-sizing:border-box;background:{{pal.ink}};color:#fff;overflow:hidden;position:relative">
+  <div style="position:absolute;left:0;right:0;top:0;height:760px">
+    <dc-import name="Scene" pal="{{pal}}" view="{{view}}" vw="390" vh="760" hint-size="100%,760px"></dc-import>
+  </div>
 
-    <div style="position:absolute;left:16px;right:16px;top:20px;display:flex;justify-content:space-between;align-items:center;gap:12px">
-      <a href="Profile.dc.html" aria-label="Back to profile" style="width:44px;height:44px;border-radius:50%;background:#0B1F24;display:flex;align-items:center;justify-content:center">
-        <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
-      </a>
-      <div role="group" aria-label="Map view" style="display:flex;background:#0B1F24;border-radius:999px;padding:4px">
-        <button type="button" onClick="{{set2d}}" aria-pressed="{{is2d}}" style="{{btn2d}}">2D</button>
-        <button type="button" onClick="{{set3d}}" aria-pressed="{{is3d}}" style="{{btn3d}}">3D</button>
-      </div>
-    </div>
-
-    <div style="position:absolute;left:16px;top:84px;background:#0B1F24;border-radius:16px;padding:10px 14px">
-      <div style="font-size:12px;color:#B7CFCB">Elevation</div>
-      <div class="h" style="font-size:22px;font-weight:800">412 m</div>
+  <div style="position:absolute;left:16px;right:16px;top:20px;display:flex;justify-content:space-between;align-items:center;gap:12px">
+    <a href="Profile.dc.html" aria-label="Back to profile" style="width:44px;height:44px;border-radius:50%;background:{{pal.ink}};display:flex;align-items:center;justify-content:center">
+      <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+    </a>
+    <div role="group" aria-label="Map view" style="display:flex;background:{{pal.ink}};border-radius:999px;padding:4px">
+      <button type="button" onClick="{{set2d}}" aria-pressed="{{is2d}}" style="{{btn2d}}">2D</button>
+      <button type="button" onClick="{{set3d}}" aria-pressed="{{is3d}}" style="{{btn3d}}">3D</button>
     </div>
   </div>
 
-  <div style="position:absolute;left:0;right:0;top:728px;bottom:0;background:#0B1F24;border-radius:28px 28px 0 0;padding:22px 20px 0">
-    <div style="width:44px;height:5px;border-radius:3px;background:#2F6A64;margin:-8px auto 16px"></div>
-    <div style="color:#C8F560;font-size:13px;font-weight:600">Saturday 3 October. Kogelberg</div>
+  <div style="position:absolute;left:16px;top:84px;background:{{pal.ink}};border-radius:16px;padding:10px 14px">
+    <div style="font-size:12px;color:{{pal.mist}};opacity:.8">Elevation</div>
+    <div class="h" style="font-size:22px;font-weight:800">412 m</div>
+  </div>
+
+  <div style="position:absolute;left:0;right:0;top:728px;bottom:0;background:{{pal.ink}};border-radius:28px 28px 0 0;padding:22px 20px 0">
+    <div style="width:44px;height:5px;border-radius:3px;background:{{pal.moss2}};margin:-8px auto 16px"></div>
+    <div style="color:{{pal.accent}};font-size:13px;font-weight:600">Saturday 3 October. Kogelberg</div>
     <h1 class="h" style="margin:2px 0 14px;font-size:28px;line-height:1.05;font-weight:800">Palmiet River to the Hangklip ridge</h1>
 
     <div style="display:flex;align-items:center;gap:14px;margin-bottom:6px">
-      <button type="button" aria-label="Play replay" style="width:56px;height:56px;border-radius:50%;border:0;background:#C8F560;color:#0B1F24;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none">
-        <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#0B1F24"/></svg>
+      <button type="button" aria-label="Replay is looping" style="width:56px;height:56px;border-radius:50%;border:0;background:{{pal.accent}};color:{{pal.ink}};display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none">
+        <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="{{pal.ink}}"/></svg>
       </button>
       <div style="flex:1;min-width:0">
-        <div style="height:6px;border-radius:3px;background:#2F6A64;position:relative"><div style="width:58%;height:6px;border-radius:3px;background:#C8F560"></div><div style="position:absolute;left:58%;top:-6px;width:18px;height:18px;border-radius:50%;background:#fff;margin-left:-9px"></div></div>
-        <div style="display:flex;justify-content:space-between;font-size:12px;color:#B7CFCB;margin-top:8px"><span>02:19</span><span>04:00</span></div>
+        <svg role="img" aria-label="Replay progress" viewBox="0 0 220 18" style="width:100%;height:18px;display:block">
+          <rect x="0" y="6" width="220" height="6" rx="3" fill="{{pal.moss2}}"/>
+          <rect x="0" y="6" width="0" height="6" rx="3" fill="{{pal.accent}}"><animate attributeName="width" values="0;220;220" keyTimes="0;0.85;1" dur="14s" repeatCount="indefinite"/></rect>
+          <circle cx="9" cy="9" r="8" fill="#ffffff"><animate attributeName="cx" values="9;211;211" keyTimes="0;0.85;1" dur="14s" repeatCount="indefinite"/></circle>
+        </svg>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:{{pal.mist}};opacity:.8;margin-top:4px"><span>Start</span><span>Hangklip ridge</span></div>
       </div>
-      <button type="button" style="min-height:44px;min-width:44px;border-radius:12px;border:1.5px solid #3B6B68;background:transparent;color:#fff;font-weight:600;cursor:pointer">2x</button>
+      <button type="button" style="min-height:44px;min-width:44px;border-radius:12px;border:1.5px solid {{pal.moss2}};background:transparent;color:#fff;font-weight:600;cursor:pointer">1x</button>
     </div>
 
-    <svg role="img" aria-label="Elevation profile of the trip with current position marked" viewBox="0 0 350 70" style="width:100%;height:70px;display:block;margin:10px 0 14px"><path d="M0 62 L40 52 L80 56 L130 30 L170 38 L210 14 L250 26 L290 10 L350 40 L350 70 L0 70Z" fill="#1E5A55"/><path d="M0 62 L40 52 L80 56 L130 30 L170 38 L210 14" fill="none" stroke="#C8F560" stroke-width="2.5"/><line x1="203" y1="0" x2="203" y2="70" stroke="#fff" stroke-width="1.5"/></svg>
+    <svg role="img" aria-label="Elevation profile of the trip" viewBox="0 0 350 70" style="width:100%;height:70px;display:block;margin:10px 0 14px"><path d="M0 62 L40 52 L80 56 L130 30 L170 38 L210 14 L250 26 L290 10 L350 40 L350 70 L0 70Z" fill="{{pal.moss}}"/><path d="M0 62 L40 52 L80 56 L130 30 L170 38 L210 14 L250 26 L290 10 L350 40" fill="none" stroke="{{pal.accent}}" stroke-width="2.5"/></svg>
 
     <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px">
-      <div style="background:#12343B;border-radius:16px;padding:12px"><div style="font-size:12px;color:#B7CFCB">Distance</div><div class="h" style="font-size:22px;font-weight:800">12.4 km</div></div>
-      <div style="background:#12343B;border-radius:16px;padding:12px"><div style="font-size:12px;color:#B7CFCB">Climb</div><div class="h" style="font-size:22px;font-weight:800">684 m</div></div>
-      <div style="background:#12343B;border-radius:16px;padding:12px"><div style="font-size:12px;color:#B7CFCB">Stamps</div><div class="h" style="font-size:22px;font-weight:800">2</div></div>
+      <div style="background:{{pal.deep}};border-radius:16px;padding:12px"><div style="font-size:12px;color:{{pal.mist}};opacity:.8">Distance</div><div class="h" style="font-size:22px;font-weight:800">12.4 km</div></div>
+      <div style="background:{{pal.deep}};border-radius:16px;padding:12px"><div style="font-size:12px;color:{{pal.mist}};opacity:.8">Climb</div><div class="h" style="font-size:22px;font-weight:800">684 m</div></div>
+      <div style="background:{{pal.deep}};border-radius:16px;padding:12px"><div style="font-size:12px;color:{{pal.mist}};opacity:.8">Stamps</div><div class="h" style="font-size:22px;font-weight:800">2</div></div>
     </div>
 
     <div style="display:flex;gap:10px;margin-top:14px">
-      <button type="button" style="flex:1;min-height:48px;border-radius:999px;border:0;background:#C8F560;color:#0B1F24;font-weight:600;cursor:pointer">Share trip</button>
-      <button type="button" style="flex:1;min-height:48px;border-radius:999px;border:1.5px solid #3B6B68;background:transparent;color:#fff;font-weight:600;cursor:pointer">Download GPX</button>
+      <button type="button" style="flex:1;min-height:48px;border-radius:999px;border:0;background:{{pal.accent}};color:{{pal.ink}};font-weight:600;cursor:pointer">Share trip</button>
+      <button type="button" style="flex:1;min-height:48px;border-radius:999px;border:1.5px solid {{pal.moss2}};background:transparent;color:#fff;font-weight:600;cursor:pointer">Download GPX</button>
     </div>
-    <p style="margin:14px 0 0;font-size:12px;line-height:1.45;color:#8FB0AC">Your trail is private unless you share it. Delete it any time in Privacy settings. TapIt is not a safety device.</p>
+    <p style="margin:14px 0 0;font-size:12px;line-height:1.45;color:{{pal.mist}};opacity:.7">Your trail is private unless you share it. Delete it any time in Privacy settings. TapIt is not a safety device.</p>
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1180}}'>
+<script type="text/x-dc" data-dc-script data-props='{"base":{"editor":"enum","options":["fynbos","ocean","plum","forest","dusk","mono"],"default":"fynbos","section":"Style"},"accent":{"editor":"enum","options":["lime","coral","aqua","lilac","pink","sky"],"default":"lime","section":"Style"},"$preview":{"width":390,"height":1180}}'>
 class Component extends DCLogic {
   constructor(props) { super(props); this.state = { mode: '3d' }; }
-  seg(on) {
+  pal() {
+    const B = {
+      fynbos: { ink: '#0B1F24', deep: '#12343B', moss: '#1E5A55', moss2: '#2F6A64', mist: '#EEF3F0' },
+      ocean: { ink: '#07182B', deep: '#0E2A47', moss: '#1D4E7A', moss2: '#2F6FA3', mist: '#EAF2F8' },
+      plum: { ink: '#1B1420', deep: '#2A1F33', moss: '#5B3A57', moss2: '#7A4E6E', mist: '#F4EEF2' },
+      forest: { ink: '#141E12', deep: '#22351F', moss: '#3E5E34', moss2: '#5C7F4C', mist: '#F1F3E8' },
+      dusk: { ink: '#0E0B24', deep: '#1A1544', moss: '#3A2F8F', moss2: '#5648C4', mist: '#EFEEF9' },
+      mono: { ink: '#111111', deep: '#222222', moss: '#444444', moss2: '#666666', mist: '#F2F2F2' }
+    };
+    const A = { lime: '#C8F560', coral: '#FF8A5B', aqua: '#5EE6D8', lilac: '#B69CFF', pink: '#FF8FC7', sky: '#8FD3FF' };
+    return Object.assign({}, B[this.props.base] || B.fynbos, { accent: A[this.props.accent] || A.lime, gold: '#F4B63F' });
+  }
+  seg(on, p) {
     const base = 'min-height:40px;min-width:56px;border:0;border-radius:999px;font-weight:600;font-size:15px;cursor:pointer;';
-    return on ? base + 'background:#C8F560;color:#0B1F24' : base + 'background:transparent;color:#fff';
+    return on ? base + 'background:' + p.accent + ';color:' + p.ink : base + 'background:transparent;color:#ffffff';
   }
   renderVals() {
     const m = this.state.mode;
+    const p = this.pal();
     return {
+      pal: p, view: m,
       is3d: m === '3d', is2d: m === '2d',
-      btn3d: this.seg(m === '3d'), btn2d: this.seg(m === '2d'),
+      btn3d: this.seg(m === '3d', p), btn2d: this.seg(m === '2d', p),
       set3d: () => this.setState({ mode: '3d' }),
       set2d: () => this.setState({ mode: '2d' })
     };

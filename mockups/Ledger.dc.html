@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Admin ledger and programmes</title>
+<title>Admin TapIt billing</title>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -32,76 +32,78 @@ td{padding:12px;border-bottom:1px solid #EEF3F0;font-size:14px;white-space:nowra
       <a href="#tenants" class="nav">Businesses</a>
       <a href="#units" class="nav">Stands and codes</a>
       <a href="#content" class="nav">Content and trails</a>
-      <a href="#ledger" class="nav nav-on" aria-current="page">Ledger and payouts</a>
-      <a href="#programmes" class="nav">Programmes and vouchers</a>
-      <a href="#members" class="nav">Members</a>
+      <a href="#billing" class="nav nav-on" aria-current="page">Billing</a>
+      <a href="#referrals" class="nav">Referral claims</a>
+      <a href="#features" class="nav">Features and plans</a>
       <a href="#privacy" class="nav">POPIA and audit log</a>
     </nav>
   </aside>
 
   <main style="flex:999 1 560px;min-width:0;padding:28px;box-sizing:border-box">
     <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px">
-      <div><h1 class="h" style="margin:0;font-size:34px;line-height:1.05;font-weight:800">Ledger and programmes</h1><div style="font-size:14px;color:#4B6368;margin-top:4px">Append-only. Corrections are reversing entries, never edits. Figures are placeholders.</div></div>
+      <div><h1 class="h" style="margin:0;font-size:34px;line-height:1.05;font-weight:800">Billing</h1><div style="font-size:14px;color:#4B6368;margin-top:4px">TapIt only invoices businesses. No guest payment ever passes through TapIt. Figures are placeholders.</div></div>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
         <button type="button" style="min-height:48px;padding:0 20px;border-radius:999px;border:1.5px solid #0B1F24;background:#fff;font-weight:600;cursor:pointer">Export CSV</button>
-        <button type="button" style="min-height:48px;padding:0 24px;border-radius:999px;border:0;background:#0B1F24;color:#C8F560;font-weight:600;cursor:pointer">Run October statements</button>
+        <button type="button" style="min-height:48px;padding:0 24px;border-radius:999px;border:0;background:#0B1F24;color:#C8F560;font-weight:600;cursor:pointer">Prepare October invoices</button>
       </div>
     </div>
 
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:16px">
-      <div style="background:#fff;border-radius:20px;padding:18px"><div style="font-size:13px;color:#4B6368">Commission receivable</div><div class="h" style="font-size:30px;font-weight:800">R[#####]</div></div>
-      <div style="background:#fff;border-radius:20px;padding:18px"><div style="font-size:13px;color:#4B6368">Payable to operators</div><div class="h" style="font-size:30px;font-weight:800">R[#####]</div></div>
-      <div style="background:#fff;border-radius:20px;padding:18px"><div style="font-size:13px;color:#4B6368">Royalties payable</div><div class="h" style="font-size:30px;font-weight:800">R[#####]</div></div>
-      <div style="background:#0B1F24;color:#fff;border-radius:20px;padding:18px"><div style="font-size:13px;color:#B7CFCB">Subscriptions billed</div><div class="h" style="font-size:30px;font-weight:800;color:#C8F560">R[#####]</div></div>
+      <div style="background:#fff;border-radius:20px;padding:18px"><div style="font-size:13px;color:#4B6368">Referral commission to invoice</div><div class="h" style="font-size:30px;font-weight:800">R[#####]</div></div>
+      <div style="background:#fff;border-radius:20px;padding:18px"><div style="font-size:13px;color:#4B6368">Subscriptions</div><div class="h" style="font-size:30px;font-weight:800">R[#####]</div></div>
+      <div style="background:#fff;border-radius:20px;padding:18px"><div style="font-size:13px;color:#4B6368">Feature upsells</div><div class="h" style="font-size:30px;font-weight:800">R[#####]</div></div>
+      <div style="background:#0B1F24;color:#fff;border-radius:20px;padding:18px"><div style="font-size:13px;color:#B7CFCB">Overdue</div><div class="h" style="font-size:30px;font-weight:800;color:#C8F560">R[#####]</div></div>
     </div>
 
     <div style="background:#fff;border-radius:22px;padding:20px;margin-bottom:16px">
       <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px">
-        <h2 class="h" style="margin:0;font-size:20px;font-weight:600">Transactions</h2>
+        <h2 class="h" style="margin:0;font-size:20px;font-weight:600">Invoice lines</h2>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <span class="pill" style="background:#0B1F24;color:#fff">All</span><span class="pill" style="background:#E3ECE7">Commission</span><span class="pill" style="background:#E3ECE7">Subscription</span><span class="pill" style="background:#E3ECE7">Royalty</span><span class="pill" style="background:#E3ECE7">Voucher</span>
+          <span class="pill" style="background:#0B1F24;color:#fff">All</span><span class="pill" style="background:#E3ECE7">Commission</span><span class="pill" style="background:#E3ECE7">Subscription</span><span class="pill" style="background:#E3ECE7">Upsell</span><span class="pill" style="background:#E3ECE7">Credit note</span>
         </div>
       </div>
       <div style="overflow-x:auto">
         <table style="width:100%;border-collapse:collapse;min-width:760px">
-          <thead><tr><th>Date</th><th>Reference</th><th>Type</th><th>From unit</th><th>Booking value</th><th>Rate</th><th>TapIt share</th><th>Payable</th><th>Status</th></tr></thead>
+          <thead><tr><th>Date</th><th>Invoice</th><th>Type</th><th>Business</th><th>Basis</th><th>Rate</th><th>Amount</th><th>Status</th></tr></thead>
           <tbody>
-            <tr><td>[date]</td><td style="font-weight:600">BK-[0001]</td><td>Commission</td><td>[Stand code]</td><td>R[####]</td><td>[10]%</td><td>R[###]</td><td>R[###]</td><td><span class="pill" style="background:#E7F8B8;color:#2C4A00">Settled</span></td></tr>
-            <tr><td>[date]</td><td style="font-weight:600">BK-[0002]</td><td>Commission</td><td>[Stand code]</td><td>R[####]</td><td>[10]%</td><td>R[###]</td><td>R[###]</td><td><span class="pill" style="background:#FBF1D6;color:#4A3600">Pending</span></td></tr>
-            <tr><td>[date]</td><td style="font-weight:600">SUB-[0001]</td><td>Subscription</td><td>[Business]</td><td>R[####]</td><td>-</td><td>R[###]</td><td>-</td><td><span class="pill" style="background:#E7F8B8;color:#2C4A00">Paid</span></td></tr>
-            <tr><td>[date]</td><td style="font-weight:600">ROY-[0001]</td><td>Royalty</td><td>[Partner]</td><td>-</td><td>[2]%</td><td>-</td><td>R[###]</td><td><span class="pill" style="background:#FBF1D6;color:#4A3600">Accrued</span></td></tr>
-            <tr><td>[date]</td><td style="font-weight:600">REV-[0001]</td><td>Reversal</td><td>[Stand code]</td><td>-R[####]</td><td>-</td><td>-R[###]</td><td>-R[###]</td><td><span class="pill" style="background:#FBE6E1;color:#7A1F10">Reversed</span></td></tr>
+            <tr><td>[date]</td><td style="font-weight:600">INV-[0001]</td><td>Commission</td><td>[E-bike operator]</td><td>[4] referred bookings, R[####]</td><td>[10]%</td><td>R[###]</td><td><span class="pill" style="background:#FBF1D6;color:#4A3600">Sent</span></td></tr>
+            <tr><td>[date]</td><td style="font-weight:600">INV-[0002]</td><td>Subscription</td><td>[Guesthouse]</td><td>Concierge plan, monthly</td><td>-</td><td>R[###]</td><td><span class="pill" style="background:#E7F8B8;color:#2C4A00">Paid</span></td></tr>
+            <tr><td>[date]</td><td style="font-weight:600">INV-[0003]</td><td>Upsell</td><td>[Restaurant]</td><td>Featured listing, 30 days</td><td>-</td><td>R[###]</td><td><span class="pill" style="background:#E7F8B8;color:#2C4A00">Paid</span></td></tr>
+            <tr><td>[date]</td><td style="font-weight:600">INV-[0004]</td><td>Commission</td><td>[Wine estate]</td><td>[2] referred bookings, R[####]</td><td>[8]%</td><td>R[###]</td><td><span class="pill" style="background:#FBE6E1;color:#7A1F10">Disputed</span></td></tr>
+            <tr><td>[date]</td><td style="font-weight:600">CN-[0001]</td><td>Credit note</td><td>[Wine estate]</td><td>Booking cancelled by partner</td><td>-</td><td>-R[###]</td><td><span class="pill" style="background:#E3ECE7">Issued</span></td></tr>
           </tbody>
         </table>
       </div>
     </div>
 
     <div style="display:flex;flex-wrap:wrap;gap:16px">
-      <div style="flex:1 1 320px;min-width:0;background:#fff;border-radius:22px;padding:20px">
-        <h2 class="h" style="margin:0 0 12px;font-size:20px;font-weight:600">Agreements</h2>
+      <div style="flex:1 1 360px;min-width:0;background:#fff;border-radius:22px;padding:20px">
+        <h2 class="h" style="margin:0 0 4px;font-size:20px;font-weight:600">Referral claims to verify</h2>
+        <p style="margin:0 0 12px;font-size:13px;color:#4B6368;line-height:1.5">TapIt does not see the sale, so each referral is matched from three signals before it is invoiced.</p>
         <div style="display:grid;gap:10px;font-size:14px">
-          <div style="display:flex;justify-content:space-between;gap:10px;padding:12px;border-radius:14px;background:#F6F9F7"><span><b>[E-bike operator]</b><br>Commission on bookings</span><span style="font-weight:600">[10]%</span></div>
-          <div style="display:flex;justify-content:space-between;gap:10px;padding:12px;border-radius:14px;background:#F6F9F7"><span><b>[Guesthouse]</b><br>Monthly subscription</span><span style="font-weight:600">R[###]</span></div>
-          <div style="display:flex;justify-content:space-between;gap:10px;padding:12px;border-radius:14px;background:#F6F9F7"><span><b>[Business forum]</b><br>Royalty on network revenue</span><span style="font-weight:600">[#]%</span></div>
+          <div style="display:flex;justify-content:space-between;gap:10px;padding:12px;border-radius:14px;background:#F6F9F7"><span><b>Click and code match</b><br>Referral code used at partner checkout</span><span class="pill" style="background:#E7F8B8;color:#2C4A00;align-self:center">Auto</span></div>
+          <div style="display:flex;justify-content:space-between;gap:10px;padding:12px;border-radius:14px;background:#F6F9F7"><span><b>Partner confirmation</b><br>Partner marks the booking in their portal</span><span class="pill" style="background:#FBF1D6;color:#4A3600;align-self:center">[##] waiting</span></div>
+          <div style="display:flex;justify-content:space-between;gap:10px;padding:12px;border-radius:14px;background:#F6F9F7"><span><b>Spot-check</b><br>Sample of bookings requested as proof</span><span class="pill" style="background:#FBE6E1;color:#7A1F10;align-self:center">[#] disputed</span></div>
         </div>
       </div>
-      <div style="flex:1 1 320px;min-width:0;background:#fff;border-radius:22px;padding:20px">
-        <h2 class="h" style="margin:0 0 12px;font-size:20px;font-weight:600">Programmes</h2>
+      <div style="flex:1 1 360px;min-width:0;background:#fff;border-radius:22px;padding:20px">
+        <h2 class="h" style="margin:0 0 12px;font-size:20px;font-weight:600">Plans and features</h2>
         <div style="display:grid;gap:10px;font-size:14px">
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px;border-radius:14px;background:#F6F9F7"><span><b>Membership tiers</b><br>Explorer, Insider, VIP. Prices and perks</span><button type="button" style="min-height:44px;padding:0 16px;border-radius:999px;border:1.5px solid #1E5A55;background:transparent;color:#1E5A55;font-weight:600;cursor:pointer">Edit</button></div>
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px;border-radius:14px;background:#F6F9F7"><span><b>Points rules</b><br>Earn rate per rand, stamp bonuses</span><button type="button" style="min-height:44px;padding:0 16px;border-radius:999px;border:1.5px solid #1E5A55;background:transparent;color:#1E5A55;font-weight:600;cursor:pointer">Edit</button></div>
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px;border-radius:14px;background:#F6F9F7"><span><b>Voucher campaigns</b><br>Partner funded or sponsor funded</span><button type="button" style="min-height:44px;padding:0 16px;border-radius:999px;border:1.5px solid #1E5A55;background:transparent;color:#1E5A55;font-weight:600;cursor:pointer">Edit</button></div>
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px;border-radius:14px;background:#F6F9F7"><span><b>Challenges</b><br>Kogelberg Explorer and seasonal</span><button type="button" style="min-height:44px;padding:0 16px;border-radius:999px;border:1.5px solid #1E5A55;background:transparent;color:#1E5A55;font-weight:600;cursor:pointer">Edit</button></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px;border-radius:14px;background:#F6F9F7"><span><b>Concierge plan</b><br>Branded page, stand, CMS</span><span style="font-weight:600">R[###] / month</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px;border-radius:14px;background:#F6F9F7"><span><b>Analytics add-on</b><br>Scans, clicks, referral reports</span><span style="font-weight:600">R[###] / month</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px;border-radius:14px;background:#F6F9F7"><span><b>Vouchers and memberships module</b><br>Run your own perks and VIP programme</span><span style="font-weight:600">R[###] / month</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px;border-radius:14px;background:#F6F9F7"><span><b>Featured listing</b><br>Top of Explore for a period</span><span style="font-weight:600">R[###]</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px;border-radius:14px;background:#F6F9F7"><span><b>Trail pack</b><br>3D flyover for your own routes</span><span style="font-weight:600">R[###]</span></div>
         </div>
       </div>
       <div style="flex:1 1 240px;min-width:0;background:#0B1F24;color:#fff;border-radius:22px;padding:20px">
-        <h2 class="h" style="margin:0 0 12px;font-size:20px;font-weight:600">Payout run</h2>
-        <div style="font-size:14px;color:#B7CFCB;line-height:1.6;margin-bottom:14px">October statements. 1. Review. 2. Approve. 3. Export the EFT batch. 4. Mark paid.</div>
+        <h2 class="h" style="margin:0 0 12px;font-size:20px;font-weight:600">Invoice run</h2>
+        <div style="font-size:14px;color:#B7CFCB;line-height:1.6;margin-bottom:14px">1. Review referral claims. 2. Issue invoices. 3. Record payments. 4. Chase overdue.</div>
         <div style="display:grid;gap:8px;margin-bottom:14px;font-size:14px">
-          <div style="display:flex;justify-content:space-between"><span>Businesses</span><b>[##]</b></div>
-          <div style="display:flex;justify-content:space-between"><span>Total payable</span><b style="color:#C8F560">R[#####]</b></div>
+          <div style="display:flex;justify-content:space-between"><span>Businesses to invoice</span><b>[##]</b></div>
+          <div style="display:flex;justify-content:space-between"><span>Total to invoice</span><b style="color:#C8F560">R[#####]</b></div>
         </div>
-        <button type="button" style="min-height:48px;width:100%;border-radius:999px;border:0;background:#C8F560;color:#0B1F24;font-weight:600;cursor:pointer">Review and approve</button>
+        <button type="button" style="min-height:48px;width:100%;border-radius:999px;border:0;background:#C8F560;color:#0B1F24;font-weight:600;cursor:pointer">Review claims</button>
       </div>
     </div>
   </main>

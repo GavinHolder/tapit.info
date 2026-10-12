@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Guest concierge desktop</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Figtree',sans-serif}
+a{color:inherit;text-decoration:none}
+button{font-family:'Figtree',sans-serif}
+.h{font-family:'Bricolage Grotesque',sans-serif;letter-spacing:-0.02em}
+.bx{position:relative}
+.badge{display:flex;align-items:center;justify-content:center}
+.bi{display:flex}
+.ring{display:none;position:absolute;left:-6px;top:-6px;width:calc(100% + 12px);height:calc(100% + 12px);overflow:visible}
+.ring circle{fill:none;stroke:currentColor;stroke-width:2.5;stroke-dasharray:1 1.5;stroke-dashoffset:1;animation:bdraw 3s ease-in-out infinite}
+.bd-shadow .bx{box-shadow:0 10px 18px rgba(0,0,0,.4)}
+.bd-hard .bx{box-shadow:4px 4px 0 rgba(0,0,0,.6)}
+.bd-drop .bx{box-shadow:0 10px 18px rgba(0,0,0,.4)}
+.bd-drop .badge{border-radius:50% 50% 50% 8%;transform:rotate(-45deg)}
+.bd-drop .badge .bi{transform:rotate(45deg)}
+.bd-spin .badge::after{content:'';position:absolute;left:-6px;top:-6px;right:-6px;bottom:-6px;border:2px dashed currentColor;border-radius:inherit;animation:bspin 9s linear infinite;pointer-events:none}
+.bd-pulse .bx::after{content:'';position:absolute;left:0;top:0;right:0;bottom:0;border:2px solid currentColor;border-radius:inherit;animation:bpulse 2s ease-out infinite;pointer-events:none}
+.bd-draw .ring{display:block}
+@keyframes bspin{to{transform:rotate(360deg)}}
+@keyframes bpulse{0%{transform:scale(1);opacity:.9}100%{transform:scale(1.6);opacity:0}}
+@keyframes bdraw{0%{stroke-dashoffset:1}60%{stroke-dashoffset:0}100%{stroke-dashoffset:0}}
+</style>
+</helmet>
+
+<div style="background:{{pal.mist}};color:{{pal.ink}};min-height:1000px" class="{{bdClass}}">
+  <header style="background:{{pal.deep}};color:#fff">
+    <div style="max-width:1280px;margin:0 auto;padding:16px 28px 56px">
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin-bottom:32px">
+        <div style="display:flex;align-items:center;gap:14px">
+          <div role="img" aria-label="Host logo placeholder" class="h" style="width:52px;height:52px;border-radius:14px;background:{{pal.accent}};color:{{pal.ink}};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px">[logo]</div>
+          <span style="font-weight:600">Kleinmond Sea Lodge</span>
+        </div>
+        <nav aria-label="Guest" style="display:flex;flex-wrap:wrap;gap:8px 28px;align-items:center;font-weight:500">
+          <a href="#stay" style="min-height:44px;display:inline-flex;align-items:center">Your stay</a>
+          <a href="#explore" style="min-height:44px;display:inline-flex;align-items:center">Explore</a>
+          <a href="#offers" style="min-height:44px;display:inline-flex;align-items:center">Offers</a>
+          <a href="ExplorerDesktop.dc.html" style="min-height:44px;padding:0 20px;border-radius:999px;background:{{pal.accent}};color:{{pal.ink}};display:inline-flex;align-items:center;font-weight:600">My passport</a>
+        </nav>
+      </div>
+      <div style="color:{{pal.accent}};font-weight:600;margin-bottom:6px">Good morning, welcome to</div>
+      <h1 class="h" style="margin:0 0 10px;font-size:64px;line-height:1;font-weight:800">Kleinmond Sea Lodge</h1>
+      <div style="font-size:18px;opacity:.8">Room 4. Checking out Sunday 10:30</div>
+    </div>
+  </header>
+
+  <main style="max-width:1280px;margin:-28px auto 0;padding:0 28px 48px;display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">
+    <div style="flex:2 1 600px;min-width:0;display:grid;gap:24px">
+      <section id="stay" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px">
+        <div style="background:#fff;border-radius:22px;padding:20px"><div style="font-size:13px;color:{{pal.muted}};font-weight:600">Wi-Fi</div><div class="h" style="font-size:22px;font-weight:600;margin:4px 0 10px">SeaLodge-Guest</div><button type="button" style="min-height:44px;padding:0 18px;border-radius:999px;border:1.5px solid {{pal.moss}};background:transparent;color:{{pal.moss}};font-weight:600;cursor:pointer">Copy password</button></div>
+        <div style="background:#fff;border-radius:22px;padding:20px"><div style="font-size:13px;color:{{pal.muted}};font-weight:600">Breakfast</div><div class="h" style="font-size:22px;font-weight:600;margin:4px 0 6px">07:30 to 09:30</div><div style="font-size:14px;color:{{pal.muted}}">Weekends 08:00 to 10:00</div></div>
+        <div style="background:#fff;border-radius:22px;padding:20px"><div style="font-size:13px;color:{{pal.muted}};font-weight:600">Check-out</div><div class="h" style="font-size:22px;font-weight:600;margin:4px 0 6px">Sunday 10:30</div><div style="font-size:14px;color:{{pal.muted}}">Late check-out on request</div></div>
+        <div style="background:#fff;border-radius:22px;padding:20px"><div style="font-size:13px;color:{{pal.muted}};font-weight:600">Contact your host</div><div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap"><button type="button" style="min-height:44px;padding:0 16px;border-radius:999px;border:0;background:{{pal.ink}};color:{{pal.accent}};font-weight:600;cursor:pointer">WhatsApp</button><button type="button" style="min-height:44px;padding:0 16px;border-radius:999px;border:1.5px solid {{pal.ink}};background:transparent;color:{{pal.ink}};font-weight:600;cursor:pointer">Call</button></div></div>
+      </section>
+
+      <section id="explore" style="background:{{pal.ink}};color:#fff;border-radius:32px;overflow:hidden">
+        <div style="position:relative;height:340px">
+          <dc-import name="Scene" pal="{{pal}}" view="3d" vw="760" vh="340" hint-size="100%,340px"></dc-import>
+          <div style="position:absolute;left:20px;top:20px;padding:8px 16px;border-radius:999px;background:{{pal.ink}};font-weight:600;font-size:14px">Featured trail. Live route preview</div>
+        </div>
+        <div style="padding:24px 28px;display:flex;flex-wrap:wrap;gap:20px;align-items:center;justify-content:space-between">
+          <div style="min-width:0;flex:1 1 300px">
+            <div style="color:{{pal.accent}};font-weight:600;font-size:13px">Featured trail</div>
+            <h2 class="h" style="margin:2px 0 6px;font-size:30px;line-height:1.05;font-weight:800">Palmiet River to the Hangklip ridge</h2>
+            <div style="opacity:.8;font-size:15px">12 km. About 4 hours. Moderate. Guided by [Operator].</div>
+          </div>
+          <a href="TripDesktop.dc.html" style="min-height:52px;padding:0 28px;border-radius:999px;background:{{pal.accent}};color:{{pal.ink}};display:inline-flex;align-items:center;font-weight:600;font-size:16px">Open full 3D replay</a>
+        </div>
+      </section>
+
+      <section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px">
+        <div style="background:#fff;border-radius:24px;padding:18px;display:flex;gap:16px;align-items:center">
+          <div role="img" aria-label="Photo placeholder" style="width:84px;height:84px;border-radius:16px;background:{{pal.moss2}};opacity:.35;flex:none"></div>
+          <div style="flex:1;min-width:0"><div class="h" style="font-size:19px;font-weight:600">Palmiet e-bike tour</div><div style="font-size:14px;color:{{pal.muted}}">3 hours. Guided. From [R price]</div><a href="#book" style="min-height:44px;display:inline-flex;align-items:center;color:{{pal.moss}};font-weight:600">Book with the operator</a></div>
+        </div>
+        <div style="background:#fff;border-radius:24px;padding:18px;display:flex;gap:16px;align-items:center">
+          <div role="img" aria-label="Photo placeholder" style="width:84px;height:84px;border-radius:16px;background:{{pal.moss2}};opacity:.35;flex:none"></div>
+          <div style="flex:1;min-width:0"><div class="h" style="font-size:19px;font-weight:600">Harbour restaurant</div><div style="font-size:14px;color:{{pal.muted}}">Seafood. 4 min drive</div><a href="#view" style="min-height:44px;display:inline-flex;align-items:center;color:{{pal.moss}};font-weight:600">View menu</a></div>
+        </div>
+      </section>
+    </div>
+
+    <aside id="offers" style="flex:1 1 320px;min-width:280px;display:grid;gap:18px">
+      <div style="background:{{pal.gold}};color:#2A1E00;border-radius:28px;padding:24px">
+        <div style="font-weight:600;font-size:13px">Voucher from a partner</div>
+        <div class="h" style="font-size:28px;line-height:1.05;font-weight:800;margin:6px 0 8px">Free coffee with any breakfast</div>
+        <div style="font-size:14px;margin-bottom:16px">Show this at the counter. Valid this week. Issued and honoured by the partner.</div>
+        <button type="button" style="min-height:52px;width:100%;border-radius:999px;border:0;background:#2A1E00;color:#fff;font-weight:600;font-size:16px;cursor:pointer">Claim voucher</button>
+      </div>
+      <div style="background:{{pal.ink}};color:#fff;border-radius:28px;padding:24px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px"><h2 class="h" style="margin:0;font-size:22px;font-weight:600">Kogelberg Explorer</h2><span style="font-size:13px;font-weight:600;color:{{pal.accent}}">2 of 5</span></div>
+        <p style="margin:0 0 18px;font-size:14px;opacity:.8">Collect 5 stamps by 31 December to win a [prize].</p>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center">
+          <div class="badge bx" style="width:48px;height:48px;border-radius:50%;background:{{pal.deep}};color:{{pal.accent}}"><span class="bi"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{pal.accent}}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><svg class="ring" aria-hidden="true" viewBox="0 0 48 48"><circle cx="24" cy="24" r="23" pathLength="1"/></svg></div>
+          <div class="badge bx" style="width:48px;height:48px;border-radius:50%;background:{{pal.deep}};color:{{pal.accent}}"><span class="bi"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{pal.accent}}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><svg class="ring" aria-hidden="true" viewBox="0 0 48 48"><circle cx="24" cy="24" r="23" pathLength="1"/></svg></div>
+          <div role="img" aria-label="Stamp not yet collected" style="width:48px;height:48px;border-radius:50%;border:2px dashed {{pal.moss2}}"></div>
+          <div role="img" aria-label="Stamp not yet collected" style="width:48px;height:48px;border-radius:50%;border:2px dashed {{pal.moss2}}"></div>
+          <div class="badge bx" style="width:48px;height:48px;border-radius:50%;background:{{pal.gold}};color:{{pal.gold}}"><span class="bi"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2A1E00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4h8v5a4 4 0 0 1-8 0zM8 6H4v1a3 3 0 0 0 4 3M16 6h4v1a3 3 0 0 1-4 3M12 13v4M8 20h8"/></svg></span><svg class="ring" aria-hidden="true" viewBox="0 0 48 48"><circle cx="24" cy="24" r="23" pathLength="1"/></svg></div>
+        </div>
+      </div>
+      <div style="background:#fff;border-radius:28px;padding:22px">
+        <h2 class="h" style="margin:0 0 6px;font-size:20px;font-weight:600">Partner memberships</h2>
+        <p style="margin:0 0 14px;font-size:14px;line-height:1.5;color:{{pal.muted}}">Some businesses here run their own member or VIP programmes. You join and pay on their site.</p>
+        <a href="ExplorerDesktop.dc.html" style="min-height:44px;display:inline-flex;align-items:center;color:{{pal.moss}};font-weight:600">See programmes</a>
+      </div>
+    </aside>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"base":{"editor":"enum","options":["fynbos","ocean","plum","forest","dusk","mono"],"default":"fynbos","section":"Style"},"accent":{"editor":"enum","options":["lime","coral","aqua","lilac","pink","sky"],"default":"lime","section":"Style"},"badges":{"editor":"enum","options":["static","shadow","hard","drop","spin","pulse","draw"],"default":"static","section":"Style"},"$preview":{"width":1280,"height":1000}}'>
+class Component extends DCLogic {
+  pal() {
+    const B = {
+      fynbos: { ink: '#0B1F24', deep: '#12343B', moss: '#1E5A55', moss2: '#2F6A64', mist: '#EEF3F0', muted: '#4B6368' },
+      ocean: { ink: '#07182B', deep: '#0E2A47', moss: '#1D4E7A', moss2: '#2F6FA3', mist: '#EAF2F8', muted: '#4A6479' },
+      plum: { ink: '#1B1420', deep: '#2A1F33', moss: '#5B3A57', moss2: '#7A4E6E', mist: '#F4EEF2', muted: '#6A5560' },
+      forest: { ink: '#141E12', deep: '#22351F', moss: '#3E5E34', moss2: '#5C7F4C', mist: '#F1F3E8', muted: '#566350' },
+      dusk: { ink: '#0E0B24', deep: '#1A1544', moss: '#3A2F8F', moss2: '#5648C4', mist: '#EFEEF9', muted: '#55527A' },
+      mono: { ink: '#111111', deep: '#222222', moss: '#444444', moss2: '#666666', mist: '#F2F2F2', muted: '#555555' }
+    };
+    const A = { lime: '#C8F560', coral: '#FF8A5B', aqua: '#5EE6D8', lilac: '#B69CFF', pink: '#FF8FC7', sky: '#8FD3FF' };
+    return Object.assign({}, B[this.props.base] || B.fynbos, { accent: A[this.props.accent] || A.lime, gold: '#F4B63F' });
+  }
+  renderVals() {
+    return { pal: this.pal(), bdClass: 'bd-' + (this.props.badges || 'static') };
+  }
+}
+</script>
+</body>
+</html>
