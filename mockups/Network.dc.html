@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Admin network overview</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Manrope',sans-serif;background:#F6F8F7;color:#0F2A2E}
+a{color:inherit;text-decoration:none}
+button,select{font-family:'Manrope',sans-serif}
+button{cursor:pointer}
+.nav{display:flex;align-items:center;gap:12px;min-height:44px;padding:0 12px;border-radius:10px;color:#4A6165;font-weight:600;font-size:15px;transition:background-color 150ms ease,color 150ms ease}
+.nav:hover{background:#EEF3F0;color:#0F2A2E}
+.nav-on{background:#E3F3C2;color:#0F3D3E}
+.nav-on:hover{background:#E3F3C2}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border-radius:10px;font-weight:700;font-size:15px;transition:background-color 150ms ease,border-color 150ms ease,transform 150ms ease}
+.btn:active{transform:scale(.98)}
+.btn-p{background:#0F3D3E;color:#F6F8F7;border:0}
+.btn-p:hover{background:#164E4F}
+.btn-o{background:#FBFCFB;color:#0F2A2E;border:1px solid #CBD9D4}
+.btn-o:hover{border-color:#0F3D3E}
+.row{transition:background-color 150ms ease}
+.row:hover{background:#F1F6F3}
+th button{border:0;background:transparent;font-size:12px;font-weight:700;color:#5B7377;padding:0;display:inline-flex;align-items:center;gap:4px;min-height:36px}
+th button:hover{color:#0F2A2E}
+a:focus-visible,button:focus-visible,select:focus-visible{outline:2px solid #0F3D3E;outline-offset:2px}
+.sel{min-height:44px;border-radius:10px;border:1px solid #CBD9D4;background:#FBFCFB;color:#0F2A2E;padding:0 12px;font-size:15px;font-weight:600}
+</style>
+</helmet>
+
+<div style="display:flex;flex-wrap:wrap;min-height:900px;position:relative">
+  <aside style="flex:0 0 240px;flex-grow:1;max-width:100%;background:#FBFCFB;border-right:1px solid #DCE5E1;padding:20px 16px;box-sizing:border-box">
+    <div style="display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;padding:0 12px 4px"><svg aria-hidden="true" width="26" height="26" viewBox="0 0 32 32"><circle cx="16" cy="16" r="15" fill="#0F3D3E"/><path d="M9 17c3-6 11-6 14 0M12 20c2-3 6-3 8 0" fill="none" stroke="#C8F560" stroke-width="2.4" stroke-linecap="round"/><circle cx="16" cy="23" r="1.8" fill="#C8F560"/></svg>TapIt</div>
+    <div style="padding:0 12px 20px;font-size:13px;font-weight:700;color:#1E5A55">Admin console</div>
+    <nav aria-label="Admin" style="display:grid;gap:2px">
+      <a href="#overview" class="nav nav-on" aria-current="page">Network overview</a>
+      <a href="#businesses" class="nav">Businesses</a>
+      <a href="#stands" class="nav">Stands and codes</a>
+      <a href="#content" class="nav">Content and trails</a>
+      <a href="#billing" class="nav">Billing</a>
+      <a href="#referrals" class="nav">Referral claims</a>
+      <a href="#plans" class="nav">Features and plans</a>
+      <a href="#audit" class="nav">POPIA and audit log</a>
+    </nav>
+  </aside>
+
+  <main style="flex:999 1 640px;min-width:0;padding:24px 32px 48px;box-sizing:border-box">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin-bottom:24px">
+      <div>
+        <h1 style="margin:0 0 4px;font-size:28px;line-height:1.15;font-weight:800;letter-spacing:-0.02em">Network overview</h1>
+        <div style="font-size:14px;color:#5B7377">Sample data to show the layout. Figures are illustrative.</div>
+      </div>
+      <div role="group" aria-label="Date range" style="display:flex;background:#E8EFEC;border-radius:12px;padding:4px;gap:4px">
+        <sc-for list="{{ranges}}" as="r" hint-placeholder-count="3">
+          <button type="button" onClick="{{r.pick}}" aria-pressed="{{r.on}}" style="{{r.style}}">{{r.label}}</button>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:16px">
+      <sc-for list="{{kpis}}" as="k" hint-placeholder-count="5">
+        <div style="background:#FBFCFB;border:1px solid #DCE5E1;border-radius:14px;padding:16px">
+          <div style="font-size:13px;color:#5B7377;margin-bottom:6px">{{k.label}}</div>
+          <div style="font-size:28px;line-height:1.1;font-weight:800;letter-spacing:-0.02em">{{k.value}}</div>
+          <div style="font-size:12px;font-weight:700;margin-top:6px;color:#2F5D12">{{k.delta}}</div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:16px;margin-bottom:16px">
+      <section style="flex:2 1 440px;min-width:0;background:#FBFCFB;border:1px solid #DCE5E1;border-radius:16px;padding:20px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px"><h2 style="margin:0;font-size:17px;font-weight:700">Scans per day</h2><span style="font-size:13px;color:#5B7377">{{chartCaption}}</span></div>
+        <div style="position:relative">
+          <svg role="img" aria-label="Line chart of scans per day across the network" viewBox="0 0 600 200" style="width:100%;height:auto;display:block">
+            <g stroke="#E8EFEC" stroke-width="1"><line x1="0" y1="20" x2="600" y2="20"/><line x1="0" y1="80" x2="600" y2="80"/><line x1="0" y1="140" x2="600" y2="140"/><line x1="0" y1="190" x2="600" y2="190"/></g>
+            <path d="{{areaD}}" fill="#C8F560" fill-opacity=".35"/>
+            <path d="{{lineD}}" fill="none" stroke="#0F3D3E" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+            <sc-if value="{{hov}}" hint-placeholder-val="{{ false }}">
+              <line x1="{{hx}}" y1="10" x2="{{hx}}" y2="190" stroke="#0F3D3E" stroke-opacity=".35" stroke-dasharray="3 4"/>
+              <circle cx="{{hx}}" cy="{{hy}}" r="5" fill="#C8F560" stroke="#0F3D3E" stroke-width="2.5"/>
+            </sc-if>
+          </svg>
+          <div onMouseMove="{{onMove}}" onMouseLeave="{{onLeave}}" style="position:absolute;inset:0;cursor:crosshair"></div>
+          <sc-if value="{{hov}}" hint-placeholder-val="{{ false }}">
+            <div style="{{tipStyle}}"><div style="font-size:12px;color:#B9D0CD">{{tipDay}}</div><div style="font-size:15px;font-weight:800">{{tipVal}} scans</div></div>
+          </sc-if>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:#5B7377;margin-top:8px"><span>{{xStart}}</span><span>{{xEnd}}</span></div>
+      </section>
+
+      <section style="flex:1 1 260px;min-width:0;background:#FBFCFB;border:1px solid #DCE5E1;border-radius:16px;padding:20px">
+        <h2 style="margin:0 0 16px;font-size:17px;font-weight:700">Guest funnel</h2>
+        <div style="display:grid;gap:16px">
+          <sc-for list="{{funnel}}" as="f" hint-placeholder-count="4">
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:600;margin-bottom:6px"><span>{{f.label}}</span><span>{{f.value}}</span></div>
+              <div style="height:8px;border-radius:4px;background:#E8EFEC"><div style="{{f.bar}}"></div></div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start">
+      <section style="flex:2 1 520px;min-width:0;background:#FBFCFB;border:1px solid #DCE5E1;border-radius:16px;padding:20px">
+        <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px">
+          <h2 style="margin:0;font-size:17px;font-weight:700">Stands</h2>
+          <label style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600">Town
+            <select class="sel" value="{{town}}" onChange="{{setTown}}">
+              <option value="all">All towns</option><option value="Kleinmond">Kleinmond</option><option value="Betty's Bay">Betty's Bay</option><option value="Pringle Bay">Pringle Bay</option><option value="Hermanus">Hermanus</option>
+            </select>
+          </label>
+        </div>
+        <div style="overflow-x:auto">
+          <table style="width:100%;border-collapse:collapse;min-width:520px">
+            <thead><tr style="border-bottom:1px solid #DCE5E1">
+              <th style="text-align:left;padding:0 8px"><button type="button" onClick="{{sortName}}">Stand {{arrowName}}</button></th>
+              <th style="text-align:left;padding:0 8px"><button type="button" onClick="{{sortTown}}">Town {{arrowTown}}</button></th>
+              <th style="text-align:right;padding:0 8px"><button type="button" onClick="{{sortScans}}">Scans {{arrowScans}}</button></th>
+              <th style="text-align:right;padding:0 8px"><button type="button" onClick="{{sortClicks}}">Clicks {{arrowClicks}}</button></th>
+              <th style="text-align:right;padding:0 8px"><button type="button" onClick="{{sortRefs}}">Referrals {{arrowRefs}}</button></th>
+            </tr></thead>
+            <tbody>
+              <sc-for list="{{rows}}" as="r" hint-placeholder-count="5">
+                <tr class="row" style="border-bottom:1px solid #EEF3F0">
+                  <td style="padding:0 8px"><button type="button" onClick="{{r.open}}" aria-label="{{r.aria}}" style="border:0;background:transparent;text-align:left;min-height:52px;width:100%;font-size:15px;font-weight:700;color:#0F2A2E;padding:0">{{r.name}}<span style="display:block;font-size:12px;font-weight:500;color:#5B7377">{{r.code}}</span></button></td>
+                  <td style="padding:0 8px;font-size:14px;color:#33474B">{{r.town}}</td>
+                  <td style="padding:0 8px;text-align:right;font-size:14px;font-variant-numeric:tabular-nums">{{r.scans}}</td>
+                  <td style="padding:0 8px;text-align:right;font-size:14px;font-variant-numeric:tabular-nums">{{r.clicks}}</td>
+                  <td style="padding:0 8px;text-align:right;font-size:14px;font-variant-numeric:tabular-nums">{{r.refs}}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+        <sc-if value="{{noRows}}" hint-placeholder-val="{{ false }}"><div style="padding:32px;text-align:center;color:#5B7377;font-size:14px">No stands in this town yet.</div></sc-if>
+      </section>
+
+      <section style="flex:1 1 280px;min-width:0;background:#FBFCFB;border:1px solid #DCE5E1;border-radius:16px;padding:20px">
+        <h2 style="margin:0 0 12px;font-size:17px;font-weight:700">Needs attention</h2>
+        <sc-if value="{{hasAlerts}}" hint-placeholder-val="{{ true }}">
+          <div style="display:grid;gap:10px">
+            <sc-for list="{{alerts}}" as="a" hint-placeholder-count="3">
+              <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;border-radius:12px;border:1px solid #E8EFEC;background:#F6F8F7">
+                <span aria-hidden="true" style="{{a.dot}}"></span>
+                <div style="flex:1;min-width:0;font-size:14px;line-height:1.45"><b>{{a.title}}</b><br><span style="color:#5B7377">{{a.text}}</span></div>
+                <button type="button" onClick="{{a.dismiss}}" aria-label="Dismiss alert" style="width:36px;height:36px;border:0;background:transparent;color:#5B7377;border-radius:8px;flex:none"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{noAlerts}}" hint-placeholder-val="{{ false }}"><div style="padding:24px;text-align:center;color:#5B7377;font-size:14px;border:1px dashed #B9CBC6;border-radius:12px">All clear. Nothing needs attention.</div></sc-if>
+      </section>
+    </div>
+  </main>
+
+  <div style="{{drawerScrim}}"></div>
+  <aside role="dialog" aria-label="Stand details" style="{{drawerStyle}}">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:20px">
+      <div><div style="font-size:12px;font-weight:700;color:#1E5A55">{{sel.code}}</div><h2 style="margin:2px 0 0;font-size:22px;line-height:1.2;font-weight:800">{{sel.name}}</h2><div style="font-size:14px;color:#5B7377">{{sel.town}}</div></div>
+      <button type="button" class="btn btn-o" onClick="{{closeDrawer}}" aria-label="Close details" style="min-height:40px;padding:0 12px">Close</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid #DCE5E1;border-radius:12px;margin-bottom:20px">
+      <div style="padding:12px;border-right:1px solid #E8EFEC"><div style="font-size:12px;color:#5B7377">Scans</div><div style="font-size:20px;font-weight:800">{{sel.scans}}</div></div>
+      <div style="padding:12px;border-right:1px solid #E8EFEC"><div style="font-size:12px;color:#5B7377">Clicks</div><div style="font-size:20px;font-weight:800">{{sel.clicks}}</div></div>
+      <div style="padding:12px"><div style="font-size:12px;color:#5B7377">Referrals</div><div style="font-size:20px;font-weight:800">{{sel.refs}}</div></div>
+    </div>
+    <div style="font-size:14px;font-weight:700;margin-bottom:8px">Most clicked from this stand</div>
+    <div style="border:1px solid #DCE5E1;border-radius:12px;margin-bottom:20px">
+      <div style="display:flex;justify-content:space-between;padding:12px 14px;border-bottom:1px solid #E8EFEC;font-size:14px"><span>Palmiet e-bike tour</span><b>38%</b></div>
+      <div style="display:flex;justify-content:space-between;padding:12px 14px;border-bottom:1px solid #E8EFEC;font-size:14px"><span>Harbour restaurant</span><b>27%</b></div>
+      <div style="display:flex;justify-content:space-between;padding:12px 14px;font-size:14px"><span>Wine tasting</span><b>19%</b></div>
+    </div>
+    <div style="font-size:14px;font-weight:700;margin-bottom:8px">Stand health</div>
+    <div style="font-size:14px;color:#33474B;line-height:1.6;margin-bottom:20px">Last scan {{sel.last}}. NFC chip and QR code both working.</div>
+    <div style="display:flex;gap:10px"><a href="#open" class="btn btn-p">Open business</a><a href="#qr" class="btn btn-o">Download QR</a></div>
+  </aside>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":900}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { range: 30, hover: -1, town: 'all', sortKey: 'scans', sortDir: -1, sel: null, dismissed: {} };
+  }
+  series(n) {
+    const out = [];
+    let seed = 7;
+    const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
+    for (let i = 0; i < n; i++) out.push(Math.round(34 + 18 * Math.sin(i / 3.2) + i * (30 / n) + rnd() * 16));
+    return out;
+  }
+  renderVals() {
+    const s = this.state, n = s.range;
+    const data = this.series(n);
+    const total = data.reduce((a, b) => a + b, 0);
+    const clicks = Math.round(total * 0.31), refs = Math.round(clicks * 0.14);
+    const fmt = (v) => v.toLocaleString('en-ZA').replace(/ /g, ' ');
+    const kpis = [
+      { label: 'Scans', value: fmt(total), delta: '+12% vs previous' },
+      { label: 'Unique visitors', value: fmt(Math.round(total * 0.74)), delta: '+9% vs previous' },
+      { label: 'Outbound clicks', value: fmt(clicks), delta: '+15% vs previous' },
+      { label: 'Referrals', value: fmt(refs), delta: '+6% vs previous' },
+      { label: 'Commission to invoice', value: 'R' + fmt(refs * 100), delta: 'Sample at 10%' }
+    ];
+    const max = Math.max.apply(null, data) * 1.15, W = 600, H = 190;
+    const px = (i) => (i / (n - 1)) * W, py = (v) => H - (v / max) * (H - 20);
+    const line = data.map((v, i) => (i ? 'L' : 'M') + px(i).toFixed(1) + ' ' + py(v).toFixed(1)).join('');
+    const area = line + 'L' + W + ' ' + H + 'L0 ' + H + 'Z';
+    const hi = s.hover;
+    const labelFor = (i) => { const d = n - 1 - i; return d === 0 ? 'Today' : d + (d === 1 ? ' day ago' : ' days ago'); };
+    const stands = [
+      { code: 'KL-01', name: '[Pilot site 1]', town: 'Kleinmond', w: 1.0, c: 0.34, r: 0.16, last: '12 minutes ago' },
+      { code: 'BB-01', name: '[Pilot site 2]', town: "Betty's Bay", w: 0.8, c: 0.29, r: 0.12, last: '1 hour ago' },
+      { code: 'PB-01', name: '[Pilot site 3]', town: 'Pringle Bay', w: 0.55, c: 0.27, r: 0.1, last: '3 hours ago' },
+      { code: 'HM-01', name: '[Pilot site 4]', town: 'Hermanus', w: 0.7, c: 0.33, r: 0.13, last: '40 minutes ago' },
+      { code: 'KL-02', name: '[Pilot site 5]', town: 'Kleinmond', w: 0.4, c: 0.25, r: 0.08, last: '2 days ago' }
+    ];
+    const share = stands.reduce((a, b) => a + b.w, 0);
+    let rows = stands.map((x) => { const sc = Math.round(total * x.w / share), cl = Math.round(sc * x.c), rf = Math.round(cl * x.r * 1.6); return Object.assign({}, x, { scans: sc, clicks: cl, refs: rf }); });
+    if (s.town !== 'all') rows = rows.filter((x) => x.town === s.town);
+    const key = s.sortKey, dir = s.sortDir;
+    rows.sort((a, b) => (typeof a[key] === 'string' ? a[key].localeCompare(b[key]) : a[key] - b[key]) * dir);
+    const arrow = (k) => (s.sortKey === k ? (s.sortDir === 1 ? '↑' : '↓') : '');
+    const sortBy = (k) => () => this.setState({ sortKey: k, sortDir: this.state.sortKey === k ? -this.state.sortDir : (k === 'name' || k === 'town' ? 1 : -1) });
+    const rowsOut = rows.map((r) => Object.assign({}, r, { scans: fmt(r.scans), clicks: fmt(r.clicks), refs: fmt(r.refs), aria: 'Open details for ' + r.name, open: () => this.setState({ sel: r.code }) }));
+    const selRaw = stands.map((x) => { const sc = Math.round(total * x.w / share), cl = Math.round(sc * x.c); return Object.assign({}, x, { scans: sc, clicks: cl, refs: Math.round(cl * x.r * 1.6) }); }).find((x) => x.code === s.sel) || { code: '', name: '', town: '', scans: 0, clicks: 0, refs: 0, last: '' };
+    const selRow = Object.assign({}, selRaw, { scans: fmt(selRaw.scans), clicks: fmt(selRaw.clicks), refs: fmt(selRaw.refs) });
+    const funnelVals = [['Scans', total, 100], ['Opened an offer', Math.round(total * 0.62), 62], ['Clicked out', clicks, 31], ['Referred booking', refs, Math.max(4, Math.round(31 * 0.14))]];
+    const funnel = funnelVals.map((f, i) => ({ label: f[0], value: fmt(f[1]), bar: 'height:8px;border-radius:4px;width:' + f[2] + '%;background:' + ['#0F3D3E', '#1E5A55', '#4D9A8E', '#C8F560'][i] + ';transition:width 300ms ease-out' }));
+    const A = [
+      { id: 'a1', c: '#C23B22', title: 'No scans in 7 days', text: 'KL-02 at [Pilot site 5]. Check the stand.' },
+      { id: 'a2', c: '#B7791F', title: 'Draft not published', text: '[Pilot site 2] has edits waiting.' },
+      { id: 'a3', c: '#1E5A55', title: 'Statements ready', text: 'October invoices can be issued.' }
+    ].filter((a) => !s.dismissed[a.id]);
+    const alerts = A.map((a) => ({ title: a.title, text: a.text, dot: 'width:10px;height:10px;border-radius:50%;margin-top:5px;flex:none;background:' + a.c, dismiss: () => this.setState({ dismissed: Object.assign({}, this.state.dismissed, { [a.id]: true }) }) }));
+    const open = !!s.sel;
+    const rangeDefs = [[7, '7 days'], [30, '30 days'], [90, '90 days']];
+    const ranges = rangeDefs.map((r) => { const on = s.range === r[0]; return { label: r[1], on: on, pick: () => this.setState({ range: r[0], hover: -1 }), style: 'min-height:40px;padding:0 16px;border:0;border-radius:9px;font-weight:700;font-size:14px;transition:background-color 150ms ease;background:' + (on ? '#FBFCFB' : 'transparent') + ';color:' + (on ? '#0F2A2E' : '#5B7377') }; });
+    return {
+      ranges: ranges, kpis: kpis, chartCaption: 'Last ' + n + ' days', areaD: area, lineD: line,
+      hov: hi >= 0, hx: hi >= 0 ? px(hi) : 0, hy: hi >= 0 ? py(data[hi]) : 0,
+      tipDay: hi >= 0 ? labelFor(hi) : '', tipVal: hi >= 0 ? data[hi] : '',
+      tipStyle: 'position:absolute;top:0;pointer-events:none;background:#0F2A2E;color:#F6F8F7;padding:8px 12px;border-radius:10px;white-space:nowrap;transform:translateX(-50%);left:' + (hi >= 0 ? Math.min(88, Math.max(12, (px(hi) / W) * 100)) : 0) + '%',
+      onMove: (e) => { const r = e.currentTarget.getBoundingClientRect(); const i = Math.round(((e.clientX - r.left) / r.width) * (n - 1)); this.setState({ hover: Math.max(0, Math.min(n - 1, i)) }); },
+      onLeave: () => this.setState({ hover: -1 }),
+      xStart: n + ' days ago', xEnd: 'Today', funnel: funnel,
+      town: s.town, setTown: (e) => this.setState({ town: e.target.value }),
+      sortName: sortBy('name'), sortTown: sortBy('town'), sortScans: sortBy('scans'), sortClicks: sortBy('clicks'), sortRefs: sortBy('refs'),
+      arrowName: arrow('name'), arrowTown: arrow('town'), arrowScans: arrow('scans'), arrowClicks: arrow('clicks'), arrowRefs: arrow('refs'),
+      rows: rowsOut, noRows: rowsOut.length === 0,
+      alerts: alerts, hasAlerts: alerts.length > 0, noAlerts: alerts.length === 0,
+      sel: selRow, closeDrawer: () => this.setState({ sel: null }),
+      drawerScrim: 'position:fixed;inset:0;background:rgba(11,31,36,.35);transition:opacity 200ms ease-out;opacity:' + (open ? 1 : 0) + ';pointer-events:' + (open ? 'auto' : 'none'),
+      drawerStyle: 'position:fixed;top:0;right:0;bottom:0;width:min(420px,100%);background:#FBFCFB;border-left:1px solid #DCE5E1;padding:24px;box-sizing:border-box;overflow-y:auto;transition:transform 240ms cubic-bezier(.2,.8,.2,1);transform:translateX(' + (open ? '0' : '105%') + ')'
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -40,7 +40,7 @@ body{margin:0}
                 <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.44;0.47;1" dur="14s" repeatCount="indefinite"/>
                 <circle cx="{{v3.sx}}" cy="{{v3.sy}}" r="{{k.stamp}}" fill="{{pal.gold}}" stroke="{{pal.ink}}" stroke-width="{{k.stroke}}"/>
                 <rect x="{{v3.lx}}" y="{{v3.ly}}" width="{{k.lw}}" height="{{k.lh}}" rx="{{k.lr}}" fill="{{pal.ink}}"/>
-                <text x="{{v3.tx}}" y="{{v3.ty}}" text-anchor="middle" font-family="Figtree, sans-serif" font-weight="600" font-size="{{k.font}}" fill="#ffffff">Stamp earned</text>
+                <text x="{{v3.tx}}" y="{{v3.ty}}" text-anchor="middle" font-family="Manrope, Figtree, sans-serif" font-weight="600" font-size="{{k.font}}" fill="#ffffff">Stamp earned</text>
               </g>
               <g>
                 <animateMotion dur="14s" repeatCount="indefinite" path="{{v3.routeD}}" keyPoints="0;1;1" keyTimes="0;0.85;1" calcMode="linear"/>
@@ -79,7 +79,7 @@ body{margin:0}
                 <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.44;0.47;1" dur="14s" repeatCount="indefinite"/>
                 <circle cx="{{v2.sx}}" cy="{{v2.sy}}" r="{{k.stamp}}" fill="{{pal.gold}}" stroke="{{pal.ink}}" stroke-width="{{k.stroke}}"/>
                 <rect x="{{v2.lx}}" y="{{v2.ly}}" width="{{k.lw}}" height="{{k.lh}}" rx="{{k.lr}}" fill="{{pal.ink}}"/>
-                <text x="{{v2.tx}}" y="{{v2.ty}}" text-anchor="middle" font-family="Figtree, sans-serif" font-weight="600" font-size="{{k.font}}" fill="#ffffff">Stamp earned</text>
+                <text x="{{v2.tx}}" y="{{v2.ty}}" text-anchor="middle" font-family="Manrope, Figtree, sans-serif" font-weight="600" font-size="{{k.font}}" fill="#ffffff">Stamp earned</text>
               </g>
               <g>
                 <animateMotion dur="14s" repeatCount="indefinite" path="{{v2.routeD}}" keyPoints="0;1;1" keyTimes="0;0.85;1" calcMode="linear"/>
@@ -152,8 +152,8 @@ class Component extends DCLogic {
     for (let r = 27; r >= 0; r--) {
       const z = r / 27, t = 1 - z;
       let line = '', first = null, last = null;
-      for (let c = 0; c <= 52; c++) {
-        const x = -1.55 + 3.1 * c / 52;
+      for (let c = 0; c <= 72; c++) {
+        const x = -3.2 + 6.4 * c / 72;
         const q = this.p3(x, z, this.hf(x, z), w, h);
         if (c === 0) first = q;
         last = q;
