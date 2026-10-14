@@ -48,6 +48,7 @@ export function TopBar({ user }: Props) {
           <svg width="16" height="16" viewBox="0 0 32 32"><path d="M9 17c3-6 11-6 14 0M12 20c2-3 6-3 8 0" fill="none" stroke="#c8f560" strokeWidth="2.6" strokeLinecap="round" /><circle cx="16" cy="24" r="2" fill="#c8f560" /></svg>
         </span>
         TapIt Studio
+        <span className="ver" title="Studio version. Features listed in What is new need this version or later.">v{process.env.NEXT_PUBLIC_STUDIO_VERSION}</span>
       </Link>
       <nav className="nav" aria-label="Studio">
         <Link href="/inbox" className={path.startsWith('/inbox') ? 'on' : ''}>

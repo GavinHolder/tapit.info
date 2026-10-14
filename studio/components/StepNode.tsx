@@ -2,9 +2,10 @@
 
 import { Handle, Position, type NodeProps } from '@xyflow/react';
 import { KINDS, STATUSES } from '@/lib/types';
-import type { RFNode } from './store';
+import { useStudio, type RFNode } from './store';
 
-export function StepNode({ data, selected }: NodeProps<RFNode>) {
+export function StepNode({ id, data, selected }: NodeProps<RFNode>) {
+  const readOnly = useStudio((s) => s.readOnly);
   const kind = KINDS[data.kind];
   const status = STATUSES[data.status];
   const pii = data.fields.some((f) => f.pii);
@@ -15,6 +16,15 @@ export function StepNode({ data, selected }: NodeProps<RFNode>) {
         <span className="pill" style={{ background: kind.bg, color: kind.color }}>{kind.label}</span>
         <span className="step-lane">{data.lane}</span>
         <span className="dot" title={status.label} style={{ background: status.dot }} />
+        {!readOnly && (
+          <button
+            type="button"
+            className="node-menu nodrag nopan"
+            aria-label={`Actions for ${data.title}`}
+            title="Add after, duplicate or delete"
+            onClick={(e) => { e.stopPropagation(); window.dispatchEvent(new CustomEvent('studio:nodemenu', { detail: { id, x: e.clientX, y: e.clientY } })); }}
+          >⋯</button>
+        )}
       </div>
       <div className="step-title">{data.title}</div>
       {(data.fields.length > 0 || data.comments.length > 0 || data.mockup) && (

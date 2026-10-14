@@ -134,7 +134,7 @@ export function ReviewViewer({ initial, thread, role }: { initial?: string; thre
 
         <div className="rv-body">
           <div className="rv-stage">
-            <Stage key={id + nonce} proto={proto} src={src} mode={mode} color={color} anns={visible} selected={selected} onSelect={(a) => { setSelected(a); setDraft(null); }} onDraft={(d) => { setDraft(d); setSelected(null); }} draft={draft} />
+            <Stage key={id + nonce} proto={proto} src={src} mode={mode} color={color} anns={visible} selected={selected} onSelect={(a) => { setSelected(a); setDraft(null); }} onDraft={(d) => { setDraft(d); setSelected(null); }} draft={draft} onMode={(m) => { setMode(m); setDraft(null); }} onDelete={(a) => void remove(a)} />
           </div>
 
           <aside className="rv-panel" aria-label="Comments on this mockup">
@@ -226,9 +226,9 @@ function DraftForm({ draft, mockup, color, onCancel, onDone }: { draft: Draft; m
   );
 }
 
-function Stage({ proto, src, mode, color, anns, selected, draft, onSelect, onDraft }: {
+function Stage({ proto, src, mode, color, anns, selected, draft, onSelect, onDraft, onMode, onDelete }: {
   proto: Prototype; src: string; mode: Mode; color: string; anns: Ann[]; selected: string | null; draft: Draft | null;
-  onSelect: (id: string) => void; onDraft: (d: Draft) => void;
+  onSelect: (id: string) => void; onDraft: (d: Draft) => void; onMode: (m: Mode) => void; onDelete: (a: Ann) => void;
 }) {
   const W = proto.w, H = proto.h;
   const frame = useRef<HTMLIFrameElement>(null);
@@ -250,6 +250,35 @@ function Stage({ proto, src, mode, color, anns, selected, draft, onSelect, onDra
     ro.observe(el);
     return () => ro.disconnect();
   }, [W]);
+
+  // Right-click menu: add a comment where you click, or open / delete an existing one.
+  const [menu, setMenu] = useState<{ x: number; y: number; ann?: Ann } | null>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  const showMenu = (x: number, y: number, ann?: Ann) => setMenu({ x, y, ann });
+
+  // In "Use it" mode the mockup itself gets the click, so listen inside it (same site, so it can be read).
+  useEffect(() => {
+    const f = frame.current;
+    if (!f) return;
+    let doc: Document | null = null;
+    const handler = (e: MouseEvent) => { e.preventDefault(); showMenu(e.clientX, e.clientY); };
+    const attach = () => { try { doc?.removeEventListener('contextmenu', handler); doc = f.contentDocument; doc?.addEventListener('contextmenu', handler); } catch { /* not readable */ } };
+    attach();
+    f.addEventListener('load', attach);
+    return () => { f.removeEventListener('load', attach); try { doc?.removeEventListener('contextmenu', handler); } catch { /* gone */ } };
+  }, []);
+
+  useEffect(() => {
+    if (!menu) return;
+    const close = () => setMenu(null);
+    const key = (e: KeyboardEvent) => { if (e.key === 'Escape') close(); };
+    window.addEventListener('click', close);
+    window.addEventListener('keydown', key);
+    const doc = (() => { try { return frame.current?.contentDocument ?? null; } catch { return null; } })();
+    doc?.addEventListener('click', close);
+    return () => { window.removeEventListener('click', close); window.removeEventListener('keydown', key); doc?.removeEventListener('click', close); };
+  }, [menu]);
 
   const local = (e: React.PointerEvent): Pt => {
     const r = overlay.current!.getBoundingClientRect();
@@ -321,7 +350,7 @@ function Stage({ proto, src, mode, color, anns, selected, draft, onSelect, onDra
   const draftAnn = draft ? { kind: draft.kind, data: draft.data } : null;
 
   return (
-    <div ref={holder} className="rv-scaler" style={{ width: W * scale, height: H * scale, margin: '0 auto' }}>
+    <div ref={holder} className="rv-scaler" style={{ width: W * scale, height: H * scale, margin: '0 auto', position: 'relative' }}>
     <div className={'rv-wrap ' + proto.device} style={{ width: W, height: H, transform: `scale(${scale})`, transformOrigin: 'top left' }}>
       <iframe ref={frame} className="rv-frame" src={src} title={proto.title} width={W} height={H} />
       <div
@@ -331,14 +360,15 @@ function Stage({ proto, src, mode, color, anns, selected, draft, onSelect, onDra
         onPointerMove={onMove}
         onPointerUp={onUp}
         onPointerLeave={() => setHover(null)}
+        onContextMenu={(e) => { e.preventDefault(); const r = overlay.current!.getBoundingClientRect(); showMenu((e.clientX - r.left) / scale, (e.clientY - r.top) / scale); }}
         style={{ ['--inv' as string]: 1 / scale }}
       >
         <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} aria-hidden="true">
           {anns.map((a) =>
             a.kind === 'draw' ? (
-              <path key={a.id} d={path((a.data as { points: Pt[] }).points)} fill="none" stroke={(a.data as { color: string }).color} strokeWidth={a.id === selected ? 5 : 3} strokeLinecap="round" strokeLinejoin="round" opacity={a.status === 'resolved' ? 0.35 : 1} />
+              <path key={a.id} d={path((a.data as { points: Pt[] }).points)} fill="none" stroke={(a.data as { color: string }).color} strokeWidth={a.id === selected ? 5 : 3} strokeLinecap="round" strokeLinejoin="round" opacity={a.status === 'resolved' ? 0.35 : 1} style={{ pointerEvents: 'stroke' }} onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); const [mx, my] = anchor(a); showMenu(mx, my, a); }} />
             ) : a.kind === 'box' ? (
-              <rect key={a.id} x={(a.data as { x: number }).x * W} y={(a.data as { y: number }).y * H} width={(a.data as { w: number }).w * W} height={(a.data as { h: number }).h * H} rx={4} fill="rgba(217,45,32,.08)" stroke="#d92d20" strokeWidth={a.id === selected ? 4 : 2.5} strokeDasharray="6 4" opacity={a.status === 'resolved' ? 0.35 : 1} />
+              <rect key={a.id} x={(a.data as { x: number }).x * W} y={(a.data as { y: number }).y * H} width={(a.data as { w: number }).w * W} height={(a.data as { h: number }).h * H} rx={4} fill="rgba(217,45,32,.08)" stroke="#d92d20" strokeWidth={a.id === selected ? 4 : 2.5} strokeDasharray="6 4" opacity={a.status === 'resolved' ? 0.35 : 1} style={{ pointerEvents: 'stroke' }} onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); const [mx, my] = anchor(a); showMenu(mx, my, a); }} />
             ) : null
           )}
           {draftAnn?.kind === 'draw' && <path d={path((draftAnn.data as { points: Pt[] }).points)} fill="none" stroke={(draftAnn.data as { color: string }).color} strokeWidth={4} strokeLinecap="round" strokeLinejoin="round" />}
@@ -362,6 +392,7 @@ function Stage({ proto, src, mode, color, anns, selected, draft, onSelect, onDra
               aria-label={`Comment ${a.n}: ${a.title}`}
               onPointerDown={(e) => e.stopPropagation()}
               onClick={() => onSelect(a.id)}
+              onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); showMenu(x, y, a); }}
             >
               {a.n}
             </button>
@@ -373,6 +404,34 @@ function Stage({ proto, src, mode, color, anns, selected, draft, onSelect, onDra
         })()}
       </div>
     </div>
+    {menu && (
+      <div
+        ref={menuRef}
+        className="ctxmenu mock"
+        role="menu"
+        aria-label={menu.ann ? `Comment ${menu.ann.n} actions` : 'Add a comment'}
+        style={{ left: Math.max(4, Math.min(menu.x * scale, W * scale - 236)), top: Math.max(4, Math.min(menu.y * scale, H * scale - (menu.ann ? 110 : 160))) }}
+        onClick={(e) => e.stopPropagation()}
+        onContextMenu={(e) => e.preventDefault()}
+      >
+        {!menu.ann && (
+          <>
+            <div className="cm-h">Add to this screen</div>
+            <button type="button" role="menuitem" className="cm-item" onClick={() => { const { label } = elementAt(menu.x, menu.y); onDraft({ kind: 'pin', data: { x: menu.x / W, y: menu.y / H }, element: label }); setMenu(null); }}>Pin a comment here</button>
+            <button type="button" role="menuitem" className="cm-item" onClick={() => { onMode('draw'); setMenu(null); }}>Draw on the screen…</button>
+            <button type="button" role="menuitem" className="cm-item" onClick={() => { onMode('box'); setMenu(null); }}>Box an area…</button>
+            {mode !== 'browse' && <><div className="cm-sep" /><button type="button" role="menuitem" className="cm-item" onClick={() => { onMode('browse'); setMenu(null); }}>Stop annotating (use the mockup)</button></>}
+          </>
+        )}
+        {menu.ann && (
+          <>
+            <div className="cm-h">Comment {menu.ann.n}</div>
+            <button type="button" role="menuitem" className="cm-item" onClick={() => { onSelect(menu.ann!.id); setMenu(null); }}>Open comment</button>
+            {menu.ann.can_delete ? <button type="button" role="menuitem" className="cm-item danger" onClick={() => { onDelete(menu.ann!); setMenu(null); }}>Delete {menu.ann.kind === 'pin' ? 'pin' : menu.ann.kind === 'draw' ? 'drawing' : 'box'}</button> : <div className="cm-h">You can only delete your own</div>}
+          </>
+        )}
+      </div>
+    )}
     </div>
   );
 }

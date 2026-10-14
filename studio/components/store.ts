@@ -69,6 +69,8 @@ interface State {
   savedAt: number | null;
   lastEdit: number;
   toast: string;
+  readOnly: boolean;
+  setReadOnly: (v: boolean) => void;
   focus: string | null;
   setFocus: (id: string | null) => void;
   loadList: () => Promise<void>;
@@ -112,6 +114,8 @@ export const useStudio = create<State>()((set, get) => ({
   savedAt: null,
   lastEdit: 0,
   toast: '',
+  readOnly: true,
+  setReadOnly: (v) => set({ readOnly: v }),
   focus: null,
   setFocus: (id) => set({ focus: id }),
 

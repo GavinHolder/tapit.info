@@ -47,3 +47,11 @@ export async function readUpload(user: User, id: string): Promise<{ data: Uint8A
     return null;
   }
 }
+
+// Deletes image files from disk (used when a comment with images is removed).
+export async function removeUploads(files: { id: string; mime: string }[]): Promise<void> {
+  for (const f of files) {
+    if (!/^att_[A-Za-z0-9_-]+$/.test(f.id) || !EXT[f.mime]) continue;
+    await fs.rm(path.join(UPLOAD_DIR, `${f.id}.${EXT[f.mime]}`), { force: true });
+  }
+}

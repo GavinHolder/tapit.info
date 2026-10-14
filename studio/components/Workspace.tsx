@@ -29,9 +29,24 @@ function Canvas({ readOnly }: { readOnly: boolean }) {
   const openMenu = (e: React.MouseEvent | MouseEvent, type: 'pane' | 'node' | 'edge', id?: string) => {
     if (readOnly) return;
     e.preventDefault();
-    const box = (e.target as HTMLElement).closest('.canvas-body')?.getBoundingClientRect();
-    setMenu({ x: e.clientX - (box?.left ?? 0), y: e.clientY - (box?.top ?? 0), type, id, at: rf.screenToFlowPosition({ x: e.clientX, y: e.clientY }) });
+    const box = document.querySelector('.canvas-body')?.getBoundingClientRect();
+    const h = type === 'pane' ? 340 : type === 'node' ? 420 : 60;
+    const x = Math.max(4, Math.min(e.clientX - (box?.left ?? 0), (box?.width ?? 800) - 240));
+    const y = Math.max(4, Math.min(e.clientY - (box?.top ?? 0), (box?.height ?? 600) - h));
+    setMenu({ x, y, type, id, at: rf.screenToFlowPosition({ x: e.clientX, y: e.clientY }) });
   };
+
+  const setReadOnlyFlag = useStudio((s) => s.setReadOnly);
+  useEffect(() => { setReadOnlyFlag(readOnly); }, [readOnly, setReadOnlyFlag]);
+  useEffect(() => {
+    const open = (ev: Event) => {
+      const d = (ev as CustomEvent<{ id: string; x: number; y: number }>).detail;
+      select({ type: 'node', id: d.id });
+      openMenu(new MouseEvent('contextmenu', { clientX: d.x, clientY: d.y }), 'node', d.id);
+    };
+    window.addEventListener('studio:nodemenu', open);
+    return () => window.removeEventListener('studio:nodemenu', open);
+  });
 
   useEffect(() => {
     if (!menu) return;
