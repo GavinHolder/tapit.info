@@ -42,6 +42,7 @@ export function TopBar({ user }: Props) {
         </Link>
         <Link href="/flows" className={path.startsWith('/flows') ? 'on' : ''}>Flows</Link>
         <Link href="/review" className={path.startsWith('/review') ? 'on' : ''}>Mockups</Link>
+        {owner && <Link href="/finalize" className={path.startsWith('/finalize') ? 'on' : ''}>Finalize</Link>}
         {owner && <Link href="/team" className={path.startsWith('/team') ? 'on' : ''}>Team</Link>}
       </nav>
       <div className="top-user">

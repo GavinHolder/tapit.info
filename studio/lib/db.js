@@ -91,6 +91,17 @@ const MIGRATIONS = [
     created_at TEXT NOT NULL
   );
   CREATE INDEX annotations_mockup ON annotations(mockup);
+  `,
+  `
+  CREATE TABLE handoffs (
+    id TEXT PRIMARY KEY,
+    version INTEGER NOT NULL UNIQUE,
+    folder TEXT NOT NULL,
+    note TEXT NOT NULL DEFAULT '',
+    stats_json TEXT NOT NULL,
+    created_by TEXT REFERENCES users(id),
+    created_at TEXT NOT NULL
+  );
   `
 ];
 
