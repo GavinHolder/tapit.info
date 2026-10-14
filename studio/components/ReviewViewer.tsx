@@ -214,7 +214,8 @@ function Stage({ proto, src, mode, color, anns, selected, draft, onSelect, onDra
   useEffect(() => {
     const el = holder.current?.parentElement;
     if (!el) return;
-    const fit = () => setScale(Math.min(1, Math.max(0.3, (el.clientWidth - 40) / W)));
+    // Round and ignore tiny changes, so a scrollbar appearing can never start a resize loop.
+    const fit = () => { const v = Math.round(Math.min(1, Math.max(0.3, (el.clientWidth - 40) / W)) * 100) / 100; setScale((cur) => (Math.abs(cur - v) < 0.03 ? cur : v)); };
     fit();
     const ro = new ResizeObserver(fit);
     ro.observe(el);

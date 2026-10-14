@@ -253,8 +253,8 @@ textarea.in { resize: vertical; line-height: 1.45; }
 .sw { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--card); box-shadow: 0 0 0 1px var(--line); padding: 0; }
 .sw.on { box-shadow: 0 0 0 2px var(--text); }
 .rv-body { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 340px; }
-.rv-stage { display: block; overflow: auto; padding: 20px; background: #e8efec; min-width: 0; }
-.rv-wrap { position: relative; background: #fff; box-shadow: 0 1px 0 var(--line), 0 12px 32px rgba(11, 31, 36, 0.12); flex: none; }
+.rv-stage { display: block; overflow: auto; scrollbar-gutter: stable; padding: 20px; background: #e8efec; min-width: 0; }
+.rv-wrap { position: relative; will-change: transform; background: #fff; box-shadow: 0 1px 0 var(--line), 0 12px 32px rgba(11, 31, 36, 0.12); flex: none; }
 .rv-wrap.phone { border-radius: 32px; overflow: hidden; outline: 8px solid var(--ink); }
 .rv-wrap.desktop { border-radius: 10px; overflow: hidden; }
 .rv-frame { display: block; border: 0; background: #fff; }
