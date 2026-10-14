@@ -120,6 +120,19 @@ const MIGRATIONS = [
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL
   );
+  `,
+  `
+  ALTER TABLE users ADD COLUMN notify_email INTEGER NOT NULL DEFAULT 1;
+  CREATE TABLE outbox (
+    id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    thread_id TEXT NOT NULL REFERENCES threads(id) ON DELETE CASCADE,
+    message_id TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    sent_at TEXT,
+    attempts INTEGER NOT NULL DEFAULT 0
+  );
+  CREATE INDEX outbox_pending ON outbox(sent_at, created_at);
   `
 ];
 

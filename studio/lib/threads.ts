@@ -2,6 +2,7 @@ import { getDb } from './db.js';
 import { newId } from './password.js';
 import type { User } from './auth';
 import { PROTOTYPES } from './prototypes';
+import { enqueueNotifications } from './mail';
 
 export type ThreadRow = {
   id: string;
@@ -115,6 +116,7 @@ function insertMessage(user: User, threadId: string, body: string, attachmentIds
   const db = getDb();
   const mid = newId('msg');
   db.prepare('INSERT INTO messages (id, thread_id, author_id, body, created_at) VALUES (?, ?, ?, ?, ?)').run(mid, threadId, user.id, body, now);
+  enqueueNotifications(user.id, threadId, mid);
   if (attachmentIds.length > 4) throw new Problem(400, 'You can attach up to 4 images to one message.');
   for (const aid of attachmentIds) {
     const res = db.prepare('UPDATE attachments SET message_id = ? WHERE id = ? AND uploaded_by = ? AND message_id IS NULL').run(mid, aid, user.id);
