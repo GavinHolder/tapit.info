@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>TapIt landing page</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="./fonts/fonts.css" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Figtree',sans-serif;background:#EEF3F0;color:#10262B}
+a{color:inherit;text-decoration:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 24px;border-radius:999px;font-weight:600;font-size:16px;border:0;cursor:pointer;font-family:'Figtree',sans-serif}
+.btn-lime{background:#C8F560;color:#0B1F24}
+.btn-lime:hover{background:#D8FA85}
+.btn-ghost{background:transparent;color:#fff;border:1.5px solid #5E8A86}
+.btn-ghost:hover{border-color:#C8F560}
+.h{font-family:'Bricolage Grotesque',sans-serif;letter-spacing:-0.02em}
+</style>
+</helmet>
+
+<div style="background:#0B1F24;color:#fff;position:relative;overflow:hidden">
+  <svg aria-hidden="true" viewBox="0 0 420 400" style="position:absolute;right:-60px;top:-40px;width:760px;height:720px;opacity:.9">
+    <g fill="none" stroke="#1E5A55" stroke-width="1.2" vector-effect="non-scaling-stroke">
+      <path d="M200 40 C 290 30 370 90 380 170 C 392 260 330 340 240 360 C 150 380 60 330 40 240 C 22 150 90 50 200 40 Z"/>
+      <path transform="translate(210 200) scale(.88) translate(-210 -200)" d="M200 40 C 290 30 370 90 380 170 C 392 260 330 340 240 360 C 150 380 60 330 40 240 C 22 150 90 50 200 40 Z"/>
+      <path transform="translate(210 200) scale(.76) rotate(6) translate(-210 -200)" d="M200 40 C 290 30 370 90 380 170 C 392 260 330 340 240 360 C 150 380 60 330 40 240 C 22 150 90 50 200 40 Z"/>
+      <path transform="translate(210 200) scale(.64) rotate(10) translate(-210 -200)" d="M200 40 C 290 30 370 90 380 170 C 392 260 330 340 240 360 C 150 380 60 330 40 240 C 22 150 90 50 200 40 Z"/>
+      <path transform="translate(210 200) scale(.52) rotate(16) translate(-210 -200)" d="M200 40 C 290 30 370 90 380 170 C 392 260 330 340 240 360 C 150 380 60 330 40 240 C 22 150 90 50 200 40 Z"/>
+      <path transform="translate(210 200) scale(.4) rotate(22) translate(-210 -200)" d="M200 40 C 290 30 370 90 380 170 C 392 260 330 340 240 360 C 150 380 60 330 40 240 C 22 150 90 50 200 40 Z"/>
+      <path transform="translate(210 200) scale(.28) rotate(30) translate(-210 -200)" d="M200 40 C 290 30 370 90 380 170 C 392 260 330 340 240 360 C 150 380 60 330 40 240 C 22 150 90 50 200 40 Z"/>
+    </g>
+    <path d="M70 300 C 120 260 140 280 190 230 C 240 180 250 210 300 150 C 330 112 340 120 356 96" fill="none" stroke="#C8F560" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 7"/>
+    <circle cx="356" cy="96" r="7" fill="#C8F560"/>
+  </svg>
+
+  <div style="position:relative;max-width:1200px;margin:0 auto;padding:0 24px">
+    <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;padding:24px 0">
+      <a href="#top" class="h" style="font-size:28px;font-weight:800;display:flex;align-items:center;gap:10px" aria-label="TapIt home">
+        <svg aria-hidden="true" width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="15" fill="#C8F560"/><path d="M9 17c3-6 11-6 14 0M12 20c2-3 6-3 8 0" fill="none" stroke="#0B1F24" stroke-width="2.4" stroke-linecap="round"/><circle cx="16" cy="23" r="1.8" fill="#0B1F24"/></svg>
+        TapIt
+      </a>
+      <nav aria-label="Main" style="display:flex;flex-wrap:wrap;gap:8px 28px;align-items:center;font-weight:500;font-size:16px">
+        <a href="#guests" style="min-height:44px;display:inline-flex;align-items:center">For guests</a>
+        <a href="#business" style="min-height:44px;display:inline-flex;align-items:center">For businesses</a>
+        <a href="#club" style="min-height:44px;display:inline-flex;align-items:center">Explorer Club</a>
+        <a href="#pilot" class="btn btn-lime">Join the pilot</a>
+      </nav>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:48px;align-items:center;padding:56px 0 96px">
+      <div style="flex:1 1 480px;min-width:0">
+        <div style="display:inline-block;padding:6px 14px;border:1px solid #2F6A64;border-radius:999px;color:#C8F560;font-size:14px;font-weight:600;margin-bottom:24px">Rooi Els to Hermanus. Pilot opens November 2026</div>
+        <h1 class="h" style="margin:0 0 24px;font-size:76px;line-height:.98;font-weight:800">Tap the table.<br>Explore the coast.</h1>
+        <p style="margin:0 0 36px;font-size:20px;line-height:1.5;color:#B7CFCB;max-width:520px">One tap on your guesthouse table opens the stay guide, the best local experiences and your own trail journal. No app to download.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:12px">
+          <a href="#guests" class="btn btn-lime">See how it works</a>
+          <a href="#business" class="btn btn-ghost">List my business</a>
+        </div>
+      </div>
+
+      <div style="flex:1 1 360px;min-width:0;display:flex;justify-content:center;position:relative;padding:20px 0">
+        <div style="width:288px;height:560px;background:#F3F7F5;border-radius:40px;border:8px solid #0F2E34;box-shadow:0 30px 60px rgba(0,0,0,.45);overflow:hidden;color:#10262B;position:relative">
+          <div style="background:#12343B;color:#fff;padding:26px 20px 22px">
+            <div style="font-size:13px;color:#C8F560;font-weight:600">Welcome to</div>
+            <div class="h" style="font-size:26px;font-weight:800;line-height:1.1">Kleinmond Sea Lodge</div>
+            <div style="font-size:13px;color:#B7CFCB;margin-top:6px">Breakfast 07:30 to 09:30</div>
+          </div>
+          <div style="padding:16px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
+            <div style="background:#fff;border-radius:16px;padding:14px;font-weight:600;font-size:14px">Wi-Fi<div style="font-weight:400;color:#4B6368;font-size:12px;margin-top:4px">Tap to copy</div></div>
+            <div style="background:#fff;border-radius:16px;padding:14px;font-weight:600;font-size:14px">Check-out<div style="font-weight:400;color:#4B6368;font-size:12px;margin-top:4px">10:30</div></div>
+            <div style="background:#fff;border-radius:16px;padding:14px;font-weight:600;font-size:14px">WhatsApp<div style="font-weight:400;color:#4B6368;font-size:12px;margin-top:4px">Message host</div></div>
+            <div style="background:#fff;border-radius:16px;padding:14px;font-weight:600;font-size:14px">Review<div style="font-weight:400;color:#4B6368;font-size:12px;margin-top:4px">Google</div></div>
+          </div>
+          <div style="margin:0 16px;background:#0B1F24;border-radius:20px;padding:16px;color:#fff">
+            <div style="font-size:12px;color:#C8F560;font-weight:600">Nearby today</div>
+            <div class="h" style="font-size:18px;font-weight:600;margin:4px 0 10px">Palmiet e-bike tour</div>
+            <svg aria-hidden="true" viewBox="0 0 240 70" style="width:100%;height:70px"><path d="M0 60 L40 38 L70 50 L110 14 L150 40 L190 22 L240 54 L240 70 L0 70Z" fill="#1E5A55"/><path d="M0 60 L40 38 L70 50 L110 14 L150 40 L190 22 L240 54" fill="none" stroke="#C8F560" stroke-width="2"/></svg>
+          </div>
+        </div>
+        <div style="position:absolute;left:0;bottom:30px;width:150px;background:#C8F560;color:#0B1F24;border-radius:20px;padding:14px 16px;font-weight:600;font-size:14px;line-height:1.3;box-shadow:0 14px 30px rgba(0,0,0,.35)">
+          <svg aria-hidden="true" width="26" height="26" viewBox="0 0 26 26" style="display:block;margin-bottom:6px"><path d="M5 14c3-8 13-8 16 0M9 18c2-4 6-4 8 0" fill="none" stroke="#0B1F24" stroke-width="2.4" stroke-linecap="round"/></svg>
+          Tap here with your phone
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="background:#12343B;color:#B7CFCB">
+  <div style="max-width:1200px;margin:0 auto;padding:20px 24px;display:flex;flex-wrap:wrap;gap:8px 36px;font-weight:600;justify-content:center">
+    <span>Rooi Els</span><span>Pringle Bay</span><span>Betty's Bay</span><span>Kleinmond</span><span>Hermanus</span>
+  </div>
+</div>
+
+<section id="guests" style="max-width:1200px;margin:0 auto;padding:104px 24px 24px">
+  <div style="font-weight:600;color:#1E5A55;margin-bottom:12px">How it works</div>
+  <h2 class="h" style="margin:0 0 48px;font-size:52px;line-height:1.05;font-weight:800;max-width:760px">Three steps from table to trail.</h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px">
+    <div style="background:#fff;border-radius:28px;padding:32px">
+      <div class="h" style="width:48px;height:48px;border-radius:50%;background:#0B1F24;color:#C8F560;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;margin-bottom:24px">1</div>
+      <h3 class="h" style="margin:0 0 10px;font-size:26px;font-weight:600">Tap or scan</h3>
+      <p style="margin:0;line-height:1.55;color:#4B6368">Hold your phone to the table stand, or scan the code. Your host's own page opens in the browser.</p>
+    </div>
+    <div style="background:#fff;border-radius:28px;padding:32px">
+      <div class="h" style="width:48px;height:48px;border-radius:50%;background:#0B1F24;color:#C8F560;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;margin-bottom:24px">2</div>
+      <h3 class="h" style="margin:0 0 10px;font-size:26px;font-weight:600">Find what's good nearby</h3>
+      <p style="margin:0;line-height:1.55;color:#4B6368">Wi-Fi, breakfast times, then hikes, restaurants, events and offers chosen for this exact spot.</p>
+    </div>
+    <div style="background:#fff;border-radius:28px;padding:32px">
+      <div class="h" style="width:48px;height:48px;border-radius:50%;background:#0B1F24;color:#C8F560;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;margin-bottom:24px">3</div>
+      <h3 class="h" style="margin:0 0 10px;font-size:26px;font-weight:600">Explore and collect</h3>
+      <p style="margin:0;line-height:1.55;color:#4B6368">Book an experience, collect stamps, keep your trails and unlock vouchers and member perks.</p>
+    </div>
+  </div>
+</section>
+
+<section style="max-width:1200px;margin:0 auto;padding:72px 24px">
+  <div style="background:#0B1F24;border-radius:36px;color:#fff;padding:56px;display:flex;flex-wrap:wrap;gap:40px;align-items:center;overflow:hidden">
+    <div style="flex:1 1 380px;min-width:0">
+      <div style="color:#C8F560;font-weight:600;margin-bottom:12px">Trip replay</div>
+      <h2 class="h" style="margin:0 0 20px;font-size:46px;line-height:1.05;font-weight:800">Relive the mountain, fly the route.</h2>
+      <p style="margin:0 0 28px;font-size:18px;line-height:1.55;color:#B7CFCB">Every hike and ride is saved as a route you can replay over the real terrain of the Kogelberg. Switch between a flat map and a moving 3D view.</p>
+      <a href="#pilot" class="btn btn-lime">Try the featured trail</a>
+    </div>
+    <div style="flex:1 1 420px;min-width:0">
+      <svg role="img" aria-label="Illustration of a route climbing over stacked mountain ridges" viewBox="0 0 520 320" style="width:100%;height:auto;display:block">
+        <rect width="520" height="320" rx="24" fill="#12343B"/>
+        <path d="M0 250 L70 190 L130 220 L210 130 L280 190 L350 110 L430 180 L520 140 L520 320 L0 320Z" fill="#1A4A4B"/>
+        <path d="M0 280 L90 220 L160 250 L250 170 L330 230 L410 160 L520 220 L520 320 L0 320Z" fill="#1E5A55"/>
+        <path d="M0 310 L100 262 L190 288 L290 224 L380 270 L470 232 L520 252 L520 320 L0 320Z" fill="#2F6A64"/>
+        <path d="M60 296 C110 262 140 270 190 238 C240 204 250 214 290 186 C330 160 340 168 350 124 C358 96 380 92 410 76" fill="none" stroke="#C8F560" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="410" cy="76" r="9" fill="#C8F560"/><circle cx="410" cy="76" r="18" fill="none" stroke="#C8F560" stroke-opacity=".5" stroke-width="2"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section id="club" style="max-width:1200px;margin:0 auto;padding:24px 24px 88px">
+  <div style="font-weight:600;color:#1E5A55;margin-bottom:12px">Explorer Club</div>
+  <h2 class="h" style="margin:0 0 16px;font-size:52px;line-height:1.05;font-weight:800;max-width:760px">Stamps, vouchers and perks that take you further.</h2>
+  <p style="margin:0 0 44px;font-size:18px;line-height:1.55;color:#4B6368;max-width:640px">Free to explore. Participating businesses run their own vouchers, member and VIP programmes. You join and pay them directly.</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;align-items:stretch">
+    <div style="background:#fff;border-radius:28px;padding:32px;display:flex;flex-direction:column;gap:14px">
+      <h3 class="h" style="margin:0;font-size:28px;font-weight:600">Explorer</h3>
+      <div class="h" style="font-size:36px;font-weight:800">Free</div>
+      <div style="line-height:1.7;color:#4B6368">Concierge pages<br>Passport stamps<br>Saved trips<br>Public vouchers</div>
+    </div>
+    <div style="background:#0B1F24;color:#fff;border-radius:28px;padding:32px;display:flex;flex-direction:column;gap:14px;border:2px solid #C8F560">
+      <h3 class="h" style="margin:0;font-size:28px;font-weight:600">Partner vouchers</h3>
+      <div class="h" style="font-size:36px;font-weight:800">From partners</div>
+      <div style="line-height:1.7;color:#B7CFCB">Discounts and freebies<br>Issued and honoured<br>by each business<br>Claim with one tap</div>
+    </div>
+    <div style="background:#F4B63F;color:#2A1E00;border-radius:28px;padding:32px;display:flex;flex-direction:column;gap:14px">
+      <h3 class="h" style="margin:0;font-size:28px;font-weight:600">Partner VIP</h3>
+      <div class="h" style="font-size:36px;font-weight:800">Set by each partner</div>
+      <div style="line-height:1.7">Tiers, points and perks<br>run by the partner<br>You join and pay on<br>their own checkout</div>
+    </div>
+  </div>
+</section>
+
+<section id="business" style="background:#fff">
+  <div style="max-width:1200px;margin:0 auto;padding:96px 24px;display:flex;flex-wrap:wrap;gap:56px;align-items:center">
+    <div style="flex:1 1 420px;min-width:0">
+      <div style="font-weight:600;color:#1E5A55;margin-bottom:12px">For businesses</div>
+      <h2 class="h" style="margin:0 0 20px;font-size:48px;line-height:1.05;font-weight:800">Know exactly what your listing earns you.</h2>
+      <p style="margin:0 0 24px;font-size:18px;line-height:1.55;color:#4B6368">Guesthouses get a branded digital concierge. Operators and restaurants get seen by guests already in the area, with every scan, click and booking tied back to where it started.</p>
+      <ul style="margin:0;padding:0;list-style:none;display:grid;gap:12px;font-weight:500">
+        <li style="display:flex;gap:12px"><span aria-hidden="true" style="color:#1E5A55;font-weight:800">+</span>Edit your concierge yourself, in minutes</li>
+        <li style="display:flex;gap:12px"><span aria-hidden="true" style="color:#1E5A55;font-weight:800">+</span>Publish offers, vouchers and events</li>
+        <li style="display:flex;gap:12px"><span aria-hidden="true" style="color:#1E5A55;font-weight:800">+</span>Clear statements for commissions and subscriptions</li>
+      </ul>
+    </div>
+    <div style="flex:1 1 420px;min-width:0;background:#EEF3F0;border-radius:28px;padding:28px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:18px"><span class="h" style="font-weight:600;font-size:20px">Your last 30 days</span><span style="font-size:13px;color:#4B6368">Sample data</span></div>
+      <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:18px">
+        <div style="background:#fff;border-radius:16px;padding:14px"><div style="font-size:12px;color:#4B6368">Scans</div><div class="h" style="font-size:28px;font-weight:800">[###]</div></div>
+        <div style="background:#fff;border-radius:16px;padding:14px"><div style="font-size:12px;color:#4B6368">Clicks</div><div class="h" style="font-size:28px;font-weight:800">[###]</div></div>
+        <div style="background:#fff;border-radius:16px;padding:14px"><div style="font-size:12px;color:#4B6368">Bookings</div><div class="h" style="font-size:28px;font-weight:800">[###]</div></div>
+      </div>
+      <svg role="img" aria-label="Sample line chart of weekly scans" viewBox="0 0 400 120" style="width:100%;height:auto;display:block"><path d="M0 100 L50 84 L100 90 L150 58 L200 66 L250 34 L300 44 L350 20 L400 28" fill="none" stroke="#1E5A55" stroke-width="3"/><path d="M0 100 L50 84 L100 90 L150 58 L200 66 L250 34 L300 44 L350 20 L400 28 L400 120 L0 120Z" fill="#C8F560" fill-opacity=".45"/></svg>
+    </div>
+  </div>
+</section>
+
+<section id="pilot" style="background:#0B1F24;color:#fff">
+  <div style="max-width:1200px;margin:0 auto;padding:96px 24px;display:flex;flex-wrap:wrap;gap:48px;align-items:center">
+    <div style="flex:1 1 380px;min-width:0">
+      <h2 class="h" style="margin:0 0 16px;font-size:48px;line-height:1.05;font-weight:800">Join the Overstrand pilot.</h2>
+      <p style="margin:0;font-size:18px;line-height:1.55;color:#B7CFCB">We are placing the first TapIt stands in November. Tell us about your business and we will be in touch.</p>
+    </div>
+    <form style="flex:1 1 380px;min-width:0;background:#12343B;border-radius:28px;padding:28px;display:grid;gap:14px">
+      <label style="display:grid;gap:6px;font-weight:600;font-size:14px">Business name<input type="text" style="min-height:48px;border-radius:12px;border:1.5px solid #3B6B68;background:#0B1F24;color:#fff;padding:0 14px;font-size:16px;font-family:'Figtree',sans-serif"></label>
+      <label style="display:grid;gap:6px;font-weight:600;font-size:14px">Town<input type="text" style="min-height:48px;border-radius:12px;border:1.5px solid #3B6B68;background:#0B1F24;color:#fff;padding:0 14px;font-size:16px;font-family:'Figtree',sans-serif"></label>
+      <label style="display:grid;gap:6px;font-weight:600;font-size:14px">Email<input type="email" style="min-height:48px;border-radius:12px;border:1.5px solid #3B6B68;background:#0B1F24;color:#fff;padding:0 14px;font-size:16px;font-family:'Figtree',sans-serif"></label>
+      <label style="display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.4;color:#B7CFCB"><input type="checkbox" style="margin-top:2px;width:20px;height:20px">I agree to TapIt contacting me about the pilot, as set out in the privacy policy.</label>
+      <button type="button" class="btn btn-lime">Request a call</button>
+    </form>
+  </div>
+</section>
+
+<footer style="background:#071417;color:#8FB0AC;font-size:14px">
+  <div style="max-width:1200px;margin:0 auto;padding:32px 24px;display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-between">
+    <span>TapIt. [Legal entity name and registration number]</span>
+    <span style="display:flex;flex-wrap:wrap;gap:8px 24px"><a href="#privacy" style="min-height:44px;display:inline-flex;align-items:center">Privacy policy</a><a href="#terms" style="min-height:44px;display:inline-flex;align-items:center">Terms</a><a href="#popia" style="min-height:44px;display:inline-flex;align-items:center">POPIA and Information Officer</a></span>
+  </div>
+</footer>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":2260}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

@@ -10,6 +10,8 @@ type Msg = { id: string; body: string; created_at: string; author: { id: string 
 type Thread = {
   id: string;
   kind: 'question' | 'comment';
+  target_type?: string;
+  target_id?: string;
   title: string;
   section: string | null;
   priority: number;
@@ -35,6 +37,8 @@ export function ThreadView({ id, role, compact = false, onChanged }: { id: strin
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
+  const changed = useRef(onChanged);
+  changed.current = onChanged;
   const fileRef = useRef<HTMLInputElement>(null);
 
   const load = useCallback(async () => {
@@ -42,8 +46,8 @@ export function ThreadView({ id, role, compact = false, onChanged }: { id: strin
     setData(d);
     await api(`/api/threads/${id}/read`, { method: 'POST' }).catch(() => undefined);
     window.dispatchEvent(new Event('studio:inbox'));
-    onChanged?.();
-  }, [id, onChanged]);
+    changed.current?.();
+  }, [id]);
 
   useEffect(() => {
     setData(null);
@@ -105,6 +109,8 @@ export function ThreadView({ id, role, compact = false, onChanged }: { id: strin
             <span className={'tag st-' + thread.status}>{statusText(thread.kind, thread.status, role)}</span>
           </div>
           {!isQuestion && <h2>{thread.title}</h2>}
+          {thread.target_type === 'mockup' && thread.target_id && <p className="related"><Link className="link" href={`/review?board=${thread.target_id}&t=${thread.id}`}>Show this on the mockup</Link></p>}
+          {thread.target_type === 'step' && thread.target_id?.includes(':') && <p className="related"><Link className="link" href={`/flows?flow=${thread.target_id.split(':')[0]}&step=${thread.target_id.split(':')[1]}`}>Show this flow step</Link></p>}
           {isQuestion && thread.why && <p className="why"><b>Why we ask.</b> {thread.why}</p>}
           {thread.related.length > 0 && (
             <p className="related">

@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Trip replay desktop</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="./fonts/fonts.css" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Figtree',sans-serif}
+a{color:inherit;text-decoration:none}
+button{font-family:'Figtree',sans-serif}
+.h{font-family:'Bricolage Grotesque',sans-serif;letter-spacing:-0.02em}
+.badge{position:relative;display:flex;align-items:center;justify-content:center}
+.bi{display:flex}
+.ring{display:none;position:absolute;left:-6px;top:-6px;width:calc(100% + 12px);height:calc(100% + 12px);overflow:visible}
+.ring circle{fill:none;stroke:currentColor;stroke-width:2.5;stroke-dasharray:1 1.5;stroke-dashoffset:1;animation:bdraw 3s ease-in-out infinite}
+.bd-shadow .badge{box-shadow:0 10px 18px rgba(0,0,0,.4)}
+.bd-hard .badge{box-shadow:4px 4px 0 rgba(0,0,0,.6)}
+.bd-drop .badge{border-radius:50% 50% 50% 8%;transform:rotate(-45deg);box-shadow:0 10px 18px rgba(0,0,0,.4)}
+.bd-drop .bi{transform:rotate(45deg)}
+.bd-spin .badge::after{content:'';position:absolute;left:-6px;top:-6px;right:-6px;bottom:-6px;border:2px dashed currentColor;border-radius:50%;animation:bspin 9s linear infinite}
+.bd-pulse .badge::after{content:'';position:absolute;left:0;top:0;right:0;bottom:0;border:2px solid currentColor;border-radius:50%;animation:bpulse 2s ease-out infinite}
+.bd-draw .ring{display:block}
+@keyframes bspin{to{transform:rotate(360deg)}}
+@keyframes bpulse{0%{transform:scale(1);opacity:.9}100%{transform:scale(1.7);opacity:0}}
+@keyframes bdraw{0%{stroke-dashoffset:1}60%{stroke-dashoffset:0}100%{stroke-dashoffset:0}}
+</style>
+</helmet>
+
+<div style="background:{{pal.mist}};color:{{pal.ink}};min-height:900px">
+  <header style="background:{{pal.ink}};color:#fff">
+    <div style="max-width:1400px;margin:0 auto;padding:14px 28px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px">
+      <a href="#home" class="h" style="font-size:24px;font-weight:800;display:flex;align-items:center;gap:10px;min-height:44px" aria-label="TapIt home">
+        <svg aria-hidden="true" width="28" height="28" viewBox="0 0 32 32"><circle cx="16" cy="16" r="15" fill="{{pal.accent}}"/><path d="M9 17c3-6 11-6 14 0M12 20c2-3 6-3 8 0" fill="none" stroke="{{pal.ink}}" stroke-width="2.4" stroke-linecap="round"/><circle cx="16" cy="23" r="1.8" fill="{{pal.ink}}"/></svg>TapIt
+      </a>
+      <nav aria-label="Explorer" style="display:flex;flex-wrap:wrap;gap:8px 28px;align-items:center;font-weight:500">
+        <a href="GuestDesktop.dc.html" style="min-height:44px;display:inline-flex;align-items:center">Stay guide</a>
+        <a href="#explore" style="min-height:44px;display:inline-flex;align-items:center">Explore</a>
+        <a href="ExplorerDesktop.dc.html" style="min-height:44px;display:inline-flex;align-items:center">My trips</a>
+        <a href="ExplorerDesktop.dc.html" style="min-height:44px;display:inline-flex;align-items:center">Wallet</a>
+        <span class="h" style="width:44px;height:44px;border-radius:50%;background:{{pal.accent}};color:{{pal.ink}};display:flex;align-items:center;justify-content:center;font-weight:800">[JD]</span>
+      </nav>
+    </div>
+  </header>
+
+  <main style="max-width:1400px;margin:0 auto;padding:24px 28px;display:flex;flex-wrap:wrap;gap:24px;align-items:stretch">
+    <section style="flex:1 1 620px;min-width:0;position:relative;min-height:640px;border-radius:28px;overflow:hidden;background:{{pal.ink}}">
+      <div style="position:absolute;left:0;right:0;top:0;bottom:0">
+        <dc-import name="Scene" pal="{{pal}}" view="{{view}}" vw="1000" vh="700" hint-size="100%,640px"></dc-import>
+      </div>
+      <div style="position:absolute;left:20px;top:20px;right:20px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap">
+        <div style="background:{{pal.ink}};color:#fff;border-radius:16px;padding:10px 16px">
+          <div style="font-size:12px;opacity:.8">Elevation at marker</div>
+          <div class="h" style="font-size:24px;font-weight:800">412 m</div>
+        </div>
+        <div role="group" aria-label="Map view" style="display:flex;background:{{pal.ink}};border-radius:999px;padding:4px">
+          <button type="button" onClick="{{set2d}}" aria-pressed="{{is2d}}" style="{{btn2d}}">Flat map</button>
+          <button type="button" onClick="{{set3d}}" aria-pressed="{{is3d}}" style="{{btn3d}}">3D terrain</button>
+        </div>
+      </div>
+      <div style="position:absolute;left:20px;right:20px;bottom:20px;background:{{pal.ink}};border-radius:20px;padding:14px 18px;display:flex;align-items:center;gap:16px;color:#fff">
+        <button type="button" aria-label="Replay is looping" style="width:48px;height:48px;border-radius:50%;border:0;background:{{pal.accent}};display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="{{pal.ink}}"/></svg></button>
+        <svg role="img" aria-label="Replay progress" viewBox="0 0 600 18" preserveAspectRatio="none" style="flex:1;min-width:0;height:18px;display:block">
+          <rect x="0" y="6" width="600" height="6" rx="3" fill="{{pal.moss2}}"/>
+          <rect x="0" y="6" width="0" height="6" rx="3" fill="{{pal.accent}}"><animate attributeName="width" values="0;600;600" keyTimes="0;0.85;1" dur="14s" repeatCount="indefinite"/></rect>
+        </svg>
+        <span style="font-size:14px;font-weight:600;flex:none">Looping replay</span>
+      </div>
+    </section>
+
+    <aside style="flex:0 1 400px;min-width:280px;display:grid;gap:16px;align-content:start" class="{{bdClass}}">
+      <div style="background:#fff;border-radius:28px;padding:24px">
+        <div style="font-size:13px;font-weight:600;color:{{pal.moss}}">Saturday 3 October. Kogelberg</div>
+        <h1 class="h" style="margin:4px 0 16px;font-size:32px;line-height:1.05;font-weight:800">Palmiet River to the Hangklip ridge</h1>
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px">
+          <div style="background:{{pal.mist}};border-radius:16px;padding:12px"><div style="font-size:12px;color:{{pal.moss}}">Distance</div><div class="h" style="font-size:22px;font-weight:800">12.4 km</div></div>
+          <div style="background:{{pal.mist}};border-radius:16px;padding:12px"><div style="font-size:12px;color:{{pal.moss}}">Climb</div><div class="h" style="font-size:22px;font-weight:800">684 m</div></div>
+          <div style="background:{{pal.mist}};border-radius:16px;padding:12px"><div style="font-size:12px;color:{{pal.moss}}">Time</div><div class="h" style="font-size:22px;font-weight:800">4 h</div></div>
+        </div>
+        <svg role="img" aria-label="Elevation profile of the trip" viewBox="0 0 350 80" style="width:100%;height:80px;display:block;margin:16px 0 4px"><path d="M0 70 L40 58 L80 64 L130 34 L170 44 L210 16 L250 30 L290 12 L350 46 L350 80 L0 80Z" fill="{{pal.mist}}"/><path d="M0 70 L40 58 L80 64 L130 34 L170 44 L210 16 L250 30 L290 12 L350 46" fill="none" stroke="{{pal.moss}}" stroke-width="3"/></svg>
+      </div>
+
+      <div style="background:#fff;border-radius:28px;padding:24px">
+        <h2 class="h" style="margin:0 0 14px;font-size:20px;font-weight:600">Stamps on this trip</h2>
+        <div style="display:flex;gap:18px;align-items:center;margin-bottom:16px">
+          <div class="badge" style="width:52px;height:52px;border-radius:50%;background:{{pal.ink}};color:{{pal.accent}};flex:none"><span class="bi"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{pal.accent}}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><svg class="ring" aria-hidden="true" viewBox="0 0 52 52"><circle cx="26" cy="26" r="25" pathLength="1"/></svg></div>
+          <div><div class="h" style="font-weight:600;font-size:17px">Palmiet trailhead</div><div style="font-size:13px;color:{{pal.muted}}">Checked in 08:12</div></div>
+        </div>
+        <div style="display:flex;gap:18px;align-items:center">
+          <div class="badge" style="width:52px;height:52px;border-radius:50%;background:{{pal.ink}};color:{{pal.accent}};flex:none"><span class="bi"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{pal.accent}}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span><svg class="ring" aria-hidden="true" viewBox="0 0 52 52"><circle cx="26" cy="26" r="25" pathLength="1"/></svg></div>
+          <div><div class="h" style="font-weight:600;font-size:17px">Hangklip lookout</div><div style="font-size:13px;color:{{pal.muted}}">Checked in 11:05</div></div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button type="button" style="flex:1 1 140px;min-height:52px;border-radius:999px;border:0;background:{{pal.ink}};color:{{pal.accent}};font-weight:600;font-size:16px;cursor:pointer">Share trip</button>
+        <button type="button" style="flex:1 1 140px;min-height:52px;border-radius:999px;border:1.5px solid {{pal.ink}};background:transparent;color:{{pal.ink}};font-weight:600;font-size:16px;cursor:pointer">Download GPX</button>
+      </div>
+      <p style="margin:0;font-size:12px;line-height:1.45;color:{{pal.muted}}">Your trail is private unless you share it. Delete it any time in Privacy settings. TapIt is not a safety device.</p>
+    </aside>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"base":{"editor":"enum","options":["fynbos","ocean","plum","forest","dusk","mono"],"default":"fynbos","section":"Style"},"accent":{"editor":"enum","options":["lime","coral","aqua","lilac","pink","sky"],"default":"lime","section":"Style"},"badges":{"editor":"enum","options":["static","shadow","hard","drop","spin","pulse","draw"],"default":"static","section":"Style"},"$preview":{"width":1280,"height":900}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { mode: '3d' }; }
+  pal() {
+    const B = {
+      fynbos: { ink: '#0B1F24', deep: '#12343B', moss: '#1E5A55', moss2: '#2F6A64', mist: '#EEF3F0', muted: '#4B6368' },
+      ocean: { ink: '#07182B', deep: '#0E2A47', moss: '#1D4E7A', moss2: '#2F6FA3', mist: '#EAF2F8', muted: '#4A6479' },
+      plum: { ink: '#1B1420', deep: '#2A1F33', moss: '#5B3A57', moss2: '#7A4E6E', mist: '#F4EEF2', muted: '#6A5560' },
+      forest: { ink: '#141E12', deep: '#22351F', moss: '#3E5E34', moss2: '#5C7F4C', mist: '#F1F3E8', muted: '#566350' },
+      dusk: { ink: '#0E0B24', deep: '#1A1544', moss: '#3A2F8F', moss2: '#5648C4', mist: '#EFEEF9', muted: '#55527A' },
+      mono: { ink: '#111111', deep: '#222222', moss: '#444444', moss2: '#666666', mist: '#F2F2F2', muted: '#555555' }
+    };
+    const A = { lime: '#C8F560', coral: '#FF8A5B', aqua: '#5EE6D8', lilac: '#B69CFF', pink: '#FF8FC7', sky: '#8FD3FF' };
+    return Object.assign({}, B[this.props.base] || B.fynbos, { accent: A[this.props.accent] || A.lime, gold: '#F4B63F' });
+  }
+  seg(on, p) {
+    const base = 'min-height:40px;padding:0 18px;border:0;border-radius:999px;font-weight:600;font-size:15px;cursor:pointer;';
+    return on ? base + 'background:' + p.accent + ';color:' + p.ink : base + 'background:transparent;color:#ffffff';
+  }
+  renderVals() {
+    const m = this.state.mode;
+    const p = this.pal();
+    return {
+      pal: p, view: m, bdClass: 'bd-' + (this.props.badges || 'static'),
+      is3d: m === '3d', is2d: m === '2d',
+      btn3d: this.seg(m === '3d', p), btn2d: this.seg(m === '2d', p),
+      set3d: () => this.setState({ mode: '3d' }),
+      set2d: () => this.setState({ mode: '2d' })
+    };
+  }
+}
+</script>
+</body>
+</html>

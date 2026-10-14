@@ -1,0 +1,37 @@
+@font-face {
+  font-family: 'Bricolage Grotesque';
+  font-style: normal;
+  font-weight: 600;
+  font-stretch: normal;
+  font-display: swap;
+  src: url(./fonts/bricolagegrotesque-ZoLvcXlyM0.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Bricolage Grotesque';
+  font-style: normal;
+  font-weight: 800;
+  font-stretch: normal;
+  font-display: swap;
+  src: url(./fonts/bricolagegrotesque-ZoLvZvlyM0.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Figtree';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(./fonts/figtree--Bs_d_QF5e.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Figtree';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(./fonts/figtree--Bs_dNQF5e.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Figtree';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(./fonts/figtree--Bs_ehR15e.ttf) format('truetype');
+}

@@ -1,6 +1,7 @@
 import { getDb } from './db.js';
 import { newId } from './password.js';
 import type { User } from './auth';
+import { PROTOTYPES } from './prototypes';
 
 export type ThreadRow = {
   id: string;
@@ -174,4 +175,64 @@ export function summary(user: User) {
   const resolved = one("SELECT COUNT(*) AS n FROM threads WHERE kind = 'question' AND status = 'resolved'");
   const openFirst = one("SELECT COUNT(*) AS n FROM threads WHERE kind = 'question' AND priority = 1 AND status = 'open'");
   return { unread, questions, open, answered, resolved, openFirst };
+}
+
+
+// ---- Pins, drawings and boxes on a mockup. Each one is a comment thread with a position. ----
+export type AnnotationData =
+  | { x: number; y: number }
+  | { x: number; y: number; w: number; h: number }
+  | { points: [number, number][]; color: string };
+
+export const ANNOTATION_COLORS = ['#d92d20', '#1d4ed8', '#047857', '#b45309'];
+const unit = (n: unknown) => (typeof n === 'number' && Number.isFinite(n) ? Math.min(1, Math.max(0, Math.round(n * 10000) / 10000)) : null);
+
+function cleanAnnotation(kind: string, raw: unknown): AnnotationData {
+  const d = (raw ?? {}) as Record<string, unknown>;
+  if (kind === 'pin') {
+    const x = unit(d.x), y = unit(d.y);
+    if (x === null || y === null) throw new Problem(400, 'The pin position is not valid.');
+    return { x, y };
+  }
+  if (kind === 'box') {
+    const x = unit(d.x), y = unit(d.y), w = unit(d.w), h = unit(d.h);
+    if (x === null || y === null || w === null || h === null || w < 0.005 || h < 0.005) throw new Problem(400, 'The box is not valid.');
+    return { x, y, w, h };
+  }
+  if (kind === 'draw') {
+    if (!Array.isArray(d.points) || d.points.length < 2 || d.points.length > 400) throw new Problem(400, 'The drawing is not valid.');
+    const points = d.points.map((p) => {
+      const a = Array.isArray(p) ? unit(p[0]) : null, b = Array.isArray(p) ? unit(p[1]) : null;
+      if (a === null || b === null) throw new Problem(400, 'The drawing is not valid.');
+      return [a, b] as [number, number];
+    });
+    const color = ANNOTATION_COLORS.includes(String(d.color)) ? String(d.color) : ANNOTATION_COLORS[0];
+    return { points, color };
+  }
+  throw new Problem(400, 'Unknown annotation type.');
+}
+
+export function createAnnotation(user: User, input: { mockup: string; kind: string; data: unknown; element?: string; body: string; attachmentIds?: string[] }) {
+  if (!PROTOTYPES.some((p) => p.id === input.mockup)) throw new Problem(400, 'Unknown mockup.');
+  const data = cleanAnnotation(input.kind, input.data);
+  const body = input.body.trim();
+  const element = (input.element ?? '').trim().slice(0, 160) || null;
+  const title = body.replace(/\s+/g, ' ').slice(0, 80) || 'Comment';
+  const id = createThread(user, { kind: 'comment', targetType: 'mockup', targetId: input.mockup, title, body, attachmentIds: input.attachmentIds });
+  getDb()
+    .prepare('INSERT INTO annotations (thread_id, mockup, kind, data, element, created_at) VALUES (?, ?, ?, ?, ?, ?)')
+    .run(id, input.mockup, input.kind, JSON.stringify(data), element, new Date().toISOString());
+  return id;
+}
+
+export function listAnnotations(user: User, mockup: string) {
+  const threads = listThreads(user, { targetType: 'mockup', targetId: mockup });
+  const rows = getDb().prepare('SELECT thread_id, kind, data, element, created_at FROM annotations WHERE mockup = ? ORDER BY created_at, rowid').all(mockup) as { thread_id: string; kind: string; data: string; element: string | null; created_at: string }[];
+  const byId = new Map(threads.map((t) => [t.id, t]));
+  return rows
+    .map((r, i) => {
+      const t = byId.get(r.thread_id);
+      return t ? { n: i + 1, id: r.thread_id, kind: r.kind, data: JSON.parse(r.data) as AnnotationData, element: r.element, title: t.title, status: t.status, unread: t.unread, message_count: t.message_count } : null;
+    })
+    .filter((x): x is NonNullable<typeof x> => x !== null);
 }

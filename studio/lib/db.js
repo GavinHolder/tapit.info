@@ -80,6 +80,17 @@ const MIGRATIONS = [
     last_read_at TEXT NOT NULL,
     PRIMARY KEY (thread_id, user_id)
   );
+  `,
+  `
+  CREATE TABLE annotations (
+    thread_id TEXT PRIMARY KEY REFERENCES threads(id) ON DELETE CASCADE,
+    mockup TEXT NOT NULL,
+    kind TEXT NOT NULL CHECK (kind IN ('pin', 'draw', 'box')),
+    data TEXT NOT NULL,
+    element TEXT,
+    created_at TEXT NOT NULL
+  );
+  CREATE INDEX annotations_mockup ON annotations(mockup);
   `
 ];
 

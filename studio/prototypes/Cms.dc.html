@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Business portal concierge editor</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="./fonts/fonts.css" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Figtree',sans-serif;background:#EEF3F0;color:#10262B}
+a{color:inherit;text-decoration:none}
+button{font-family:'Figtree',sans-serif}
+.h{font-family:'Bricolage Grotesque',sans-serif;letter-spacing:-0.02em}
+.nav{display:flex;align-items:center;gap:12px;min-height:44px;padding:0 14px;border-radius:12px;color:#B7CFCB;font-weight:500}
+.nav-on{background:#12343B;color:#fff}
+.field{min-height:44px;border-radius:12px;border:1.5px solid #C9D8D2;background:#fff;padding:0 14px;font-size:15px;font-family:'Figtree',sans-serif;color:#10262B;box-sizing:border-box;width:100%}
+</style>
+</helmet>
+
+<div style="display:flex;flex-wrap:wrap;min-height:940px">
+  <aside style="flex:0 0 250px;background:#0B1F24;color:#fff;padding:24px 16px;box-sizing:border-box;flex-grow:1;max-width:100%">
+    <div class="h" style="font-size:24px;font-weight:800;padding:0 14px 20px;display:flex;align-items:center;gap:10px"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 32 32"><circle cx="16" cy="16" r="15" fill="#C8F560"/><path d="M9 17c3-6 11-6 14 0M12 20c2-3 6-3 8 0" fill="none" stroke="#0B1F24" stroke-width="2.4" stroke-linecap="round"/><circle cx="16" cy="23" r="1.8" fill="#0B1F24"/></svg>TapIt</div>
+    <div style="padding:0 14px 16px;font-size:13px;color:#8FB0AC">Kleinmond Sea Lodge</div>
+    <nav aria-label="Portal" style="display:grid;gap:4px">
+      <a href="#overview" class="nav">Overview</a>
+      <a href="#concierge" class="nav nav-on" aria-current="page">Concierge page</a>
+      <a href="#listings" class="nav">Listings and offers</a>
+      <a href="#vouchers" class="nav">Vouchers</a>
+      <a href="#analytics" class="nav">Analytics</a>
+      <a href="#statements" class="nav">Statements</a>
+      <a href="#units" class="nav">My TapIt stands</a>
+      <a href="#settings" class="nav">Account</a>
+    </nav>
+  </aside>
+
+  <main style="flex:999 1 560px;min-width:0;padding:28px;box-sizing:border-box">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px">
+      <div>
+        <h1 class="h" style="margin:0;font-size:34px;line-height:1.05;font-weight:800">Concierge page</h1>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:6px;font-size:14px;color:#4B6368"><span style="padding:3px 10px;border-radius:999px;background:#F4DFA8;color:#4A3600;font-weight:600">Draft</span>Saved 2 minutes ago. Live version 14 is published.</div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button type="button" style="min-height:48px;padding:0 20px;border-radius:999px;border:1.5px solid #0B1F24;background:transparent;font-weight:600;cursor:pointer">History</button>
+        <button type="button" style="min-height:48px;padding:0 24px;border-radius:999px;border:0;background:#0B1F24;color:#C8F560;font-weight:600;cursor:pointer">Publish changes</button>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">
+      <div style="flex:1 1 440px;min-width:0;display:grid;gap:14px">
+        <div style="background:#fff;border-radius:22px;padding:20px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><h2 class="h" style="margin:0;font-size:20px;font-weight:600">Welcome header</h2><span style="font-size:12px;font-weight:600;color:#1E5A55">Smart section</span></div>
+          <label style="display:grid;gap:6px;font-size:14px;font-weight:600;margin-bottom:12px">Display name<input class="field" type="text" value="Kleinmond Sea Lodge"></label>
+          <label style="display:grid;gap:6px;font-size:14px;font-weight:600">Welcome line<input class="field" type="text" value="Good morning, welcome to"></label>
+        </div>
+
+        <div style="background:#fff;border-radius:22px;padding:20px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><h2 class="h" style="margin:0;font-size:20px;font-weight:600">Breakfast and check-out</h2><span style="font-size:12px;font-weight:600;color:#1E5A55">Smart section</span></div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px">
+            <label style="display:grid;gap:6px;font-size:14px;font-weight:600">Weekday breakfast<input class="field" type="text" value="07:30 to 09:30"></label>
+            <label style="display:grid;gap:6px;font-size:14px;font-weight:600">Weekend breakfast<input class="field" type="text" value="08:00 to 10:00"></label>
+            <label style="display:grid;gap:6px;font-size:14px;font-weight:600">Check-out<input class="field" type="text" value="10:30"></label>
+          </div>
+        </div>
+
+        <div style="background:#fff;border-radius:22px;padding:20px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><h2 class="h" style="margin:0;font-size:20px;font-weight:600">Wi-Fi</h2><span style="font-size:12px;font-weight:600;color:#1E5A55">Smart section</span></div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px">
+            <label style="display:grid;gap:6px;font-size:14px;font-weight:600">Network<input class="field" type="text" value="SeaLodge-Guest"></label>
+            <label style="display:grid;gap:6px;font-size:14px;font-weight:600">Password<input class="field" type="text" value="[password]"></label>
+          </div>
+        </div>
+
+        <div style="background:#fff;border-radius:22px;padding:20px;border:2px solid #C8F560">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><h2 class="h" style="margin:0;font-size:20px;font-weight:600">Text block: House notes</h2><span style="font-size:12px;font-weight:600;color:#4B6368">Free block</span></div>
+          <div role="toolbar" aria-label="Text formatting" style="display:flex;gap:6px;margin-bottom:10px">
+            <button type="button" aria-label="Bold" style="width:44px;height:44px;border-radius:10px;border:1.5px solid #C9D8D2;background:#fff;font-weight:800;cursor:pointer">B</button>
+            <button type="button" aria-label="Italic" style="width:44px;height:44px;border-radius:10px;border:1.5px solid #C9D8D2;background:#fff;font-style:italic;font-weight:600;cursor:pointer">I</button>
+            <button type="button" aria-label="Insert link" style="width:44px;height:44px;border-radius:10px;border:1.5px solid #C9D8D2;background:#fff;cursor:pointer"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10262B" stroke-width="2" stroke-linecap="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3A4 4 0 0 0 11 18.700l1-1"/></svg></button>
+          </div>
+          <label style="display:grid;gap:6px;font-size:14px;font-weight:600">Notes shown to guests<textarea style="min-height:96px;border-radius:12px;border:1.5px solid #C9D8D2;padding:12px 14px;font-size:15px;font-family:'Figtree',sans-serif;line-height:1.5;resize:vertical;box-sizing:border-box;width:100%">Quiet hours from 22:00. Braai area is behind the garden. Ask Anel at reception for beach towels.</textarea></label>
+        </div>
+
+        <div style="background:#fff;border-radius:22px;padding:20px">
+          <h2 class="h" style="margin:0 0 12px;font-size:20px;font-weight:600">Add a block</h2>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px">
+            <button type="button" style="min-height:64px;border-radius:14px;border:1.5px dashed #9FB5AE;background:#F6F9F7;font-weight:600;cursor:pointer">Text</button>
+            <button type="button" style="min-height:64px;border-radius:14px;border:1.5px dashed #9FB5AE;background:#F6F9F7;font-weight:600;cursor:pointer">Photo</button>
+            <button type="button" style="min-height:64px;border-radius:14px;border:1.5px dashed #9FB5AE;background:#F6F9F7;font-weight:600;cursor:pointer">Link button</button>
+            <button type="button" style="min-height:64px;border-radius:14px;border:1.5px dashed #9FB5AE;background:#F6F9F7;font-weight:600;cursor:pointer">Offer</button>
+            <button type="button" style="min-height:64px;border-radius:14px;border:1.5px dashed #9FB5AE;background:#F6F9F7;font-weight:600;cursor:pointer">Map pin</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="flex:0 0 300px;max-width:100%;display:grid;gap:14px;justify-items:center">
+        <div style="font-size:13px;font-weight:600;color:#4B6368">Live phone preview</div>
+        <div style="width:276px;height:560px;background:#F3F7F5;border-radius:38px;border:8px solid #0F2E34;overflow:hidden;box-shadow:0 20px 40px rgba(11,31,36,.25)">
+          <div style="background:#12343B;color:#fff;padding:24px 18px 20px">
+            <div style="font-size:12px;color:#C8F560;font-weight:600">Good morning, welcome to</div>
+            <div class="h" style="font-size:24px;font-weight:800;line-height:1.05">Kleinmond Sea Lodge</div>
+            <div style="font-size:12px;color:#B7CFCB;margin-top:6px">Breakfast 07:30 to 09:30</div>
+          </div>
+          <div style="padding:14px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px">
+            <div style="background:#fff;border-radius:14px;padding:12px;font-weight:600;font-size:13px">Wi-Fi<div style="font-weight:400;color:#4B6368;font-size:11px">SeaLodge-Guest</div></div>
+            <div style="background:#fff;border-radius:14px;padding:12px;font-weight:600;font-size:13px">Check-out<div style="font-weight:400;color:#4B6368;font-size:11px">10:30</div></div>
+          </div>
+          <div style="margin:0 14px;background:#fff;border-radius:14px;padding:12px;font-size:12px;line-height:1.45;color:#4B6368"><div class="h" style="font-weight:600;color:#10262B;font-size:15px;margin-bottom:4px">House notes</div>Quiet hours from 22:00. Braai area is behind the garden.</div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
+          <span style="padding:6px 12px;border-radius:999px;background:#fff;font-size:13px;font-weight:600">Phone</span>
+          <span style="padding:6px 12px;border-radius:999px;background:transparent;border:1.5px solid #C9D8D2;font-size:13px;font-weight:600;color:#4B6368">Tablet</span>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":940}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

@@ -10,6 +10,6 @@ Design Component source files (`.dc.html`) for the TapIt UI concepts canvas.
 - `Network.dc.html` admin network overview (date range, chart hover, sortable table, detail drawer)
 - `Scene.dc.html` shared animated 3D / 2D trip-route scene component
 
-Older first-round boards (`Main`, `Guest`, `Trip`, `Profile`, `Club`, `Cms`, `Admin`, `Ledger`, `*Desktop`, `StyleLab`) are kept for reference.
+All of these are available in TapIt Studio under Mockups. Older first-round boards (`Main`, `Guest`, `Trip`, `Profile`, `Club`, `Cms`, `Admin`, `Ledger`, `*Desktop`, `StyleLab`) are kept for reference.
 
 To render locally, serve this folder with the Design Component runtime as `support.js`.

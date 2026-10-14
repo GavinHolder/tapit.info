@@ -11,14 +11,14 @@ const root = path.resolve(here, '..');
 const src = path.resolve(root, '..', 'mockups');
 const out = path.join(root, 'prototypes');
 const vendor = path.join(root, 'vendor');
-const boards = ['Landing', 'App', 'AppDesktop', 'Portal', 'Network', 'Scene'];
+const boards = fs.readdirSync(src).filter((f) => f.endsWith('.dc.html')).map((f) => f.replace('.dc.html', ''));
 
 fs.rmSync(out, { recursive: true, force: true });
 fs.mkdirSync(path.join(out, 'fonts'), { recursive: true });
 
 const read = (f) => fs.readFileSync(path.join(vendor, f), 'utf8');
 fs.writeFileSync(path.join(out, 'support.js'), [read('react.production.min.js'), read('react-dom.production.min.js'), read('dc-runtime.js')].join('\n;\n'));
-fs.writeFileSync(path.join(out, 'fonts', 'fonts.css'), fs.readFileSync(path.join(vendor, 'manrope.local.css'), 'utf8').replace(/\.\/fonts\//g, './'));
+fs.writeFileSync(path.join(out, 'fonts', 'fonts.css'), ['manrope.local.css', 'v1fonts.local.css'].map((f) => fs.readFileSync(path.join(vendor, f), 'utf8')).join('\n').replace(/\.\/fonts\//g, './'));
 for (const f of fs.readdirSync(path.join(vendor, 'fonts'))) fs.copyFileSync(path.join(vendor, 'fonts', f), path.join(out, 'fonts', f));
 
 for (const b of boards) {
