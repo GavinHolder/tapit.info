@@ -9,8 +9,8 @@ Status: captured, not yet built unless marked done.
 
 ## Visual design AND application flow
 - [x] Application flows (React Flow editor, seeded flows).
-- [ ] Visual design workspace: mockups with pin/draw comments, plus recorded design decisions (palette, layout direction, components) that the client can approve.
-- [ ] Every flow step can link to the screen it uses, and every screen shows which steps use it.
+- [x] Visual design workspace: mockups with pin/draw comments, plus recorded design decisions (palette, layout direction, components) that the client can approve.
+- [x] Every flow step can link to the screen it uses, and every screen shows which steps use it.
 
 ## Finalize
 - [x] A Finalize button (owner only) that snapshots ALL of it: design decisions, annotated mockups, comments and threads, flows, open questions.

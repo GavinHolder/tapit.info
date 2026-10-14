@@ -1,0 +1,80 @@
+[
+  {
+    "id": "d01", "area": "Look and feel", "title": "Base colour palette",
+    "description": "The main colours of the guest app, business portal and landing page. Pick the one that feels right for the Overstrand. All six are shown live in the Style lab.",
+    "options": [
+      { "id": "fynbos", "label": "Fynbos: deep teal with lime", "note": "The current default. Fresh and coastal.", "mockup": "StyleLab" },
+      { "id": "ocean", "label": "Ocean: navy and blue", "note": "Calm and corporate.", "mockup": "StyleLab" },
+      { "id": "plum", "label": "Plum: aubergine and rose", "note": "Warm and boutique.", "mockup": "StyleLab" },
+      { "id": "forest", "label": "Forest: deep green and moss", "note": "Natural and earthy.", "mockup": "StyleLab" },
+      { "id": "dusk", "label": "Dusk: indigo and lilac", "note": "Evening and premium.", "mockup": "StyleLab" },
+      { "id": "graphite", "label": "Graphite: charcoal and grey", "note": "Neutral, lets each business's brand lead.", "mockup": "StyleLab" }
+    ]
+  },
+  {
+    "id": "d02", "area": "Look and feel", "title": "Accent colour",
+    "description": "The colour used for highlights, buttons and progress.",
+    "options": [
+      { "id": "lime", "label": "Lime", "mockup": "StyleLab" },
+      { "id": "coral", "label": "Coral", "mockup": "StyleLab" },
+      { "id": "aqua", "label": "Aqua", "mockup": "StyleLab" },
+      { "id": "lilac", "label": "Lilac", "mockup": "StyleLab" },
+      { "id": "pink", "label": "Pink", "mockup": "StyleLab" },
+      { "id": "sky", "label": "Sky", "mockup": "StyleLab" }
+    ]
+  },
+  {
+    "id": "d03", "area": "Look and feel", "title": "Badge and stamp style",
+    "description": "How passport stamps and badges look and move. Animated styles are lighter on phones than they look.",
+    "options": [
+      { "id": "static", "label": "Static", "mockup": "StyleLab" },
+      { "id": "soft", "label": "Soft shadow", "mockup": "StyleLab" },
+      { "id": "hard", "label": "Hard shadow", "mockup": "StyleLab" },
+      { "id": "drop", "label": "Drop shape", "mockup": "StyleLab" },
+      { "id": "spin", "label": "Spinning outline", "mockup": "StyleLab" },
+      { "id": "pulse", "label": "Pulse ring", "mockup": "StyleLab" },
+      { "id": "drawn", "label": "Drawn outline", "mockup": "StyleLab" }
+    ]
+  },
+  {
+    "id": "d04", "area": "Trip replay", "title": "How a recorded trip is shown",
+    "description": "Guests who opt in can replay a trip on a map with the route drawn as they moved. The 3D view is only used here, not across the whole app.",
+    "options": [
+      { "id": "both", "label": "Animated 3D with a switch to a flat map", "note": "Recommended. Works on older phones too.", "mockup": "Trip" },
+      { "id": "3d", "label": "Animated 3D only", "mockup": "Trip" },
+      { "id": "flat", "label": "Flat map only", "mockup": "App" }
+    ]
+  },
+  {
+    "id": "d05", "area": "Guest app", "title": "Guest app layout",
+    "description": "The guest app has four areas: Stay, Explore, Trips and Wallet. Phone first with a tab bar, and a sidebar layout on desktop.",
+    "options": [
+      { "id": "v2", "label": "Version 2: clean tabbed app", "mockup": "App" },
+      { "id": "v1", "label": "Version 1: concierge page with Your stay, Explore and Offers", "mockup": "Guest" }
+    ]
+  },
+  {
+    "id": "d06", "area": "Landing page", "title": "Landing page direction",
+    "description": "The public page that explains TapIt to guesthouses and operators, with a working demo.",
+    "options": [
+      { "id": "v2", "label": "Version 2: clean page with a live demo phone", "mockup": "Landing" },
+      { "id": "v1", "label": "Version 1: first concept", "mockup": "Main" }
+    ]
+  },
+  {
+    "id": "d07", "area": "Business portal", "title": "Business portal editor",
+    "description": "Where a business edits its concierge page. Content is written here, so this decides how easy that feels.",
+    "options": [
+      { "id": "v2", "label": "Version 2: blocks with a live phone preview", "mockup": "Portal" },
+      { "id": "v1", "label": "Version 1: first editor concept", "mockup": "Cms" }
+    ]
+  },
+  {
+    "id": "d08", "area": "Admin", "title": "Admin overview and billing",
+    "description": "How the TapIt team sees the network, and how referral commission and subscriptions are invoiced to businesses. TapIt never handles guest payments.",
+    "options": [
+      { "id": "v2", "label": "Version 2: network overview with detail drawer", "mockup": "Network" },
+      { "id": "v1", "label": "Version 1: first overview concept with the billing ledger", "mockup": "Admin" }
+    ]
+  }
+]

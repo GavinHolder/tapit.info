@@ -174,7 +174,9 @@ export function summary(user: User) {
   const answered = one("SELECT COUNT(*) AS n FROM threads WHERE kind = 'question' AND status = 'answered'");
   const resolved = one("SELECT COUNT(*) AS n FROM threads WHERE kind = 'question' AND status = 'resolved'");
   const openFirst = one("SELECT COUNT(*) AS n FROM threads WHERE kind = 'question' AND priority = 1 AND status = 'open'");
-  return { unread, questions, open, answered, resolved, openFirst };
+  const dstatus = user.role === 'client' ? 'proposed' : 'changes';
+  const decisions = one('SELECT COUNT(*) AS n FROM decisions WHERE status = ?', dstatus);
+  return { unread, questions, open, answered, resolved, openFirst, decisions };
 }
 
 

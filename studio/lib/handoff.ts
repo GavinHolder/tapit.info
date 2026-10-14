@@ -44,6 +44,13 @@ function loadThreads(): T[] {
   }));
 }
 
+type Dec = { title: string; area: string; description: string; status: string; chosen: string | null; options: { id: string; label: string; note?: string; mockup?: string }[]; decided_by: string | null; decided_at: string | null; thread: T | null };
+function loadDecisions(threads: T[]): Dec[] {
+  const rows = getDb().prepare('SELECT d.title, d.area, d.description, d.status, d.chosen, d.options_json, d.thread_id, d.decided_at, u.name AS decided_by FROM decisions d LEFT JOIN users u ON u.id = d.decided_by ORDER BY d.sort, d.created_at').all() as { title: string; area: string; description: string; status: string; chosen: string | null; options_json: string; thread_id: string; decided_at: string | null; decided_by: string | null }[];
+  return rows.map(({ options_json, thread_id, ...r }) => ({ ...r, options: JSON.parse(options_json), thread: threads.find((t) => t.id === thread_id) ?? null }));
+}
+const chosenLabel = (d: Dec) => d.options.find((o) => o.id === d.chosen)?.label ?? (d.status === 'approved' ? 'Approved as written' : '');
+
 const role = (r: string) => (r === 'owner' ? 'Developer' : r === 'client' ? 'Client' : 'System');
 const day = (iso: string) => iso.slice(0, 16).replace('T', ' ');
 const oneLine = (s: string) => s.replace(/\s+/g, ' ').trim();
@@ -76,7 +83,8 @@ const where = (t: T, flows: Flow[]) => {
 export function preflight() {
   const threads = loadThreads();
   const q = threads.filter((t) => t.kind === 'question');
-  const comments = threads.filter((t) => t.kind === 'comment');
+  const decisionThreadIds = new Set(getDb().prepare('SELECT thread_id FROM decisions').all().map((r: unknown) => (r as { thread_id: string }).thread_id));
+  const comments = threads.filter((t) => t.kind === 'comment' && !decisionThreadIds.has(t.id));
   const last = lastHandoff();
   return {
     questions: {
@@ -87,6 +95,7 @@ export function preflight() {
     },
     comments: { open: comments.filter((t) => t.status !== 'resolved').length, resolved: comments.filter((t) => t.status === 'resolved').length },
     mockupComments: comments.filter((t) => t.annotation && t.status !== 'resolved').length,
+    decisions: (() => { const d = loadDecisions(threads).filter((x) => x.status !== 'superseded'); return { approved: d.filter((x) => x.status === 'approved').length, pending: d.filter((x) => x.status !== 'approved').length }; })(),
     next: (last?.version ?? 0) + 1,
     last
   };
@@ -111,8 +120,9 @@ export function listHandoffs(): HandoffRow[] {
 const lastHandoff = () => listHandoffs()[0] ?? null;
 
 // ---- The prompts ----
-function codePrompt(a: { version: number; date: string; note: string; flows: Flow[]; threads: T[]; since: string | null; flowSummary: { open: number } }) {
-  const { flows, threads } = a;
+function codePrompt(a: { version: number; date: string; note: string; flows: Flow[]; threads: T[]; decisions: Dec[]; since: string | null; flowSummary: { open: number } }) {
+  const { flows, threads, decisions } = a;
+  const live = decisions.filter((d) => d.status !== 'superseded');
   const qs = threads.filter((t) => t.kind === 'question');
   const confirmed = qs.filter((t) => t.status === 'resolved');
   const toConfirm = qs.filter((t) => t.status === 'answered');
@@ -124,7 +134,7 @@ function codePrompt(a: { version: number; date: string; note: string; flows: Flo
   L.push('## Read these first, in this order', '');
   L.push('1. `CLAUDE.md` in the repository root: the business rules. They override anything below.');
   L.push('2. `SPEC.md`: the plain-English build spec generated from the flows.');
-  L.push('3. `client-answers.md`: the client\'s answers to our questions, with their status.');
+  L.push('3. `client-answers.md` and `design-decisions.md`: the client\'s answers and approved design decisions, with their status.');
   L.push('4. `discussions.md` and `mockup-feedback.md`: change requests and decisions made in review.');
   L.push('5. `flows/*.flow.json`: the machine-readable flows (steps, fields captured, reads, writes, API).');
   L.push('6. `mockups.json` and the `mockups/` folder in the repository: the interactive UI mockups to match.');
@@ -149,8 +159,13 @@ function codePrompt(a: { version: number; date: string; note: string; flows: Flo
   L.push('', '## Answered by the client, not yet confirmed by the developer', '', 'Treat these as the working answer, but flag them in your plan.', '');
   if (!toConfirm.length) L.push('None.');
   toConfirm.forEach((t) => L.push(`- **${t.question_id?.toUpperCase()} ${oneLine(t.title)}**\n  Answer: ${oneLine(clientAnswer(t)) || '(see thread)'}`));
+  L.push('', '## Design decisions', '', 'Approved by the client. Build to these; do not substitute.', '');
+  const approved = live.filter((d) => d.status === 'approved');
+  if (!approved.length) L.push('None approved yet.');
+  approved.forEach((d) => L.push(`- **${d.title}** (${d.area}): ${chosenLabel(d)}${d.options.find((o) => o.id === d.chosen)?.mockup ? ` (see mockup ${d.options.find((o) => o.id === d.chosen)!.mockup})` : ''}`));
   L.push('', '## Not decided yet', '', 'Do not assume answers to these. Ask the developer before building anything that depends on them.', '');
-  if (!unanswered.length && !a.flowSummary.open) L.push('Nothing outstanding.');
+  live.filter((d) => d.status !== 'approved').forEach((d) => L.push(`- Design decision, ${d.status === 'changes' ? 'client asked for changes' : 'awaiting client approval'}: ${d.title} (${d.area})`));
+  if (!unanswered.length && !a.flowSummary.open && !live.some((d) => d.status !== 'approved')) L.push('Nothing outstanding.');
   unanswered.forEach((t) => L.push(`- ${t.priority === 1 ? '**Needed first.** ' : ''}${t.question_id?.toUpperCase()} ${oneLine(t.title)}${t.why ? ` Why it matters: ${oneLine(t.why)}` : ''}`));
   for (const f of flows) for (const n of f.nodes) if (n.data.status === 'question' || n.data.kind === 'question') L.push(`- Flow “${f.title}”, step “${n.data.title}”: ${oneLine(n.data.notes || '')}`);
 
@@ -162,8 +177,9 @@ function codePrompt(a: { version: number; date: string; note: string; flows: Flo
   return L.join('\n') + '\n';
 }
 
-function designPrompt(a: { version: number; date: string; flows: Flow[]; threads: T[] }) {
-  const { flows, threads } = a;
+function designPrompt(a: { version: number; date: string; flows: Flow[]; threads: T[]; decisions: Dec[] }) {
+  const { flows, threads, decisions } = a;
+  const live = decisions.filter((d) => d.status !== 'superseded');
   const L: string[] = [];
   L.push(`# Design brief for TapIt (handoff v${a.version}, ${a.date})`, '');
   L.push('Use this with Claude Design to produce or refine the TapIt screens. Mobile first at all times.', '');
@@ -176,7 +192,13 @@ function designPrompt(a: { version: number; date: string; flows: Flow[]; threads
   L.push('- Rich where it counts (the trip replay on a 3D map of the mountain), quiet everywhere else.');
   L.push('- Accessible: sufficient contrast, real buttons and labels, visible focus. No invented statistics or filler text; use clear placeholders.');
   L.push('- Money rule: TapIt never takes guest payments. Voucher and membership screens link out to the business\'s own checkout or terms.', '');
-  L.push('## Screens to design or refine', '');
+  L.push('## Decisions already made', '');
+  const ap = live.filter((d) => d.status === 'approved');
+  if (!ap.length) L.push('None approved yet. Use the base direction above.');
+  ap.forEach((d) => L.push(`- ${d.title}: **${chosenLabel(d)}**`));
+  const pend = live.filter((d) => d.status !== 'approved');
+  if (pend.length) { L.push('', 'Still open with the client. Keep these easy to change:', ''); pend.forEach((d) => L.push(`- ${d.title}`)); }
+  L.push('', '## Screens to design or refine', '');
   for (const f of flows) {
     const screens = f.nodes.filter((n) => n.data.kind === 'screen' || n.data.kind === 'profile');
     if (!screens.length) continue;
@@ -227,9 +249,24 @@ function answersDoc(threads: T[]) {
   return L.join('\n');
 }
 
+function decisionsDoc(decs: Dec[]) {
+  const L = ['# Design decisions', '', '**Approved** decisions are agreed with the client. Others are still open.', ''];
+  const st: Record<string, string> = { approved: 'Approved', proposed: 'Awaiting client approval', changes: 'Client asked for changes', superseded: 'Replaced' };
+  for (const d of decs) {
+    L.push(`## ${d.title}`, '', `${d.area} · **${st[d.status] ?? d.status}**${d.status === 'approved' ? ` by ${d.decided_by ?? 'the client'} on ${d.decided_at?.slice(0, 10)}` : ''}`, '');
+    if (d.description) L.push(d.description, '');
+    if (d.status === 'approved' && chosenLabel(d)) L.push(`Chosen: **${chosenLabel(d)}**`, '');
+    if (d.options.length) { L.push('Options:', ''); d.options.forEach((o) => L.push(`- ${o.label}${o.id === d.chosen ? ' (chosen)' : ''}${o.note ? `: ${o.note}` : ''}${o.mockup ? ` [mockup ${o.mockup}]` : ''}`)); L.push(''); }
+    const msgs = d.thread ? d.thread.messages.filter((m) => m.role !== 'system') : [];
+    if (msgs.length) L.push('Discussion:', '', renderMessages(msgs), '');
+  }
+  if (!decs.length) L.push('No decisions recorded.');
+  return L.join('\n');
+}
+
 function discussionsDoc(threads: T[], flows: Flow[]) {
   const L = ['# Discussions', '', 'Comments and messages that are not on a mockup. Resolved threads are listed last.', ''];
-  const list = threads.filter((t) => t.kind === 'comment' && t.target_type !== 'mockup');
+  const list = threads.filter((t) => t.kind === 'comment' && t.target_type !== 'mockup' && !t.title.startsWith('Decision: '));
   const render = (t: T) => `### ${t.title}\n\nOn: ${where(t, flows)} · ${t.status === 'resolved' ? 'resolved' : 'open'}\n\n${renderMessages(t.messages)}\n`;
   L.push('## Open', '');
   list.filter((t) => t.status !== 'resolved').forEach((t) => L.push(render(t)));
@@ -272,9 +309,10 @@ function changesDoc(threads: T[], since: string, prev: number) {
 export async function finalize(user: User, input: { note: string; acknowledged: boolean }) {
   const db = getDb();
   const [pre, fw, flows] = [preflight(), await flowWarnings(), await readFlows()];
-  const warnings = pre.questions.unanswered.length + pre.questions.toReview + pre.comments.open + fw.open;
+  const warnings = pre.questions.unanswered.length + pre.questions.toReview + pre.comments.open + fw.open + pre.decisions.pending;
   if (warnings > 0 && !input.acknowledged) throw Object.assign(new Error('There are open items. Tick the box to hand off anyway.'), { status: 409 });
   const threads = loadThreads();
+  const decisions = loadDecisions(threads);
   const version = pre.next;
   const date = new Date().toISOString().slice(0, 10);
   const folderName = `${date}-v${version}`;
@@ -286,10 +324,11 @@ export async function finalize(user: User, input: { note: string; acknowledged: 
   const since = pre.last?.created_at ?? null;
   const spec = buildSpec(flows);
   const files: Record<string, string> = {
-    'CLAUDE_CODE_PROMPT.md': codePrompt({ version, date, note, flows, threads, since: pre.last ? `v${pre.last.version}` : null, flowSummary: fw }),
-    'CLAUDE_DESIGN_PROMPT.md': designPrompt({ version, date, flows, threads }),
+    'CLAUDE_CODE_PROMPT.md': codePrompt({ version, date, note, flows, threads, decisions, since: pre.last ? `v${pre.last.version}` : null, flowSummary: fw }),
+    'CLAUDE_DESIGN_PROMPT.md': designPrompt({ version, date, flows, threads, decisions }),
     'SPEC.md': spec,
     'client-answers.md': answersDoc(threads),
+    'design-decisions.md': decisionsDoc(decisions),
     'discussions.md': discussionsDoc(threads, flows),
     'mockup-feedback.md': mockupDoc(threads),
     'mockups.json': JSON.stringify(PROTOTYPES.map(({ id, file, title, note: n, w, h, device, group }) => ({ id, file: `mockups/${file}`, title, note: n, width: w, height: h, device, group })), null, 2) + '\n'
@@ -299,7 +338,7 @@ export async function finalize(user: User, input: { note: string; acknowledged: 
 
   const stats = {
     flows: flows.length, steps: flows.reduce((n, f) => n + f.nodes.length, 0), questions: pre.questions.total, confirmed: pre.questions.confirmed,
-    unanswered: pre.questions.unanswered.length, toReview: pre.questions.toReview, openComments: pre.comments.open, openStepsInFlows: fw.open, mockupComments: threads.filter((t) => t.annotation).length
+    unanswered: pre.questions.unanswered.length, toReview: pre.questions.toReview, openComments: pre.comments.open, openStepsInFlows: fw.open, mockupComments: threads.filter((t) => t.annotation).length, decisionsApproved: pre.decisions.approved, decisionsPending: pre.decisions.pending
   };
   files['README.md'] = [
     `# TapIt handoff v${version}`, '', `Created ${new Date().toISOString()} by ${user.name}.`, note ? `\nNote: ${oneLine(note)}\n` : '',
@@ -307,7 +346,7 @@ export async function finalize(user: User, input: { note: string; acknowledged: 
     '- `CLAUDE_CODE_PROMPT.md`: paste or point Claude Code at this to start the build.',
     '- `CLAUDE_DESIGN_PROMPT.md`: the brief for Claude Design.',
     '- `SPEC.md`, `flows/`: the agreed application flow.',
-    '- `client-answers.md`, `discussions.md`, `mockup-feedback.md`: everything the client and developer discussed.',
+    '- `client-answers.md`, `design-decisions.md`, `discussions.md`, `mockup-feedback.md`: everything the client and developer discussed and decided.',
     '- `mockups.json`: the list of mockups (sources are in `mockups/` in the repository).',
     '- `uploads/`: images attached to messages.', '',
     '## State at hand-off', '', ...Object.entries(stats).map(([k, v]) => `- ${k}: ${v}`), ''

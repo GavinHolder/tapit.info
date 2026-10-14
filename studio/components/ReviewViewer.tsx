@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { api } from '@/lib/api';
 import { GROUPS, PROTOTYPES, type Prototype } from '@/lib/prototypes';
@@ -38,6 +39,8 @@ export function ReviewViewer({ initial, thread, role }: { initial?: string; thre
   const [selected, setSelected] = useState<string | null>(thread ?? null);
   const [draft, setDraft] = useState<Draft | null>(null);
   const [showResolved, setShowResolved] = useState(false);
+  const [links, setLinks] = useState<Record<string, { flow: string; flowTitle: string; step: string; title: string }[]>>({});
+  useEffect(() => { void api<{ links: typeof links }>('/api/mockup-links').then((r) => setLinks(r.links)).catch(() => undefined); }, []);
   const proto: Prototype = PROTOTYPES.find((p) => p.id === id) ?? PROTOTYPES[0];
   const src = `/api/prototypes/${proto.file}`;
 
@@ -117,6 +120,16 @@ export function ReviewViewer({ initial, thread, role }: { initial?: string; thre
               {counts.resolved > 0 && <label className="chk"><input type="checkbox" checked={showResolved} onChange={(e) => setShowResolved(e.target.checked)} />Show resolved</label>}
             </div>
             <p className="hint">{MODES.find((m) => m.key === mode)!.hint}</p>
+            {(links[proto.id]?.length ?? 0) > 0 && !draft && !selected && (
+              <details className="used">
+                <summary>Used by {links[proto.id].length} flow step{links[proto.id].length === 1 ? '' : 's'}</summary>
+                <ul>
+                  {links[proto.id].map((l) => (
+                    <li key={l.flow + l.step}><Link className="link" href={`/flows?flow=${l.flow}&step=${l.step}`}>{l.title}</Link> <span className="hint">{l.flowTitle}</span></li>
+                  ))}
+                </ul>
+              </details>
+            )}
 
             {draft && <DraftForm key={JSON.stringify(draft.data)} draft={draft} mockup={proto.id} onCancel={() => setDraft(null)} onDone={async (newId) => { setDraft(null); await load(); setSelected(newId); }} color={color} />}
 

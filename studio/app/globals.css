@@ -308,3 +308,48 @@ textarea.in { resize: vertical; line-height: 1.45; }
 .handoff { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; border-top: 1px solid var(--line-2); padding-top: 12px; }
 .handoff p { margin: 4px 0 0; }
 .hbtns { display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-start; }
+
+/* decisions */
+.dec { display: grid; gap: 14px; align-content: start; }
+.dec-head { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; align-items: flex-start; }
+.dec .lead { color: var(--muted); max-width: 720px; margin: 4px 0 0; }
+.dgroup { display: grid; gap: 10px; }
+.dgroup h2 { font-size: 16px; }
+.dcard { border: 1px solid var(--line); background: var(--card); border-radius: 16px; padding: 16px; display: grid; gap: 10px; }
+.dcard.st-proposed { border-color: #e8c9a0; }
+.dcard.st-changes { border-color: #b9c7ee; }
+.dcard header { display: flex; gap: 6px; align-items: center; }
+.dcard h3 { font-size: 18px; margin: 0; }
+.ddesc { margin: 0; color: var(--muted); max-width: 760px; }
+.dst-proposed { background: #fde6c8; color: #8a5a00; }
+.dst-approved { background: #dcf2e1; color: #1d6b3a; }
+.dst-changes { background: #dbeafe; color: #1e40af; }
+.dst-superseded { background: var(--line-2); color: var(--muted); }
+.dopts { border: 0; margin: 0; padding: 0; min-width: 0; display: grid; gap: 6px; }
+.dopt { display: flex; align-items: flex-start; gap: 10px; border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; background: var(--bg); cursor: pointer; }
+.dopts:disabled .dopt { cursor: default; }
+.dopt.on { border-color: var(--deep); background: #eef7d8; }
+.dopt.chosen { border-color: #2f8f4e; }
+.dopt input { margin-top: 4px; }
+.otext { display: grid; gap: 2px; flex: 1; min-width: 0; }
+.otext span { color: var(--muted); font-size: 13px; }
+.otext .tag { justify-self: start; }
+.link.small { font-size: 13px; white-space: nowrap; }
+.dact { display: grid; gap: 8px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.mono { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; }
+.dedit { max-width: 860px; }
+.used ul { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 2px; font-size: 14px; }
+.used summary { cursor: pointer; font-weight: 700; font-size: 13px; }
+
+/* small screens */
+.nav { min-width: 0; overflow-x: auto; scrollbar-width: none; }
+.nav a { white-space: nowrap; }
+.tv-actions { flex-wrap: wrap; }
+.dopt { flex-wrap: wrap; }
+.dopt .link { margin-left: 26px; }
+@media (max-width: 800px) {
+  .top { overflow: hidden; }
+  .top-user { margin-left: 0; }
+  .nav { flex: 1; }
+}

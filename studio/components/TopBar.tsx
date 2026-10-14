@@ -11,10 +11,11 @@ export function TopBar({ user }: Props) {
   const path = usePathname();
   const owner = user.role === 'owner';
   const [unread, setUnread] = useState(0);
+  const [decisions, setDecisions] = useState(0);
 
   useEffect(() => {
     let live = true;
-    const poll = () => api<{ unread: number }>('/api/inbox/summary').then((r) => live && setUnread(r.unread)).catch(() => undefined);
+    const poll = () => api<{ unread: number; decisions: number }>('/api/inbox/summary').then((r) => { if (live) { setUnread(r.unread); setDecisions(r.decisions); } }).catch(() => undefined);
     void poll();
     const t = setInterval(poll, 20000);
     const onFocus = () => void poll();
@@ -39,6 +40,9 @@ export function TopBar({ user }: Props) {
       <nav className="nav" aria-label="Studio">
         <Link href="/inbox" className={path.startsWith('/inbox') ? 'on' : ''}>
           Inbox{unread > 0 && <span className="badge" aria-label={`${unread} with new replies`}>{unread}</span>}
+        </Link>
+        <Link href="/decisions" className={path.startsWith('/decisions') ? 'on' : ''}>
+          Decisions{decisions > 0 && <span className="badge" aria-label={`${decisions} waiting`}>{decisions}</span>}
         </Link>
         <Link href="/flows" className={path.startsWith('/flows') ? 'on' : ''}>Flows</Link>
         <Link href="/review" className={path.startsWith('/review') ? 'on' : ''}>Mockups</Link>

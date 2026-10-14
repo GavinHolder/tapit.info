@@ -102,6 +102,24 @@ const MIGRATIONS = [
     created_by TEXT REFERENCES users(id),
     created_at TEXT NOT NULL
   );
+  `,
+  `
+  CREATE TABLE decisions (
+    id TEXT PRIMARY KEY,
+    seed_id TEXT UNIQUE,
+    area TEXT NOT NULL,
+    title TEXT NOT NULL,
+    description TEXT NOT NULL DEFAULT '',
+    options_json TEXT NOT NULL DEFAULT '[]',
+    chosen TEXT,
+    status TEXT NOT NULL DEFAULT 'proposed' CHECK (status IN ('proposed', 'approved', 'changes', 'superseded')),
+    thread_id TEXT REFERENCES threads(id),
+    sort INTEGER NOT NULL DEFAULT 0,
+    decided_by TEXT REFERENCES users(id),
+    decided_at TEXT,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+  );
   `
 ];
 
@@ -174,6 +192,31 @@ export function seedQuestions(db) {
   return added;
 }
 
+// Creates the starting design decisions from planning/decisions.json. Existing ones are left alone.
+export function seedDecisions(db) {
+  const file = path.join(PLANNING_DIR, 'decisions.json');
+  if (!fs.existsSync(file)) return 0;
+  const list = JSON.parse(fs.readFileSync(file, 'utf8'));
+  const exists = db.prepare('SELECT 1 FROM decisions WHERE seed_id = ?');
+  let added = 0;
+  const now = new Date().toISOString();
+  list.forEach((d, i) => {
+    if (exists.get(d.id)) return;
+    const tid = newId('thr');
+    db.prepare(
+      `INSERT INTO threads (id, kind, target_type, target_id, title, sort, status, created_by, created_at, updated_at)
+       VALUES (?, 'comment', 'project', '', ?, 0, 'open', NULL, ?, ?)`
+    ).run(tid, `Decision: ${d.title}`.slice(0, 200), now, now);
+    db.prepare('INSERT INTO messages (id, thread_id, author_id, body, created_at) VALUES (?, ?, NULL, ?, ?)').run(newId('msg'), tid, `Decision: ${d.title}. ${d.description}`, now);
+    db.prepare(
+      `INSERT INTO decisions (id, seed_id, area, title, description, options_json, thread_id, sort, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    ).run(newId('dec'), d.id, d.area, d.title, d.description || '', JSON.stringify(d.options || []), tid, i + 1, now, now);
+    added += 1;
+  });
+  if (added) console.log(`[studio] Added ${added} design decisions from planning/decisions.json.`);
+  return added;
+}
+
 export function openDb(dir = DATA_DIR) {
   fs.mkdirSync(dir, { recursive: true });
   const db = new DatabaseSync(path.join(dir, 'studio.db'));
@@ -189,6 +232,7 @@ export function getDb() {
     g.__studioDb = openDb();
     bootstrapOwner(g.__studioDb);
     seedQuestions(g.__studioDb);
+    seedDecisions(g.__studioDb);
   }
   return g.__studioDb;
 }

@@ -8,6 +8,7 @@ type Pre = {
   questions: { total: number; unanswered: { id: string; id_label: string | null; title: string; first: boolean }[]; toReview: number; confirmed: number };
   comments: { open: number; resolved: number };
   mockupComments: number;
+  decisions: { approved: number; pending: number };
   next: number;
   last: { version: number; created_at: string } | null;
 };
@@ -30,7 +31,7 @@ export function Finalize() {
 
   if (!data) return <div className="plain">{error || 'Loading…'}</div>;
   const { pre, flows, handoffs } = data;
-  const warnings = pre.questions.unanswered.length + pre.questions.toReview + pre.comments.open + flows.open;
+  const warnings = pre.questions.unanswered.length + pre.questions.toReview + pre.comments.open + flows.open + pre.decisions.pending;
 
   async function run() {
     setBusy(true);
@@ -71,6 +72,7 @@ export function Finalize() {
           <div className={pre.questions.toReview ? 'warn' : ''}><b>{pre.questions.toReview}</b><span>answered, to review</span></div>
           <div className={pre.questions.unanswered.length ? 'warn' : ''}><b>{pre.questions.unanswered.length}</b><span>unanswered</span></div>
           <div className={pre.comments.open ? 'warn' : ''}><b>{pre.comments.open}</b><span>open comments{pre.mockupComments ? ` (${pre.mockupComments} on mockups)` : ''}</span></div>
+          <div className={pre.decisions.pending ? 'warn' : ''}><b>{pre.decisions.approved}</b><span>design decisions approved{pre.decisions.pending ? ` (${pre.decisions.pending} waiting)` : ''}</span></div>
           <div className={flows.open ? 'warn' : ''}><b>{flows.open}</b><span>open steps in flows</span></div>
           <div><b>{flows.agreed}</b><span>flow steps agreed</span></div>
         </div>
