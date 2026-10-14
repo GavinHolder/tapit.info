@@ -191,7 +191,35 @@ function Toolbar({ readOnly }: { readOnly: boolean }) {
   );
 }
 
+// Add ?debug=1 to the Flows address to see whether right-clicks reach the page.
+function DebugPanel() {
+  const [log, setLog] = useState({ ctx: 0, last: '', prevented: '', nodeMenu: 0, clicks: 0 });
+  useEffect(() => {
+    const onCtx = (e: MouseEvent) => {
+      const t = e.target as HTMLElement;
+      const desc = `${t?.tagName?.toLowerCase()}.${(typeof t?.className === 'string' ? t.className : '').split(' ').slice(0, 2).join('.')}`;
+      setLog((l) => ({ ...l, ctx: l.ctx + 1, last: desc, prevented: 'checking' }));
+      setTimeout(() => setLog((l) => ({ ...l, prevented: String(e.defaultPrevented) })), 0);
+    };
+    const onNode = () => setLog((l) => ({ ...l, nodeMenu: l.nodeMenu + 1 }));
+    const onClick = () => setLog((l) => ({ ...l, clicks: l.clicks + 1 }));
+    window.addEventListener('contextmenu', onCtx, true);
+    window.addEventListener('studio:nodemenu', onNode);
+    window.addEventListener('click', onClick, true);
+    return () => { window.removeEventListener('contextmenu', onCtx, true); window.removeEventListener('studio:nodemenu', onNode); window.removeEventListener('click', onClick, true); };
+  }, []);
+  const menus = typeof document === 'undefined' ? 0 : document.querySelectorAll('.ctxmenu').length;
+  const dots = typeof document === 'undefined' ? 0 : document.querySelectorAll('.node-menu').length;
+  return (
+    <div className="debugpanel" role="status">
+      <b>Debug</b> v{process.env.NEXT_PUBLIC_STUDIO_VERSION} · right-click events seen: {log.ctx} · last target: {log.last || 'none yet'} · handled by app: {log.prevented || '-'} · ⋯ buttons clicked: {log.nodeMenu} · clicks: {log.clicks} · menus on screen: {menus} · ⋯ buttons on page: {dots} · {typeof navigator === 'undefined' ? '' : navigator.userAgent.replace(/Mozilla\/5.0 /, '').slice(0, 60)}
+    </div>
+  );
+}
+
 export function Workspace({ readOnly }: { readOnly: boolean }) {
+  const [debug, setDebug] = useState(false);
+  useEffect(() => { setDebug(new URLSearchParams(window.location.search).has('debug')); }, []);
   const list = useStudio((s) => s.list);
   const flowId = useStudio((s) => s.flowId);
   const title = useStudio((s) => s.title);
@@ -288,6 +316,7 @@ export function Workspace({ readOnly }: { readOnly: boolean }) {
       </section>
 
       <Inspector readOnly={readOnly} />
+      {debug && <DebugPanel />}
       <div role="status" aria-live="polite" className={'toast' + (toast ? ' show' : '')}>{toast}</div>
     </div>
   );
