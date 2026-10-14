@@ -6,5 +6,5 @@ export const dynamic = 'force-dynamic';
 export default async function Home() {
   const user = await getUser();
   if (!user) redirect('/login');
-  redirect('/flows');
+  redirect(user.role === 'owner' ? '/flows' : '/inbox');
 }

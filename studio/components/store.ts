@@ -69,6 +69,8 @@ interface State {
   savedAt: number | null;
   lastEdit: number;
   toast: string;
+  focus: string | null;
+  setFocus: (id: string | null) => void;
   loadList: () => Promise<void>;
   open: (id: string) => Promise<void>;
   onNodesChange: (c: NodeChange<RFNode>[]) => void;
@@ -106,6 +108,8 @@ export const useStudio = create<State>()((set, get) => ({
   savedAt: null,
   lastEdit: 0,
   toast: '',
+  focus: null,
+  setFocus: (id) => set({ focus: id }),
 
   say: (m) => {
     if (toastTimer) clearTimeout(toastTimer);

@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { KINDS, LANES, STATUSES, type Field, type NodeKind, type Status } from '@/lib/types';
 import { PROTOTYPES } from '@/lib/prototypes';
 import { useStudio } from './store';
+import { StepDiscussion } from './StepDiscussion';
 
 export function Inspector({ readOnly }: { readOnly: boolean }) {
   const selected = useStudio((s) => s.selected);
@@ -13,12 +13,7 @@ export function Inspector({ readOnly }: { readOnly: boolean }) {
   const updateNode = useStudio((s) => s.updateNode);
   const updateEdgeLabel = useStudio((s) => s.updateEdgeLabel);
   const removeSelected = useStudio((s) => s.removeSelected);
-  const [author, setAuthor] = useState('');
-  const [text, setText] = useState('');
-
-  useEffect(() => {
-    try { setAuthor(localStorage.getItem('studio-author') || ''); } catch { /* private mode */ }
-  }, []);
+  const flowId = useStudio((s) => s.flowId);
 
   if (!selected) {
     return (
@@ -47,15 +42,6 @@ export function Inspector({ readOnly }: { readOnly: boolean }) {
   const d = node.data;
   const set = (patch: Partial<typeof d>) => updateNode(node.id, patch);
   const setField = (i: number, patch: Partial<Field>) => set({ fields: d.fields.map((f, j) => (j === i ? { ...f, ...patch } : f)) });
-
-  const addComment = () => {
-    const t = text.trim();
-    if (!t) return;
-    const name = author.trim() || 'Reviewer';
-    try { localStorage.setItem('studio-author', name); } catch { /* ignore */ }
-    set({ comments: [...d.comments, { id: Math.random().toString(36).slice(2, 9), author: name, at: new Date().toISOString(), text: t }] });
-    setText('');
-  };
 
   return (
     <aside className="inspector">
@@ -131,21 +117,9 @@ export function Inspector({ readOnly }: { readOnly: boolean }) {
       {PROTOTYPES.some((p) => p.file === d.mockup) && (
         <Link className="link" href={`/review?board=${PROTOTYPES.find((p) => p.file === d.mockup)!.id}`}>Open this mockup</Link>
       )}
+      </fieldset>
 
-      <fieldset className="grp">
-        <legend>Comments</legend>
-        {d.comments.length === 0 && <p className="hint">No comments yet.</p>}
-        {d.comments.map((c) => (
-          <div className="cmt" key={c.id}>
-            <div className="cmt-h"><b>{c.author}</b><span>{new Date(c.at).toLocaleDateString('en-ZA', { day: 'numeric', month: 'short' })}</span></div>
-            <div>{c.text}</div>
-          </div>
-        ))}
-        <input className="in" aria-label="Your name" placeholder="Your name" value={author} onChange={(e) => setAuthor(e.target.value)} />
-        <textarea className="in" rows={3} aria-label="Add a comment" placeholder="Add a comment, a link or a question" value={text} onChange={(e) => setText(e.target.value)} />
-        <button type="button" className="btn primary small" onClick={addComment} disabled={!text.trim()}>Add comment</button>
-      </fieldset>
-      </fieldset>
+      {flowId && <StepDiscussion flowId={flowId} nodeId={node.id} role={readOnly ? 'client' : 'owner'} />}
     </aside>
   );
 }

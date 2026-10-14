@@ -22,10 +22,22 @@ function Canvas({ readOnly }: { readOnly: boolean }) {
   const rf = useReactFlow();
 
   // Open at a readable zoom, starting from the first step. The Fit button still shows the whole flow.
+  // A link to a specific step (?flow=&step=) centres on that step and selects it instead.
   useEffect(() => {
     const t = setTimeout(() => {
-      const all = useStudio.getState().nodes;
+      const st = useStudio.getState();
+      const all = st.nodes;
       if (!all.length) return;
+      const target = st.focus && all.find((n) => n.id === st.focus);
+      if (target) {
+        const w = target.measured?.width ?? 250;
+        const h = target.measured?.height ?? 110;
+        void rf.setCenter(target.position.x + w / 2, target.position.y + h / 2, { zoom: 0.9, duration: 300 });
+        rf.setNodes((ns) => ns.map((n) => ({ ...n, selected: n.id === target.id })));
+        st.select({ type: 'node', id: target.id });
+        st.setFocus(null);
+        return;
+      }
       const b = rf.getNodesBounds(all);
       const zoom = 0.8;
       void rf.setViewport({ x: 32 - b.x * zoom, y: 130 - b.y * zoom, zoom }, { duration: 250 });
@@ -130,9 +142,16 @@ export function Workspace({ readOnly }: { readOnly: boolean }) {
   const [newTitle, setNewTitle] = useState('');
 
   useEffect(() => {
+    const q = new URLSearchParams(window.location.search);
+    const wantFlow = q.get('flow');
+    const wantStep = q.get('step');
     void loadList().then(() => {
-      const first = useStudio.getState().list[0];
-      if (first && !useStudio.getState().flowId) void open(first.id);
+      const st = useStudio.getState();
+      const pick = st.list.find((f) => f.id === wantFlow) ?? (st.flowId ? undefined : st.list[0]);
+      if (pick) {
+        if (wantStep) st.setFocus(wantStep);
+        void open(pick.id);
+      }
     });
   }, [loadList, open]);
 

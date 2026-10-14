@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 
 type Props = { user: { name: string; role: 'owner' | 'client'; email: string } };
@@ -9,6 +10,18 @@ type Props = { user: { name: string; role: 'owner' | 'client'; email: string } }
 export function TopBar({ user }: Props) {
   const path = usePathname();
   const owner = user.role === 'owner';
+  const [unread, setUnread] = useState(0);
+
+  useEffect(() => {
+    let live = true;
+    const poll = () => api<{ unread: number }>('/api/inbox/summary').then((r) => live && setUnread(r.unread)).catch(() => undefined);
+    void poll();
+    const t = setInterval(poll, 20000);
+    const onFocus = () => void poll();
+    window.addEventListener('focus', onFocus);
+    window.addEventListener('studio:inbox', onFocus);
+    return () => { live = false; clearInterval(t); window.removeEventListener('focus', onFocus); window.removeEventListener('studio:inbox', onFocus); };
+  }, [path]);
 
   async function signOut() {
     try { await api('/api/auth/logout', { method: 'POST' }); } catch { /* already signed out */ }
@@ -24,6 +37,9 @@ export function TopBar({ user }: Props) {
         TapIt Studio
       </Link>
       <nav className="nav" aria-label="Studio">
+        <Link href="/inbox" className={path.startsWith('/inbox') ? 'on' : ''}>
+          Inbox{unread > 0 && <span className="badge" aria-label={`${unread} with new replies`}>{unread}</span>}
+        </Link>
         <Link href="/flows" className={path.startsWith('/flows') ? 'on' : ''}>Flows</Link>
         <Link href="/review" className={path.startsWith('/review') ? 'on' : ''}>Mockups</Link>
         {owner && <Link href="/team" className={path.startsWith('/team') ? 'on' : ''}>Team</Link>}
