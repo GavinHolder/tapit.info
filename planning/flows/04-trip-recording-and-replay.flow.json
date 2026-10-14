@@ -1,0 +1,488 @@
+{
+  "id": "04-trip-recording-and-replay",
+  "title": "Trip recording, profile and replay",
+  "description": "When a guest creates a profile, what location data is captured and kept, how the 3D replay loads, and how a guest deletes their data.",
+  "nodes": [
+    {
+      "id": "t1",
+      "type": "step",
+      "position": {
+        "x": 0,
+        "y": 146
+      },
+      "data": {
+        "title": "Trips tab",
+        "kind": "screen",
+        "lane": "Frontend",
+        "status": "draft",
+        "notes": "",
+        "fields": [],
+        "reads": "",
+        "writes": "",
+        "api": "",
+        "mockup": "App.dc.html",
+        "comments": []
+      }
+    },
+    {
+      "id": "t2",
+      "type": "step",
+      "position": {
+        "x": 340,
+        "y": 146
+      },
+      "data": {
+        "title": "Taps Record a new trip",
+        "kind": "action",
+        "lane": "Guest",
+        "status": "draft",
+        "notes": "",
+        "fields": [],
+        "reads": "",
+        "writes": "",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "t3",
+      "type": "step",
+      "position": {
+        "x": 680,
+        "y": 146
+      },
+      "data": {
+        "title": "Record sheet with the location consent switch",
+        "kind": "screen",
+        "lane": "Frontend",
+        "status": "draft",
+        "notes": "Explains what is stored and that it is private.",
+        "fields": [],
+        "reads": "",
+        "writes": "",
+        "api": "",
+        "mockup": "App.dc.html",
+        "comments": []
+      }
+    },
+    {
+      "id": "t4",
+      "type": "step",
+      "position": {
+        "x": 1020,
+        "y": 146
+      },
+      "data": {
+        "title": "Consent given?",
+        "kind": "decision",
+        "lane": "Frontend",
+        "status": "draft",
+        "notes": "",
+        "fields": [],
+        "reads": "",
+        "writes": "",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "t5",
+      "type": "step",
+      "position": {
+        "x": 1360,
+        "y": 219
+      },
+      "data": {
+        "title": "Back to Trips. Nothing is recorded.",
+        "kind": "screen",
+        "lane": "Frontend",
+        "status": "draft",
+        "notes": "",
+        "fields": [],
+        "reads": "",
+        "writes": "",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "t6",
+      "type": "step",
+      "position": {
+        "x": 1360,
+        "y": 73
+      },
+      "data": {
+        "title": "Guest already has a profile?",
+        "kind": "decision",
+        "lane": "Backend",
+        "status": "draft",
+        "notes": "",
+        "fields": [],
+        "reads": "",
+        "writes": "",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "t7",
+      "type": "step",
+      "position": {
+        "x": 1700,
+        "y": 115
+      },
+      "data": {
+        "title": "Email sign-in link",
+        "kind": "screen",
+        "lane": "Frontend",
+        "status": "draft",
+        "notes": "Passwordless.",
+        "fields": [
+          {
+            "name": "Email",
+            "type": "email",
+            "required": true,
+            "pii": true
+          }
+        ],
+        "reads": "",
+        "writes": "",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "t8",
+      "type": "step",
+      "position": {
+        "x": 2040,
+        "y": 115
+      },
+      "data": {
+        "title": "Explorer profile created",
+        "kind": "profile",
+        "lane": "Backend",
+        "status": "draft",
+        "notes": "",
+        "fields": [
+          {
+            "name": "Email",
+            "type": "email",
+            "required": true,
+            "pii": true
+          },
+          {
+            "name": "Display name",
+            "type": "text",
+            "required": false,
+            "pii": true
+          },
+          {
+            "name": "Location consent",
+            "type": "boolean",
+            "required": true,
+            "pii": false
+          },
+          {
+            "name": "Consent given at",
+            "type": "timestamp",
+            "required": true,
+            "pii": false
+          }
+        ],
+        "reads": "",
+        "writes": "users (role=explorer), consents",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "t9",
+      "type": "step",
+      "position": {
+        "x": 2380,
+        "y": 73
+      },
+      "data": {
+        "title": "Records the trip",
+        "kind": "action",
+        "lane": "Guest",
+        "status": "draft",
+        "notes": "Browser location while the page is open and the screen is on. Points are kept on the phone and sent when the signal returns.",
+        "fields": [],
+        "reads": "",
+        "writes": "trips, track_points (geometry, time, accuracy)",
+        "api": "POST /api/trips/{id}/points (batched)",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "t10",
+      "type": "step",
+      "position": {
+        "x": 2720,
+        "y": 146
+      },
+      "data": {
+        "title": "Save the trip",
+        "kind": "backend",
+        "lane": "Backend",
+        "status": "draft",
+        "notes": "Private by default.",
+        "fields": [],
+        "reads": "",
+        "writes": "trips (visibility=private)",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "t11",
+      "type": "step",
+      "position": {
+        "x": 3060,
+        "y": 219
+      },
+      "data": {
+        "title": "Trip replay: 3D and flat map",
+        "kind": "screen",
+        "lane": "Frontend",
+        "status": "draft",
+        "notes": "The route draws itself over the terrain. Toggle 3D and flat. Replay button.",
+        "fields": [],
+        "reads": "track_points, terrain tiles (self-hosted)",
+        "writes": "",
+        "api": "",
+        "mockup": "App.dc.html",
+        "comments": []
+      }
+    },
+    {
+      "id": "t12",
+      "type": "step",
+      "position": {
+        "x": 3400,
+        "y": 73
+      },
+      "data": {
+        "title": "Share the trip?",
+        "kind": "decision",
+        "lane": "Frontend",
+        "status": "draft",
+        "notes": "",
+        "fields": [],
+        "reads": "",
+        "writes": "",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "t13",
+      "type": "step",
+      "position": {
+        "x": 3740,
+        "y": 73
+      },
+      "data": {
+        "title": "Create a share link",
+        "kind": "action",
+        "lane": "Guest",
+        "status": "draft",
+        "notes": "",
+        "fields": [],
+        "reads": "",
+        "writes": "trip_shares",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "t14",
+      "type": "step",
+      "position": {
+        "x": 3400,
+        "y": 219
+      },
+      "data": {
+        "title": "Deletes or exports their data",
+        "kind": "action",
+        "lane": "Guest",
+        "status": "draft",
+        "notes": "Delete my trips and Export my data in Privacy settings.",
+        "fields": [],
+        "reads": "",
+        "writes": "deletions, audit_log",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "t15",
+      "type": "step",
+      "position": {
+        "x": 2720,
+        "y": 0
+      },
+      "data": {
+        "title": "Do we ship background tracking, or only import GPX for long hikes?",
+        "kind": "question",
+        "lane": "Admin",
+        "status": "question",
+        "notes": "Browsers pause tracking when the screen is off. A native wrapper is a later option.",
+        "fields": [],
+        "reads": "",
+        "writes": "",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "t16",
+      "type": "step",
+      "position": {
+        "x": 3060,
+        "y": 73
+      },
+      "data": {
+        "title": "How long do we keep track points?",
+        "kind": "question",
+        "lane": "Admin",
+        "status": "question",
+        "notes": "POPIA: keep only as long as needed. Proposal: 12 months, then delete.",
+        "fields": [],
+        "reads": "",
+        "writes": "",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "t17",
+      "type": "step",
+      "position": {
+        "x": 3400,
+        "y": 365
+      },
+      "data": {
+        "title": "Where do the terrain tiles come from, and what do they cost?",
+        "kind": "question",
+        "lane": "Admin",
+        "status": "question",
+        "notes": "Self-host as PMTiles. Check licensing for the elevation data.",
+        "fields": [],
+        "reads": "",
+        "writes": "",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "t1-t2",
+      "source": "t1",
+      "target": "t2"
+    },
+    {
+      "id": "t2-t3",
+      "source": "t2",
+      "target": "t3"
+    },
+    {
+      "id": "t3-t4",
+      "source": "t3",
+      "target": "t4"
+    },
+    {
+      "id": "t4-t5",
+      "source": "t4",
+      "target": "t5",
+      "label": "no"
+    },
+    {
+      "id": "t4-t6",
+      "source": "t4",
+      "target": "t6",
+      "label": "yes"
+    },
+    {
+      "id": "t6-t7",
+      "source": "t6",
+      "target": "t7",
+      "label": "no"
+    },
+    {
+      "id": "t7-t8",
+      "source": "t7",
+      "target": "t8"
+    },
+    {
+      "id": "t6-t9",
+      "source": "t6",
+      "target": "t9",
+      "label": "yes"
+    },
+    {
+      "id": "t8-t9",
+      "source": "t8",
+      "target": "t9"
+    },
+    {
+      "id": "t9-t10",
+      "source": "t9",
+      "target": "t10"
+    },
+    {
+      "id": "t10-t11",
+      "source": "t10",
+      "target": "t11"
+    },
+    {
+      "id": "t11-t12",
+      "source": "t11",
+      "target": "t12"
+    },
+    {
+      "id": "t12-t13",
+      "source": "t12",
+      "target": "t13",
+      "label": "yes"
+    },
+    {
+      "id": "t11-t14",
+      "source": "t11",
+      "target": "t14"
+    },
+    {
+      "id": "t9-t15",
+      "source": "t9",
+      "target": "t15"
+    },
+    {
+      "id": "t10-t16",
+      "source": "t10",
+      "target": "t16"
+    },
+    {
+      "id": "t11-t17",
+      "source": "t11",
+      "target": "t17"
+    }
+  ]
+}

@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Business portal editor</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="./fonts/fonts.css" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Manrope',sans-serif;background:#F6F8F7;color:#0F2A2E}
+a{color:inherit;text-decoration:none}
+button,input,textarea{font-family:'Manrope',sans-serif}
+button{cursor:pointer}
+.nav{display:flex;align-items:center;gap:12px;min-height:44px;padding:0 12px;border-radius:10px;color:#4A6165;font-weight:600;font-size:15px;transition:background-color 150ms ease,color 150ms ease}
+.nav:hover{background:#EEF3F0;color:#0F2A2E}
+.nav-on{background:#E3F3C2;color:#0F3D3E}
+.nav-on:hover{background:#E3F3C2}
+.field{min-height:44px;border-radius:10px;border:1px solid #CBD9D4;background:#FBFCFB;color:#0F2A2E;padding:0 14px;font-size:15px;width:100%;box-sizing:border-box;transition:border-color 150ms ease}
+.field:hover{border-color:#9FB5AE}
+.field:focus{border-color:#0F3D3E;outline:none;box-shadow:0 0 0 3px #D5E6E0}
+textarea.field{padding:12px 14px;line-height:1.5;resize:vertical;min-height:88px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border-radius:10px;font-weight:700;font-size:15px;transition:background-color 150ms ease,border-color 150ms ease,transform 150ms ease}
+.btn:active{transform:scale(.98)}
+.btn-p{background:#0F3D3E;color:#F6F8F7;border:0}
+.btn-p:hover{background:#164E4F}
+.btn-o{background:#FBFCFB;color:#0F2A2E;border:1px solid #CBD9D4}
+.btn-o:hover{border-color:#0F3D3E}
+.ib{width:36px;height:36px;border-radius:8px;border:1px solid #DCE5E1;background:#FBFCFB;color:#4A6165;display:flex;align-items:center;justify-content:center;transition:background-color 150ms ease,border-color 150ms ease}
+.ib:hover{background:#EEF3F0;border-color:#9FB5AE}
+a:focus-visible,button:focus-visible{outline:2px solid #0F3D3E;outline-offset:2px}
+</style>
+</helmet>
+
+<div style="display:flex;flex-wrap:wrap;min-height:900px">
+  <aside style="flex:0 0 240px;flex-grow:1;max-width:100%;background:#FBFCFB;border-right:1px solid #DCE5E1;padding:20px 16px;box-sizing:border-box">
+    <div style="display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;padding:0 12px 4px"><svg aria-hidden="true" width="26" height="26" viewBox="0 0 32 32"><circle cx="16" cy="16" r="15" fill="#0F3D3E"/><path d="M9 17c3-6 11-6 14 0M12 20c2-3 6-3 8 0" fill="none" stroke="#C8F560" stroke-width="2.4" stroke-linecap="round"/><circle cx="16" cy="23" r="1.8" fill="#C8F560"/></svg>TapIt</div>
+    <div style="padding:0 12px 20px;font-size:13px;color:#5B7377">Kleinmond Sea Lodge</div>
+    <nav aria-label="Portal" style="display:grid;gap:2px">
+      <a href="#overview" class="nav">Overview</a>
+      <a href="#concierge" class="nav nav-on" aria-current="page">Concierge page</a>
+      <a href="#offers" class="nav">Offers and vouchers</a>
+      <a href="#analytics" class="nav">Analytics</a>
+      <a href="#stands" class="nav">My stands</a>
+      <a href="#billing" class="nav">Billing</a>
+      <a href="#account" class="nav">Account</a>
+    </nav>
+  </aside>
+
+  <main style="flex:999 1 600px;min-width:0;padding:24px 32px 48px;box-sizing:border-box">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin-bottom:24px">
+      <div>
+        <h1 style="margin:0 0 6px;font-size:28px;line-height:1.15;font-weight:800;letter-spacing:-0.02em">Concierge page</h1>
+        <div style="display:flex;align-items:center;gap:10px;font-size:14px;color:#5B7377"><span style="{{statusStyle}}">{{statusLabel}}</span><span>{{statusNote}}</span></div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button type="button" class="btn btn-o" onClick="{{saveDraft}}" disabled="{{isSaved}}" style="{{saveStyle}}">Save draft</button>
+        <button type="button" class="btn btn-p" onClick="{{askPublish}}">Publish changes</button>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">
+      <div style="flex:1 1 460px;min-width:0;display:grid;gap:16px">
+
+        <section style="background:#FBFCFB;border:1px solid #DCE5E1;border-radius:16px;padding:20px">
+          <h2 style="margin:0 0 16px;font-size:17px;font-weight:700">Welcome</h2>
+          <div style="display:grid;gap:14px">
+            <sc-for list="{{fWelcome}}" as="f" hint-placeholder-count="2">
+              <label style="display:grid;gap:6px;font-size:14px;font-weight:600">{{f.label}}<input class="field" type="text" value="{{f.value}}" onChange="{{f.set}}"></label>
+            </sc-for>
+          </div>
+        </section>
+
+        <section style="background:#FBFCFB;border:1px solid #DCE5E1;border-radius:16px;padding:20px">
+          <h2 style="margin:0 0 16px;font-size:17px;font-weight:700">Hours and Wi-Fi</h2>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px">
+            <sc-for list="{{fHours}}" as="f" hint-placeholder-count="5">
+              <label style="display:grid;gap:6px;font-size:14px;font-weight:600">{{f.label}}<input class="field" type="text" value="{{f.value}}" onChange="{{f.set}}"></label>
+            </sc-for>
+          </div>
+        </section>
+
+        <section style="background:#FBFCFB;border:1px solid #DCE5E1;border-radius:16px;padding:20px">
+          <h2 style="margin:0 0 4px;font-size:17px;font-weight:700">Quick actions</h2>
+          <p style="margin:0 0 12px;font-size:14px;color:#5B7377">Choose which buttons guests see at the top.</p>
+          <div>
+            <sc-for list="{{actions}}" as="a" hint-placeholder-count="4">
+              <div style="display:flex;align-items:center;justify-content:space-between;min-height:52px;border-top:1px solid #E8EFEC">
+                <span style="font-size:15px;font-weight:600">{{a.label}}</span>
+                <button type="button" role="switch" aria-checked="{{a.on}}" aria-label="{{a.aria}}" onClick="{{a.toggle}}" style="{{a.switchStyle}}"><span style="{{a.knobStyle}}"></span></button>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+
+        <section style="background:#FBFCFB;border:1px solid #DCE5E1;border-radius:16px;padding:20px">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:4px"><h2 style="margin:0;font-size:17px;font-weight:700">Content blocks</h2><span style="font-size:13px;color:#5B7377">{{blockCount}}</span></div>
+          <p style="margin:0 0 16px;font-size:14px;color:#5B7377">Add notes, offers and links. Use the arrows to reorder.</p>
+          <sc-if value="{{hasBlocks}}" hint-placeholder-val="{{ true }}">
+            <div style="display:grid;gap:12px;margin-bottom:16px">
+              <sc-for list="{{blocks}}" as="b" hint-placeholder-count="2">
+                <div style="border:1px solid #DCE5E1;border-radius:12px;padding:14px;background:#F6F8F7">
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px">
+                    <span style="{{b.tagStyle}}">{{b.typeLabel}}</span>
+                    <span style="display:flex;gap:6px">
+                      <button type="button" class="ib" onClick="{{b.up}}" disabled="{{b.noUp}}" aria-label="Move up" style="{{b.upStyle}}"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></button>
+                      <button type="button" class="ib" onClick="{{b.down}}" disabled="{{b.noDown}}" aria-label="Move down" style="{{b.downStyle}}"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+                      <button type="button" class="ib" onClick="{{b.remove}}" aria-label="Delete block"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"/></svg></button>
+                    </span>
+                  </div>
+                  <div style="display:grid;gap:10px">
+                    <input class="field" type="text" value="{{b.title}}" onChange="{{b.setTitle}}" aria-label="Block title">
+                    <textarea class="field" value="{{b.body}}" onChange="{{b.setBody}}" aria-label="Block text" style="min-height:72px"></textarea>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{noBlocks}}" hint-placeholder-val="{{ false }}">
+            <div style="border:1px dashed #B9CBC6;border-radius:12px;padding:24px;text-align:center;margin-bottom:16px;color:#5B7377;font-size:14px">No blocks yet. Add your first one below.</div>
+          </sc-if>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button type="button" class="btn btn-o" onClick="{{addText}}">+ Note</button>
+            <button type="button" class="btn btn-o" onClick="{{addOffer}}">+ Offer</button>
+            <button type="button" class="btn btn-o" onClick="{{addLink}}">+ Link</button>
+          </div>
+        </section>
+
+        <section style="background:#FBFCFB;border:1px solid #DCE5E1;border-radius:16px;padding:20px">
+          <h2 style="margin:0 0 4px;font-size:17px;font-weight:700">Accent colour</h2>
+          <p style="margin:0 0 14px;font-size:14px;color:#5B7377">Used on your guest page buttons and highlights.</p>
+          <div role="radiogroup" aria-label="Accent colour" style="display:flex;gap:12px;flex-wrap:wrap">
+            <sc-for list="{{swatches}}" as="s" hint-placeholder-count="5">
+              <button type="button" role="radio" aria-checked="{{s.on}}" aria-label="{{s.name}}" onClick="{{s.pick}}" style="{{s.style}}"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{s.tick}}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="{{s.tickStyle}}"><path d="M5 12l5 5 9-10"/></svg></button>
+            </sc-for>
+          </div>
+        </section>
+      </div>
+
+      <div style="flex:0 0 320px;max-width:100%;position:sticky;top:16px">
+        <div style="font-size:13px;font-weight:700;color:#5B7377;margin-bottom:10px">Live preview</div>
+        <div style="width:320px;max-width:100%;height:620px;border-radius:36px;border:6px solid #0B1F24;background:#F6F8F7;overflow:hidden;box-sizing:border-box;position:relative">
+          <div class="pv" style="position:absolute;inset:0;overflow-y:auto;padding:18px 16px 24px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+              <div style="width:30px;height:30px;border-radius:9px;background:#0F3D3E;color:{{accent}};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px">KSL</div>
+              <span style="font-size:12px;font-weight:600;color:#5B7377">{{pvName}}</span>
+            </div>
+            <div style="font-size:12px;color:#5B7377;margin-bottom:6px">{{pvWelcome}}</div>
+            <div style="font-size:24px;line-height:1.1;font-weight:800;letter-spacing:-0.02em;margin-bottom:16px">{{pvName}}</div>
+            <sc-if value="{{hasActions}}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap">
+                <sc-for list="{{pvActions}}" as="a" hint-placeholder-count="4">
+                  <div style="text-align:center;width:56px"><div style="width:44px;height:44px;border-radius:50%;margin:0 auto 4px;background:#FBFCFB;border:1px solid #DCE5E1;display:flex;align-items:center;justify-content:center"><span style="width:10px;height:10px;border-radius:50%;background:{{accent}};border:1px solid #0F3D3E"></span></div><div style="font-size:10px;font-weight:700">{{a.label}}</div></div>
+                </sc-for>
+              </div>
+            </sc-if>
+            <div style="background:#FBFCFB;border:1px solid #DCE5E1;border-radius:12px;margin-bottom:12px;font-size:12px">
+              <div style="display:flex;justify-content:space-between;gap:8px;padding:10px 12px;border-bottom:1px solid #E8EFEC"><span style="font-weight:700">Breakfast</span><span style="color:#5B7377;text-align:right">{{pvWeekday}}</span></div>
+              <div style="display:flex;justify-content:space-between;gap:8px;padding:10px 12px;border-bottom:1px solid #E8EFEC"><span style="font-weight:700">Weekends</span><span style="color:#5B7377;text-align:right">{{pvWeekend}}</span></div>
+              <div style="display:flex;justify-content:space-between;gap:8px;padding:10px 12px;border-bottom:1px solid #E8EFEC"><span style="font-weight:700">Check-out</span><span style="color:#5B7377;text-align:right">{{pvCheckout}}</span></div>
+              <div style="display:flex;justify-content:space-between;gap:8px;padding:10px 12px"><span style="font-weight:700">Wi-Fi</span><span style="color:#5B7377;text-align:right">{{pvWifi}}</span></div>
+            </div>
+            <sc-for list="{{pvBlocks}}" as="b" hint-placeholder-count="2">
+              <div style="{{b.style}}">
+                <div style="{{b.tagStyle}}">{{b.typeLabel}}</div>
+                <div style="font-size:14px;font-weight:800;margin:4px 0 2px">{{b.title}}</div>
+                <div style="font-size:12px;line-height:1.45;color:{{b.bodyColor}}">{{b.body}}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div style="{{overlayStyle}}">
+  <div role="dialog" aria-modal="true" aria-label="Publish changes" style="width:min(420px,calc(100% - 32px));background:#FBFCFB;border-radius:20px;padding:24px">
+    <h2 style="margin:0 0 8px;font-size:20px;font-weight:800">Publish changes?</h2>
+    <p style="margin:0 0 20px;font-size:15px;line-height:1.55;color:#4A6165">Guests will see the updated page within seconds. You can restore an earlier version from History.</p>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button type="button" class="btn btn-o" onClick="{{cancelPublish}}">Cancel</button>
+      <button type="button" class="btn btn-p" onClick="{{doPublish}}">Publish</button>
+    </div>
+  </div>
+</div>
+
+<div role="status" aria-live="polite" style="{{toastStyle}}">{{toast}}</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":900}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      f: { name: 'Kleinmond Sea Lodge', welcome: 'Good morning, welcome to', weekday: '07:30 to 09:30', weekend: '08:00 to 10:00', checkout: 'Sunday 10:30', wifiName: 'SeaLodge-Guest', wifiPass: '[password]' },
+      act: { wifi: true, whatsapp: true, review: true, call: false },
+      blocks: [{ id: 1, type: 'note', title: 'House notes', body: 'Quiet hours from 22:00. Braai area is behind the garden. Ask Anel at reception for beach towels.' }],
+      nextId: 2, accent: '#C8F560', dirty: false, version: 14, confirm: false, toast: ''
+    };
+    this._t = null;
+  }
+  mark(patch) { this.setState(Object.assign({ dirty: true }, patch)); }
+  say(m) { clearTimeout(this._t); this.setState({ toast: m }); this._t = setTimeout(() => this.setState({ toast: '' }), 2200); }
+  renderVals() {
+    const s = this.state, f = s.f;
+    const setF = (k) => (e) => this.mark({ f: Object.assign({}, this.state.f, { [k]: e.target.value }) });
+    const mk = (label, k) => ({ label: label, value: f[k], set: setF(k) });
+    const typeMeta = { note: ['Note', '#E3F3C2', '#2F5D12'], offer: ['Offer', '#FBE6C8', '#7A4A0E'], link: ['Link', '#D9ECE6', '#1E5A55'] };
+    const tag = (t) => 'display:inline-block;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:3px 8px;border-radius:6px;background:' + typeMeta[t][1] + ';color:' + typeMeta[t][2];
+    const setBlock = (id, patch) => this.mark({ blocks: this.state.blocks.map((b) => b.id === id ? Object.assign({}, b, patch) : b) });
+    const move = (i, d) => { const a = this.state.blocks.slice(); const j = i + d; if (j < 0 || j >= a.length) return; const t = a[i]; a[i] = a[j]; a[j] = t; this.mark({ blocks: a }); };
+    const add = (type) => () => {
+      const defaults = { note: ['New note', 'Write something helpful for guests.'], offer: ['New offer', 'Describe the offer and how to claim it.'], link: ['New link', 'Where should this button take guests?'] };
+      this.mark({ blocks: this.state.blocks.concat([{ id: this.state.nextId, type: type, title: defaults[type][0], body: defaults[type][1] }]), nextId: this.state.nextId + 1 });
+    };
+    const blocks = s.blocks.map((b, i) => {
+      const noUp = i === 0, noDown = i === s.blocks.length - 1;
+      return { typeLabel: typeMeta[b.type][0], tagStyle: tag(b.type), title: b.title, body: b.body, setTitle: (e) => setBlock(b.id, { title: e.target.value }), setBody: (e) => setBlock(b.id, { body: e.target.value }),
+        up: () => move(i, -1), down: () => move(i, 1), noUp: noUp, noDown: noDown, upStyle: noUp ? 'opacity:.4;cursor:not-allowed' : '', downStyle: noDown ? 'opacity:.4;cursor:not-allowed' : '',
+        remove: () => this.mark({ blocks: this.state.blocks.filter((x) => x.id !== b.id) }) };
+    });
+    const pvBlocks = s.blocks.map((b) => {
+      const offer = b.type === 'offer';
+      return { typeLabel: typeMeta[b.type][0], tagStyle: tag(b.type), title: b.title, body: b.body, bodyColor: offer ? '#33474B' : '#5B7377',
+        style: 'border-radius:12px;padding:12px;margin-bottom:10px;border:1px solid ' + (offer ? '#E8CFA0' : '#DCE5E1') + ';background:' + (offer ? '#FFF6E2' : '#FBFCFB') };
+    });
+    const actDefs = [['wifi', 'Wi-Fi'], ['whatsapp', 'WhatsApp'], ['review', 'Google review'], ['call', 'Call reception']];
+    const actions = actDefs.map((a) => { const on = !!s.act[a[0]]; return { label: a[1], on: on, aria: 'Show ' + a[1], toggle: () => this.mark({ act: Object.assign({}, this.state.act, { [a[0]]: !on }) }),
+      switchStyle: 'flex:none;width:48px;height:28px;border-radius:14px;border:0;padding:3px;display:flex;align-items:center;justify-content:' + (on ? 'flex-end' : 'flex-start') + ';background:' + (on ? '#0F3D3E' : '#C3D2CD') + ';transition:background-color 150ms ease',
+      knobStyle: 'width:22px;height:22px;border-radius:50%;background:#FBFCFB' }; });
+    const pvActions = actDefs.filter((a) => s.act[a[0]]).map((a) => ({ label: a[1] === 'Google review' ? 'Review' : a[1] === 'Call reception' ? 'Call' : a[1] }));
+    const sw = [['Lime', '#C8F560'], ['Aqua', '#5EE6D8'], ['Sky', '#8FD3FF'], ['Lilac', '#B69CFF'], ['Coral', '#FF9B6B']];
+    const swatches = sw.map((x) => { const on = s.accent === x[1]; return { name: x[0], on: on, pick: () => this.mark({ accent: x[1] }), tick: '#0B1F24', tickStyle: 'opacity:' + (on ? 1 : 0), style: 'width:44px;height:44px;border-radius:50%;background:' + x[1] + ';display:flex;align-items:center;justify-content:center;border:' + (on ? '2px solid #0F3D3E' : '2px solid transparent') + ';box-shadow:inset 0 0 0 2px #FBFCFB;transition:border-color 150ms ease' }; });
+    const saved = !s.dirty;
+    const badge = (bg, fg) => 'padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;background:' + bg + ';color:' + fg;
+    return {
+      fWelcome: [mk('Display name', 'name'), mk('Welcome line', 'welcome')],
+      fHours: [mk('Weekday breakfast', 'weekday'), mk('Weekend breakfast', 'weekend'), mk('Check-out', 'checkout'), mk('Wi-Fi network', 'wifiName'), mk('Wi-Fi password', 'wifiPass')],
+      actions: actions, blocks: blocks, hasBlocks: blocks.length > 0, noBlocks: blocks.length === 0,
+      blockCount: blocks.length + (blocks.length === 1 ? ' block' : ' blocks'),
+      addText: add('note'), addOffer: add('offer'), addLink: add('link'),
+      swatches: swatches, accent: s.accent,
+      pvName: f.name || 'Your business', pvWelcome: f.welcome, pvWeekday: f.weekday, pvWeekend: f.weekend, pvCheckout: f.checkout, pvWifi: f.wifiName,
+      pvActions: pvActions, hasActions: pvActions.length > 0, pvBlocks: pvBlocks,
+      statusLabel: saved ? 'Up to date' : 'Unsaved changes', statusStyle: saved ? badge('#E3F3C2', '#2F5D12') : badge('#FBF1D6', '#6B4A00'),
+      statusNote: saved ? 'Live version ' + s.version + ' is published.' : 'Save a draft or publish to go live.',
+      isSaved: saved, saveStyle: saved ? 'opacity:.5;cursor:not-allowed' : '',
+      saveDraft: () => { this.setState({ dirty: false }); this.say('Draft saved'); },
+      askPublish: () => this.setState({ confirm: true }),
+      cancelPublish: () => this.setState({ confirm: false }),
+      doPublish: () => { this.setState({ confirm: false, dirty: false, version: this.state.version + 1 }); this.say('Published as version ' + (this.state.version + 1)); },
+      overlayStyle: 'position:fixed;inset:0;background:rgba(11,31,36,.5);display:flex;align-items:center;justify-content:center;transition:opacity 200ms ease-out;opacity:' + (s.confirm ? 1 : 0) + ';pointer-events:' + (s.confirm ? 'auto' : 'none'),
+      toast: s.toast, toastStyle: 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);padding:12px 20px;border-radius:999px;background:#0F2A2E;color:#F6F8F7;font-size:14px;font-weight:600;transition:opacity 180ms ease-out;pointer-events:none;opacity:' + (s.toast ? 1 : 0)
+    };
+  }
+}
+</script>
+</body>
+</html>

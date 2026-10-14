@@ -1,0 +1,370 @@
+{
+  "id": "01-guest-tap-to-concierge",
+  "title": "Guest taps a stand and explores",
+  "description": "What happens from the moment a guest taps the NFC stand: how the page is found, what loads, what is logged, and how a guest is sent to a partner.",
+  "nodes": [
+    {
+      "id": "g1",
+      "type": "step",
+      "position": {
+        "x": 0,
+        "y": 219
+      },
+      "data": {
+        "title": "Guest taps the NFC stand or scans the QR code",
+        "kind": "action",
+        "lane": "Guest",
+        "status": "draft",
+        "notes": "The phone opens tapit.info/t/{code}. No app and no sign-up.",
+        "fields": [],
+        "reads": "",
+        "writes": "",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "g2",
+      "type": "step",
+      "position": {
+        "x": 340,
+        "y": 219
+      },
+      "data": {
+        "title": "Find the stand",
+        "kind": "backend",
+        "lane": "Backend",
+        "status": "draft",
+        "notes": "Look up the stand code and its business. Record an anonymous scan.",
+        "fields": [],
+        "reads": "units, tenants",
+        "writes": "events (scan: unit_id, tenant_id, anonymous session id, time)",
+        "api": "GET /t/{code}",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "g3",
+      "type": "step",
+      "position": {
+        "x": 680,
+        "y": 219
+      },
+      "data": {
+        "title": "Stand active and page published?",
+        "kind": "decision",
+        "lane": "Backend",
+        "status": "draft",
+        "notes": "",
+        "fields": [],
+        "reads": "",
+        "writes": "",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "g4",
+      "type": "step",
+      "position": {
+        "x": 1020,
+        "y": 292
+      },
+      "data": {
+        "title": "Fallback page: this stand is not active yet",
+        "kind": "screen",
+        "lane": "Frontend",
+        "status": "draft",
+        "notes": "Show TapIt information and a contact link.",
+        "fields": [],
+        "reads": "",
+        "writes": "",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "g5",
+      "type": "step",
+      "position": {
+        "x": 1020,
+        "y": 146
+      },
+      "data": {
+        "title": "Concierge: Stay tab",
+        "kind": "screen",
+        "lane": "Frontend",
+        "status": "draft",
+        "notes": "Host name, quick actions (Wi-Fi, WhatsApp, Review, Call), breakfast, check-out and the featured trail.",
+        "fields": [],
+        "reads": "page_versions (published), offers",
+        "writes": "",
+        "api": "GET /api/t/{code}/concierge",
+        "mockup": "App.dc.html",
+        "comments": []
+      }
+    },
+    {
+      "id": "g6",
+      "type": "step",
+      "position": {
+        "x": 1360,
+        "y": 292
+      },
+      "data": {
+        "title": "Taps a quick action",
+        "kind": "action",
+        "lane": "Guest",
+        "status": "draft",
+        "notes": "Wi-Fi copies the password. WhatsApp, Review and Call open the other app.",
+        "fields": [],
+        "reads": "",
+        "writes": "",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "g7",
+      "type": "step",
+      "position": {
+        "x": 1700,
+        "y": 292
+      },
+      "data": {
+        "title": "Log the click",
+        "kind": "backend",
+        "lane": "Backend",
+        "status": "draft",
+        "notes": "Record which button was used from which stand.",
+        "fields": [],
+        "reads": "",
+        "writes": "events (click: target, unit_id)",
+        "api": "POST /api/events",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "g8",
+      "type": "step",
+      "position": {
+        "x": 1360,
+        "y": 146
+      },
+      "data": {
+        "title": "Explore tab",
+        "kind": "screen",
+        "lane": "Frontend",
+        "status": "draft",
+        "notes": "Search, category filters and places near this stand. Guests can save places.",
+        "fields": [],
+        "reads": "listings, offers (by tenant region)",
+        "writes": "",
+        "api": "GET /api/listings?unit={code}",
+        "mockup": "App.dc.html",
+        "comments": []
+      }
+    },
+    {
+      "id": "g9",
+      "type": "step",
+      "position": {
+        "x": 1700,
+        "y": 146
+      },
+      "data": {
+        "title": "Place detail sheet",
+        "kind": "screen",
+        "lane": "Frontend",
+        "status": "draft",
+        "notes": "Description, operator, price, Save and Book with operator.",
+        "fields": [],
+        "reads": "",
+        "writes": "",
+        "api": "",
+        "mockup": "App.dc.html",
+        "comments": []
+      }
+    },
+    {
+      "id": "g10",
+      "type": "step",
+      "position": {
+        "x": 2040,
+        "y": 146
+      },
+      "data": {
+        "title": "Taps Book with operator",
+        "kind": "action",
+        "lane": "Guest",
+        "status": "draft",
+        "notes": "",
+        "fields": [],
+        "reads": "",
+        "writes": "",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "g11",
+      "type": "step",
+      "position": {
+        "x": 2380,
+        "y": 146
+      },
+      "data": {
+        "title": "Create the referral and redirect",
+        "kind": "backend",
+        "lane": "Backend",
+        "status": "draft",
+        "notes": "The guest is sent to the operator with a referral code so the booking can be traced to this stand.",
+        "fields": [],
+        "reads": "",
+        "writes": "referrals (unit_id, listing_id, referral_code, session id, status=clicked)",
+        "api": "GET /go/{referral_code}",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "g12",
+      "type": "step",
+      "position": {
+        "x": 2720,
+        "y": 219
+      },
+      "data": {
+        "title": "Operator's own booking page",
+        "kind": "external",
+        "lane": "External",
+        "status": "draft",
+        "notes": "The guest books and pays the operator directly. TapIt never takes the payment.",
+        "fields": [],
+        "reads": "",
+        "writes": "",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "g13",
+      "type": "step",
+      "position": {
+        "x": 2720,
+        "y": 73
+      },
+      "data": {
+        "title": "Can partners add the referral code at their own checkout?",
+        "kind": "question",
+        "lane": "Admin",
+        "status": "question",
+        "notes": "This decides whether referrals can be matched automatically. Ask the client and the first partners.",
+        "fields": [],
+        "reads": "",
+        "writes": "",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "g14",
+      "type": "step",
+      "position": {
+        "x": 1360,
+        "y": 0
+      },
+      "data": {
+        "title": "Trips, Wallet and Passport tabs",
+        "kind": "screen",
+        "lane": "Frontend",
+        "status": "draft",
+        "notes": "See the trip recording flow.",
+        "fields": [],
+        "reads": "",
+        "writes": "",
+        "api": "",
+        "mockup": "App.dc.html",
+        "comments": []
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "g1-g2",
+      "source": "g1",
+      "target": "g2"
+    },
+    {
+      "id": "g2-g3",
+      "source": "g2",
+      "target": "g3"
+    },
+    {
+      "id": "g3-g4",
+      "source": "g3",
+      "target": "g4",
+      "label": "no"
+    },
+    {
+      "id": "g3-g5",
+      "source": "g3",
+      "target": "g5",
+      "label": "yes"
+    },
+    {
+      "id": "g5-g6",
+      "source": "g5",
+      "target": "g6"
+    },
+    {
+      "id": "g6-g7",
+      "source": "g6",
+      "target": "g7"
+    },
+    {
+      "id": "g5-g8",
+      "source": "g5",
+      "target": "g8"
+    },
+    {
+      "id": "g8-g9",
+      "source": "g8",
+      "target": "g9"
+    },
+    {
+      "id": "g9-g10",
+      "source": "g9",
+      "target": "g10"
+    },
+    {
+      "id": "g10-g11",
+      "source": "g10",
+      "target": "g11"
+    },
+    {
+      "id": "g11-g12",
+      "source": "g11",
+      "target": "g12"
+    },
+    {
+      "id": "g11-g13",
+      "source": "g11",
+      "target": "g13"
+    },
+    {
+      "id": "g5-g14",
+      "source": "g5",
+      "target": "g14"
+    }
+  ]
+}

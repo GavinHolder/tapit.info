@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>TapIt guest app</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="./fonts/fonts.css" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Manrope',sans-serif}
+button,input{font-family:'Manrope',sans-serif}
+button{cursor:pointer}
+.scroll{scrollbar-width:none}
+.scroll::-webkit-scrollbar{display:none}
+.press{transition:background-color 150ms ease,border-color 150ms ease,transform 150ms ease}
+.press:hover{background-color:#EEF3F0}
+.press:active{transform:scale(.98)}
+.press:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid #0F3D3E;outline-offset:2px}
+.prim{transition:background-color 150ms ease,transform 150ms ease}
+.prim:hover{background-color:#164E4F}
+.prim:active{transform:scale(.98)}
+</style>
+</helmet>
+
+<div style="position:relative;width:390px;height:844px;overflow:hidden;background:#F6F8F7;color:#0F2A2E">
+
+  <sc-if value="{{isStay}}" hint-placeholder-val="{{ true }}">
+    <div class="scroll" style="position:absolute;left:0;right:0;top:0;bottom:76px;overflow-y:auto;padding:0 20px 24px">
+      <div style="display:flex;align-items:center;justify-content:space-between;height:64px">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div role="img" aria-label="Host logo" style="width:36px;height:36px;border-radius:10px;background:#0F3D3E;color:#C8F560;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px">KSL</div>
+          <span style="font-size:14px;font-weight:600;color:#5B7377">Kleinmond Sea Lodge</span>
+        </div>
+        <button type="button" class="press" onClick="{{goTrips}}" aria-label="Your profile" style="width:44px;height:44px;border-radius:50%;border:1px solid #DCE5E1;background:#FBFCFB;color:#0F2A2E;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.user}}"/></svg></button>
+      </div>
+
+      <div style="padding:8px 0 24px">
+        <div style="font-size:14px;font-weight:500;color:#5B7377;margin-bottom:8px">Room 4. Checking out Sunday 10:30</div>
+        <h1 style="margin:0;font-size:32px;line-height:1.1;font-weight:800;letter-spacing:-0.02em">Welcome to<br>Kleinmond Sea Lodge</h1>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:28px">
+        <button type="button" class="press" onClick="{{openWifi}}" style="border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:8px;padding:0;color:#0F2A2E"><span style="width:56px;height:56px;border-radius:50%;border:1px solid #DCE5E1;background:#FBFCFB;display:flex;align-items:center;justify-content:center;color:#0F3D3E"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.wifi}}"/></svg></span><span style="font-size:12px;font-weight:600">Wi-Fi</span></button>
+        <button type="button" class="press" onClick="{{toastWa}}" style="border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:8px;padding:0;color:#0F2A2E"><span style="width:56px;height:56px;border-radius:50%;border:1px solid #DCE5E1;background:#FBFCFB;display:flex;align-items:center;justify-content:center;color:#0F3D3E"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.chat}}"/></svg></span><span style="font-size:12px;font-weight:600">WhatsApp</span></button>
+        <button type="button" class="press" onClick="{{toastReview}}" style="border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:8px;padding:0;color:#0F2A2E"><span style="width:56px;height:56px;border-radius:50%;border:1px solid #DCE5E1;background:#FBFCFB;display:flex;align-items:center;justify-content:center;color:#0F3D3E"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.star}}"/></svg></span><span style="font-size:12px;font-weight:600">Review</span></button>
+        <button type="button" class="press" onClick="{{toastCall}}" style="border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:8px;padding:0;color:#0F2A2E"><span style="width:56px;height:56px;border-radius:50%;border:1px solid #DCE5E1;background:#FBFCFB;display:flex;align-items:center;justify-content:center;color:#0F3D3E"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.phone}}"/></svg></span><span style="font-size:12px;font-weight:600">Call</span></button>
+      </div>
+
+      <h2 style="margin:0 0 12px;font-size:16px;font-weight:700">Your stay</h2>
+      <div style="background:#FBFCFB;border:1px solid #DCE5E1;border-radius:16px;margin-bottom:28px">
+        <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid #E8EFEC"><span style="width:36px;height:36px;border-radius:10px;background:#EAF1EE;color:#0F3D3E;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.cup}}"/></svg></span><span style="flex:1;font-size:15px;font-weight:600">Breakfast</span><span style="font-size:15px;color:#5B7377">07:30 to 09:30</span></div>
+        <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid #E8EFEC"><span style="width:36px;height:36px;border-radius:10px;background:#EAF1EE;color:#0F3D3E;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.door}}"/></svg></span><span style="flex:1;font-size:15px;font-weight:600">Check-out</span><span style="font-size:15px;color:#5B7377">Sunday 10:30</span></div>
+        <div style="display:flex;align-items:center;gap:12px;padding:14px 16px"><span style="width:36px;height:36px;border-radius:10px;background:#EAF1EE;color:#0F3D3E;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.moon}}"/></svg></span><span style="flex:1;font-size:15px;font-weight:600">Quiet hours</span><span style="font-size:15px;color:#5B7377">From 22:00</span></div>
+      </div>
+
+      <h2 style="margin:0 0 12px;font-size:16px;font-weight:700">Featured trail</h2>
+      <div style="border:1px solid #DCE5E1;border-radius:20px;overflow:hidden;background:#FBFCFB">
+        <div style="position:relative;height:184px;background:#0B1F24">
+          <dc-import name="Scene" pal="{{pal}}" view="3d" vw="350" vh="184" hint-size="100%,184px"></dc-import>
+        </div>
+        <div style="padding:16px">
+          <div style="font-size:13px;font-weight:600;color:#1E5A55;margin-bottom:4px">12 km. 4 hours. Moderate</div>
+          <div style="font-size:18px;font-weight:700;line-height:1.25;margin-bottom:14px">Palmiet River to the Hangklip ridge</div>
+          <button type="button" class="prim" onClick="{{openTrip}}" style="min-height:48px;width:100%;border:0;border-radius:12px;background:#0F3D3E;color:#F6F8F7;font-weight:700;font-size:15px">Play the 3D route</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{isExplore}}" hint-placeholder-val="{{ false }}">
+    <div class="scroll" style="position:absolute;left:0;right:0;top:0;bottom:76px;overflow-y:auto;padding:0 20px 24px">
+      <div style="padding:28px 0 16px">
+        <h1 style="margin:0 0 4px;font-size:28px;line-height:1.15;font-weight:800;letter-spacing:-0.02em">Explore</h1>
+        <div style="font-size:14px;color:#5B7377">Picked for Kleinmond. {{countLabel}}</div>
+      </div>
+      <label style="display:flex;align-items:center;gap:10px;height:48px;border-radius:14px;border:1px solid #DCE5E1;background:#FBFCFB;padding:0 14px;color:#5B7377;margin-bottom:14px">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.search}}"/></svg>
+        <input type="text" value="{{q}}" onChange="{{setQ}}" aria-label="Search places" style="flex:1;min-width:0;border:0;background:transparent;font-size:15px;color:#0F2A2E;outline:none;height:44px" id="searchbox">
+      </label>
+      <div class="scroll" style="display:flex;gap:8px;overflow-x:auto;margin:0 -20px 16px;padding:0 20px">
+        <sc-for list="{{cats}}" as="c" hint-placeholder-count="5">
+          <button type="button" onClick="{{c.pick}}" aria-pressed="{{c.on}}" style="{{c.style}}">{{c.label}}</button>
+        </sc-for>
+      </div>
+
+      <sc-if value="{{hasItems}}" hint-placeholder-val="{{ true }}">
+        <div style="background:#FBFCFB;border:1px solid #DCE5E1;border-radius:16px">
+          <sc-for list="{{items}}" as="it" hint-placeholder-count="4">
+            <div style="{{it.rowStyle}}">
+              <button type="button" class="press" onClick="{{it.open}}" aria-label="{{it.openLabel}}" style="flex:1;min-width:0;display:flex;align-items:center;gap:14px;border:0;background:transparent;text-align:left;padding:12px 0 12px 14px;color:#0F2A2E">
+                <span style="{{it.tileStyle}}"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{it.icon}}"/></svg></span>
+                <span style="min-width:0"><span style="display:block;font-size:15px;font-weight:700;line-height:1.25">{{it.title}}</span><span style="display:block;font-size:13px;color:#5B7377;margin-top:2px">{{it.sub}}</span></span>
+              </button>
+              <button type="button" class="press" onClick="{{it.fav}}" aria-label="{{it.favLabel}}" aria-pressed="{{it.isFav}}" style="width:48px;height:48px;border:0;background:transparent;color:{{it.favColor}};display:flex;align-items:center;justify-content:center;flex:none;margin-right:4px"><svg viewBox="0 0 24 24" width="22" height="22" fill="{{it.favFill}}" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.heart}}"/></svg></button>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{noItems}}" hint-placeholder-val="{{ false }}">
+        <div style="text-align:center;padding:48px 24px;border:1px dashed #C3D2CD;border-radius:16px">
+          <div style="font-size:16px;font-weight:700;margin-bottom:6px">Nothing matches that</div>
+          <div style="font-size:14px;color:#5B7377;margin-bottom:16px">Try a different word or clear the filter.</div>
+          <button type="button" class="press" onClick="{{clearFilters}}" style="min-height:44px;padding:0 20px;border-radius:12px;border:1px solid #0F3D3E;background:transparent;color:#0F3D3E;font-weight:700;font-size:14px">Clear filters</button>
+        </div>
+      </sc-if>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{isTrips}}" hint-placeholder-val="{{ false }}">
+    <div class="scroll" style="position:absolute;left:0;right:0;top:0;bottom:76px;overflow-y:auto;padding:0 20px 24px">
+      <div style="padding:28px 0 20px">
+        <h1 style="margin:0 0 4px;font-size:28px;line-height:1.15;font-weight:800;letter-spacing:-0.02em">Your journey</h1>
+        <div style="font-size:14px;color:#5B7377">Exploring since September</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid #DCE5E1;border-radius:16px;background:#FBFCFB;margin-bottom:24px">
+        <div style="padding:16px;border-right:1px solid #E8EFEC"><div style="font-size:24px;font-weight:800">7</div><div style="font-size:13px;color:#5B7377">Trips</div></div>
+        <div style="padding:16px;border-right:1px solid #E8EFEC"><div style="font-size:24px;font-weight:800">64</div><div style="font-size:13px;color:#5B7377">Kilometres</div></div>
+        <div style="padding:16px"><div style="font-size:24px;font-weight:800">2</div><div style="font-size:13px;color:#5B7377">Stamps</div></div>
+      </div>
+
+      <div style="background:#0B1F24;color:#F6F8F7;border-radius:20px;padding:20px;margin-bottom:24px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px"><h2 style="margin:0;font-size:18px;font-weight:700">Kogelberg Explorer</h2><span style="font-size:13px;font-weight:700;color:#C8F560">2 of 5</span></div>
+        <div style="font-size:14px;color:#A9C0BE;margin-bottom:16px">Collect 5 stamps by 31 December to win a [prize].</div>
+        <div style="height:6px;border-radius:3px;background:#1E3C42;margin-bottom:18px"><div style="width:40%;height:6px;border-radius:3px;background:#C8F560"></div></div>
+        <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px">
+          <sc-for list="{{stamps}}" as="s" hint-placeholder-count="5">
+            <div style="text-align:center">
+              <div style="{{s.style}}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{s.icon}}"/></svg></div>
+              <div style="font-size:11px;line-height:1.25;color:#A9C0BE;margin-top:8px">{{s.label}}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <h2 style="margin:0 0 12px;font-size:16px;font-weight:700">Recent trips</h2>
+      <div style="background:#FBFCFB;border:1px solid #DCE5E1;border-radius:16px;margin-bottom:20px">
+        <sc-for list="{{trips}}" as="t" hint-placeholder-count="3">
+          <button type="button" class="press" onClick="{{t.open}}" style="{{t.style}}">
+            <svg role="img" aria-label="Route preview" viewBox="0 0 64 56" style="width:64px;height:56px;border-radius:12px;flex:none;display:block"><rect width="64" height="56" fill="#0B1F24"/><path d="M0 40 L14 28 L26 34 L40 16 L52 28 L64 22 L64 56 L0 56Z" fill="#1E5A55"/><path d="{{t.line}}" fill="none" stroke="#C8F560" stroke-width="2.5" stroke-linecap="round"/></svg>
+            <span style="flex:1;min-width:0"><span style="display:block;font-size:15px;font-weight:700;line-height:1.25">{{t.title}}</span><span style="display:block;font-size:13px;color:#5B7377;margin-top:2px">{{t.meta}}</span></span>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#9AB0AB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.right}}"/></svg>
+          </button>
+        </sc-for>
+      </div>
+      <button type="button" class="prim" onClick="{{openRecord}}" style="min-height:52px;width:100%;border:0;border-radius:14px;background:#0F3D3E;color:#F6F8F7;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;gap:10px"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.plus}}"/></svg>Record a new trip</button>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{isWallet}}" hint-placeholder-val="{{ false }}">
+    <div class="scroll" style="position:absolute;left:0;right:0;top:0;bottom:76px;overflow-y:auto;padding:0 20px 24px">
+      <div style="padding:28px 0 16px">
+        <h1 style="margin:0 0 4px;font-size:28px;line-height:1.15;font-weight:800;letter-spacing:-0.02em">Wallet</h1>
+        <div style="font-size:14px;color:#5B7377">Perks from partner businesses</div>
+      </div>
+      <div role="tablist" aria-label="Wallet sections" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;background:#E8EFEC;border-radius:12px;padding:4px;margin-bottom:16px">
+        <button type="button" role="tab" onClick="{{walletV}}" aria-selected="{{wTabV}}" style="{{wTabVStyle}}">Vouchers</button>
+        <button type="button" role="tab" onClick="{{walletP}}" aria-selected="{{wTabP}}" style="{{wTabPStyle}}">Partners</button>
+      </div>
+
+      <sc-if value="{{wTabV}}" hint-placeholder-val="{{ true }}">
+        <div style="display:grid;gap:12px">
+          <sc-for list="{{vouchers}}" as="v" hint-placeholder-count="3">
+            <button type="button" class="press" onClick="{{v.open}}" style="{{v.style}}">
+              <span style="flex:1;min-width:0;padding:16px;text-align:left"><span style="display:block;font-size:12px;font-weight:700;color:#1E5A55">{{v.from}}</span><span style="display:block;font-size:18px;font-weight:800;line-height:1.2;margin:4px 0">{{v.title}}</span><span style="display:block;font-size:13px;color:#5B7377">{{v.status}}</span></span>
+              <span style="width:76px;border-left:1px dashed #C3D2CD;display:flex;align-items:center;justify-content:center;color:#0F3D3E"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.ticket}}"/></svg></span>
+            </button>
+          </sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{wTabP}}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid;gap:12px">
+          <div style="background:#FBFCFB;border:1px solid #DCE5E1;border-radius:16px;padding:16px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:16px;font-weight:700">[Palmiet e-bike] riders club</span><span style="font-size:12px;font-weight:700;color:#1E5A55;background:#E3F3C2;padding:4px 10px;border-radius:999px">Member</span></div>
+            <div style="font-size:14px;line-height:1.5;color:#5B7377;margin-bottom:14px">Ride discounts and free helmet hire. Perks and points are managed by the operator.</div>
+            <button type="button" class="press" onClick="{{toastPartner}}" style="min-height:44px;padding:0 16px;border-radius:12px;border:1px solid #0F3D3E;background:transparent;color:#0F3D3E;font-weight:700;font-size:14px">Manage on partner site</button>
+          </div>
+          <div style="background:#FBFCFB;border:1px solid #DCE5E1;border-radius:16px;padding:16px">
+            <div style="font-size:16px;font-weight:700;margin-bottom:6px">[Harbour restaurant] VIP table</div>
+            <div style="font-size:14px;line-height:1.5;color:#5B7377;margin-bottom:14px">Priority booking and chef specials. Price and terms are set by the restaurant.</div>
+            <button type="button" class="prim" onClick="{{toastPartner}}" style="min-height:44px;padding:0 16px;border-radius:12px;border:0;background:#0F3D3E;color:#F6F8F7;font-weight:700;font-size:14px">Join on partner site</button>
+          </div>
+          <p style="margin:0;font-size:12px;line-height:1.5;color:#5B7377">You join and pay on the business's own checkout. Their terms and refund policy apply. TapIt only shows the offer.</p>
+        </div>
+      </sc-if>
+    </div>
+  </sc-if>
+
+  <nav aria-label="Main" style="position:absolute;left:0;right:0;bottom:0;height:76px;background:#FBFCFB;border-top:1px solid #DCE5E1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr))">
+    <sc-for list="{{tabs}}" as="t" hint-placeholder-count="4">
+      <button type="button" onClick="{{t.go}}" aria-current="{{t.current}}" style="border:0;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:{{t.color}};font-size:12px;font-weight:700">
+        <span style="{{t.pill}}"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{t.icon}}"/></svg></span>{{t.label}}
+      </button>
+    </sc-for>
+  </nav>
+
+  <sc-if value="{{tripOpen}}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;background:#0B1F24;color:#F6F8F7">
+      <div style="position:absolute;left:0;right:0;top:0;height:560px">
+        <sc-if value="{{sceneOn}}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Scene" pal="{{pal}}" view="{{mode}}" vw="390" vh="560" hint-size="100%,560px"></dc-import>
+        </sc-if>
+      </div>
+      <div style="position:absolute;left:16px;right:16px;top:16px;display:flex;justify-content:space-between;align-items:center">
+        <button type="button" onClick="{{closeTrip}}" aria-label="Back" style="width:44px;height:44px;border-radius:50%;border:0;background:#0B1F24;color:#F6F8F7;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.left}}"/></svg></button>
+        <div role="group" aria-label="Map view" style="display:flex;background:#0B1F24;border-radius:999px;padding:4px">
+          <button type="button" onClick="{{set2d}}" aria-pressed="{{is2d}}" style="{{seg2d}}">2D</button>
+          <button type="button" onClick="{{set3d}}" aria-pressed="{{is3d}}" style="{{seg3d}}">3D</button>
+        </div>
+      </div>
+      <div style="position:absolute;left:0;right:0;top:520px;bottom:0;background:#0B1F24;border-radius:24px 24px 0 0;padding:24px 20px 20px">
+        <div style="font-size:13px;font-weight:600;color:#C8F560;margin-bottom:6px">Saturday 3 October. Kogelberg</div>
+        <h2 style="margin:0 0 16px;font-size:24px;line-height:1.15;font-weight:800;letter-spacing:-0.01em">Palmiet River to the Hangklip ridge</h2>
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-bottom:20px">
+          <div><div style="font-size:12px;color:#A9C0BE">Distance</div><div style="font-size:20px;font-weight:800">12.4 km</div></div>
+          <div><div style="font-size:12px;color:#A9C0BE">Climb</div><div style="font-size:20px;font-weight:800">684 m</div></div>
+          <div><div style="font-size:12px;color:#A9C0BE">Time</div><div style="font-size:20px;font-weight:800">4 h</div></div>
+        </div>
+        <div style="display:flex;gap:10px">
+          <button type="button" onClick="{{replay}}" style="flex:1;min-height:52px;border:0;border-radius:14px;background:#C8F560;color:#0B1F24;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="{{ic.play}}"/></svg>Replay</button>
+          <button type="button" onClick="{{toastShare}}" style="flex:1;min-height:52px;border:1px solid #2F6A64;border-radius:14px;background:transparent;color:#F6F8F7;font-weight:700;font-size:15px">Share</button>
+        </div>
+        <p style="margin:14px 0 0;font-size:12px;line-height:1.5;color:#8FA9A7">Your trail is private unless you share it. TapIt is not a safety device.</p>
+      </div>
+    </div>
+  </sc-if>
+
+  <button type="button" onClick="{{closeSheet}}" aria-label="Close" tabindex="{{scrimTab}}" style="position:absolute;inset:0;border:0;background:rgba(11,31,36,.5);opacity:{{scrimOp}};pointer-events:{{scrimPE}};transition:opacity 200ms ease-out;cursor:default"></button>
+
+  <div role="dialog" aria-modal="true" aria-label="{{sheetLabel}}" style="position:absolute;left:0;right:0;bottom:0;background:#FBFCFB;border-radius:24px 24px 0 0;padding:12px 20px 28px;transform:translateY({{sheetY}});transition:transform 240ms cubic-bezier(.2,.8,.2,1);max-height:700px;overflow-y:auto" class="scroll">
+    <div style="width:40px;height:4px;border-radius:2px;background:#C3D2CD;margin:0 auto 16px"></div>
+
+    <sc-if value="{{sheetWifi}}" hint-placeholder-val="{{ false }}">
+      <h2 style="margin:0 0 4px;font-size:22px;font-weight:800">Guest Wi-Fi</h2>
+      <p style="margin:0 0 16px;font-size:14px;color:#5B7377">Connect from anywhere in the lodge.</p>
+      <div style="border:1px solid #DCE5E1;border-radius:14px;margin-bottom:16px">
+        <div style="padding:14px 16px;border-bottom:1px solid #E8EFEC"><div style="font-size:12px;color:#5B7377">Network</div><div style="font-size:16px;font-weight:700">SeaLodge-Guest</div></div>
+        <div style="padding:14px 16px"><div style="font-size:12px;color:#5B7377">Password</div><div style="font-size:16px;font-weight:700">[password]</div></div>
+      </div>
+      <button type="button" class="prim" onClick="{{copyWifi}}" style="min-height:52px;width:100%;border:0;border-radius:14px;background:#0F3D3E;color:#F6F8F7;font-weight:700;font-size:15px">Copy password</button>
+    </sc-if>
+
+    <sc-if value="{{sheetItem}}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;gap:14px;align-items:center;margin-bottom:14px">
+        <span style="{{cur.tileStyle}}"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{cur.icon}}"/></svg></span>
+        <div style="min-width:0"><h2 style="margin:0;font-size:20px;line-height:1.2;font-weight:800">{{cur.title}}</h2><div style="font-size:13px;color:#5B7377;margin-top:2px">{{cur.sub}}</div></div>
+      </div>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.55;color:#33474B">{{cur.desc}}</p>
+      <div style="border:1px solid #DCE5E1;border-radius:14px;margin-bottom:16px">
+        <div style="display:flex;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #E8EFEC;font-size:14px"><span style="color:#5B7377">Operator</span><b>{{cur.op}}</b></div>
+        <div style="display:flex;justify-content:space-between;padding:12px 16px;font-size:14px"><span style="color:#5B7377">{{cur.metaLabel}}</span><b>{{cur.meta}}</b></div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button type="button" class="prim" onClick="{{toastBook}}" style="flex:1;min-height:52px;border:0;border-radius:14px;background:#0F3D3E;color:#F6F8F7;font-weight:700;font-size:15px">{{cur.cta}}</button>
+        <button type="button" class="press" onClick="{{curFav}}" aria-label="Save place" aria-pressed="{{curIsFav}}" style="width:52px;height:52px;border-radius:14px;border:1px solid #DCE5E1;background:#FBFCFB;color:{{curFavColor}};display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="22" height="22" fill="{{curFavFill}}" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.heart}}"/></svg></button>
+      </div>
+      <p style="margin:12px 0 0;font-size:12px;line-height:1.5;color:#5B7377">You book and pay with the operator. Their terms apply.</p>
+    </sc-if>
+
+    <sc-if value="{{sheetVoucher}}" hint-placeholder-val="{{ false }}">
+      <div style="font-size:12px;font-weight:700;color:#1E5A55">{{curV.from}}</div>
+      <h2 style="margin:2px 0 4px;font-size:24px;line-height:1.15;font-weight:800">{{curV.title}}</h2>
+      <p style="margin:0 0 16px;font-size:14px;color:#5B7377">{{curV.rule}}. {{curV.exp}}</p>
+      <div style="display:flex;justify-content:center;padding:20px;border:1px solid #DCE5E1;border-radius:16px;background:#F6F8F7;margin-bottom:16px">
+        <svg role="img" aria-label="QR code for staff to scan" viewBox="0 0 25 25" style="width:176px;height:176px;display:block"><rect width="25" height="25" fill="#F6F8F7"/><path d="{{curV.qr}}" fill="#0F2A2E" transform="translate(2 2)"/></svg>
+      </div>
+      <p style="margin:0 0 16px;font-size:13px;line-height:1.5;color:#5B7377;text-align:center">Show this to staff. They confirm it in their own portal.</p>
+      <button type="button" class="press" onClick="{{closeSheet}}" style="min-height:52px;width:100%;border-radius:14px;border:1px solid #0F3D3E;background:transparent;color:#0F3D3E;font-weight:700;font-size:15px">Done</button>
+    </sc-if>
+
+    <sc-if value="{{sheetRecord}}" hint-placeholder-val="{{ false }}">
+      <h2 style="margin:0 0 4px;font-size:22px;font-weight:800">Record a trip</h2>
+      <p style="margin:0 0 16px;font-size:14px;line-height:1.5;color:#5B7377">Keep this page open while you walk or ride. Your route is saved to your journey so you can replay it in 3D.</p>
+      <div style="display:flex;gap:14px;align-items:flex-start;border:1px solid #DCE5E1;border-radius:14px;padding:14px 16px;margin-bottom:12px">
+        <div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:700;margin-bottom:2px">Use my location</div><div style="font-size:13px;line-height:1.45;color:#5B7377">Your trail is private. You can export or delete it at any time.</div></div>
+        <button type="button" role="switch" aria-checked="{{consent}}" aria-label="Allow location while recording" onClick="{{toggleConsent}}" style="{{switchStyle}}"><span style="{{knobStyle}}"></span></button>
+      </div>
+      <p style="margin:0 0 16px;font-size:12px;line-height:1.5;color:#5B7377">Recording works while the screen is on. For long hikes, import a GPX from your watch instead.</p>
+      <button type="button" class="prim" onClick="{{startRecord}}" disabled="{{noConsent}}" style="{{startStyle}}">Start recording</button>
+    </sc-if>
+  </div>
+
+  <div role="status" aria-live="polite" style="position:absolute;left:50%;bottom:92px;transform:translateX(-50%);max-width:340px;padding:12px 18px;border-radius:999px;background:#0F2A2E;color:#F6F8F7;font-size:14px;font-weight:600;opacity:{{toastOp}};pointer-events:none;transition:opacity 180ms ease-out;white-space:nowrap">{{toast}}</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { screen: 'stay', sheet: null, itemId: 'ebike', voucherId: 'dessert', q: '', cat: 'all', favs: { ebike: true }, toast: '', tripOpen: false, mode: '3d', sceneOn: true, wTab: 'v', consent: false };
+    this._t = null;
+  }
+  icons() {
+    return {
+      home: 'M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10',
+      compass: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM15.5 8.5l-2 5-5 2 2-5z',
+      route: 'M6 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM18 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM8 18h7a3 3 0 0 0 0-6H9a3 3 0 0 1 0-6h7',
+      ticket: 'M3 9a2 2 0 0 0 0 4v3a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-3a2 2 0 0 1 0-4V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1zM14 6v12',
+      wifi: 'M3 9c5-5 13-5 18 0M6 13c3-3 9-3 12 0M9.5 17c1.5-1.5 3.5-1.5 5 0M12 20h.01',
+      chat: 'M4 20l1.4-4.2A8 8 0 1 1 8.4 18.8z',
+      star: 'M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.5 6.7 19.4l1.2-6L3.4 9.3l6-.7z',
+      phone: 'M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z',
+      heart: 'M12 20.5S3 15.5 3 9.5A4.5 4.5 0 0 1 12 7a4.5 4.5 0 0 1 9 2.5c0 6-9 11-9 11z',
+      search: 'M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM21 21l-4.3-4.3',
+      right: 'M9 5l7 7-7 7', left: 'M15 5l-7 7 7 7', check: 'M5 12l5 5 9-10', play: 'M8 5v14l11-7z', plus: 'M12 5v14M5 12h14',
+      user: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21c1-5 15-5 16 0',
+      bike: 'M5 18a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM19 18a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM5 15l4-7h6l3 7M9 8l3 7',
+      mountain: 'M3 20l6-11 4 6 3-4 5 9z',
+      fork: 'M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M17 3c-2 2-2 6 0 8v10',
+      wine: 'M8 3h8l-1 7a3 3 0 0 1-6 0L8 3zM12 13v8M9 21h6',
+      cup: 'M5 8h11v6a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4V8zM16 10h2a2 2 0 0 1 0 4h-2M8 3v2M12 3v2',
+      door: 'M6 21V4a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v17M4 21h16M13 12h.01',
+      moon: 'M20 14.5A8 8 0 1 1 9.5 4 6.5 6.5 0 0 0 20 14.5z'
+    };
+  }
+  data() {
+    return {
+      items: [
+        { id: 'ebike', cat: 'bike', icon: 'bike', title: 'Palmiet e-bike tour', sub: 'Guided. 3 hours', op: 'Palmiet e-Bikes', metaLabel: 'From', meta: 'R[price]', cta: 'Book with operator', desc: 'Ride the Palmiet valley on a guided e-bike tour. Helmets and water are included and a local guide leads the way.' },
+        { id: 'ridge', cat: 'hike', icon: 'mountain', title: 'Hangklip ridge hike', sub: '12 km. Moderate. 4 hours', op: '[Guide name]', metaLabel: 'Guide', meta: 'Optional', cta: 'Ask about a guide', desc: 'A ridge walk with wide views over False Bay. Start early and carry water. A guide is available on request.' },
+        { id: 'harbour', cat: 'food', icon: 'fork', title: 'Harbour restaurant', sub: 'Seafood. 4 min drive', op: 'Harbour restaurant', metaLabel: 'Open', meta: '12:00 to 21:00', cta: 'Reserve a table', desc: 'Fresh seafood on the water. Show your free dessert voucher with any main course.' },
+        { id: 'wine', cat: 'wine', icon: 'wine', title: 'Overberg wine tasting', sub: 'Tastings from 11:00', op: '[Wine estate]', metaLabel: 'Perk', meta: '10% off', cta: 'Book a tasting', desc: 'A relaxed tasting of cool-climate wines in the hills above the bay.' },
+        { id: 'lagoon', cat: 'hike', icon: 'mountain', title: 'Kleinmond lagoon walk', sub: '6 km. Easy. 1.5 hours', op: 'Self-guided', metaLabel: 'Cost', meta: 'Free', cta: 'Get directions', desc: 'A flat, easy walk around the lagoon. Good for birdwatching and early mornings.' },
+        { id: 'bakery', cat: 'food', icon: 'cup', title: 'Sea breeze bakery', sub: 'Coffee and pastries. 2 min walk', op: 'Sea breeze bakery', metaLabel: 'Open', meta: '06:30 to 14:00', cta: 'Get directions', desc: 'Fresh bread, coffee and pastries close to the lodge.' }
+      ],
+      vouchers: [
+        { id: 'dessert', from: 'Harbour restaurant', title: 'Free dessert', rule: 'With any main course', exp: 'Expires 30 Nov', status: 'Ready to use' },
+        { id: 'ride', from: 'Palmiet e-Bikes', title: '15% off your next ride', rule: 'Quote code TAP15 when booking', exp: 'Expires 15 Dec', status: 'Ready to use' },
+        { id: 'coffee', from: 'Sea breeze bakery', title: 'Free coffee with breakfast', rule: 'One per guest', exp: 'Expires 31 Oct', status: 'Ready to use' }
+      ]
+    };
+  }
+  qr(seed) {
+    let s = 0;
+    for (let i = 0; i < seed.length; i++) s = (s * 31 + seed.charCodeAt(i)) >>> 0;
+    const rnd = () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; };
+    const N = 21;
+    const fin = (x, y) => (x < 8 && y < 8) || (x > 12 && y < 8) || (x < 8 && y > 12);
+    let d = '';
+    for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+      if (fin(x, y)) continue;
+      if (rnd() > 0.52) d += 'M' + x + ' ' + y + 'h1v1h-1z';
+    }
+    [[0, 0], [14, 0], [0, 14]].forEach((o) => {
+      d += 'M' + o[0] + ' ' + o[1] + 'h7v7h-7zM' + (o[0] + 1) + ' ' + (o[1] + 1) + 'v5h5v-5zM' + (o[0] + 2) + ' ' + (o[1] + 2) + 'h3v3h-3z';
+    });
+    return d;
+  }
+  say(msg) {
+    clearTimeout(this._t);
+    this.setState({ toast: msg });
+    this._t = setTimeout(() => this.setState({ toast: '' }), 1900);
+  }
+  tileStyle(cat, size) {
+    const tints = { bike: ['#E3F3C2', '#2F5D12'], hike: ['#D9ECE6', '#1E5A55'], food: ['#FBE6C8', '#7A4A0E'], wine: ['#EBDDF0', '#5B2F6B'] };
+    const t = tints[cat] || tints.hike;
+    return 'width:' + size + 'px;height:' + size + 'px;border-radius:14px;background:' + t[0] + ';color:' + t[1] + ';display:flex;align-items:center;justify-content:center;flex:none';
+  }
+  renderVals() {
+    const s = this.state, IC = this.icons(), D = this.data();
+    const pal = { ink: '#0B1F24', deep: '#12343B', moss: '#1E5A55', moss2: '#2F6A64', mist: '#EEF3F0', accent: '#C8F560', gold: '#F4B63F' };
+    const go = (k) => () => this.setState({ screen: k });
+    const tabDefs = [['stay', 'Stay', IC.home], ['explore', 'Explore', IC.compass], ['trips', 'Trips', IC.route], ['wallet', 'Wallet', IC.ticket]];
+    const tabs = tabDefs.map((t) => {
+      const on = s.screen === t[0];
+      return { label: t[1], icon: t[2], go: go(t[0]), current: on ? 'page' : 'false', color: on ? '#0F3D3E' : '#6F8588', pill: 'width:56px;height:30px;border-radius:15px;display:flex;align-items:center;justify-content:center;transition:background-color 150ms ease;background:' + (on ? '#E3F3C2' : 'transparent') };
+    });
+    const q = s.q.trim().toLowerCase();
+    const filtered = D.items.filter((it) => (s.cat === 'all' || it.cat === s.cat) && (!q || (it.title + ' ' + it.sub).toLowerCase().includes(q)));
+    const catDefs = [['all', 'All'], ['hike', 'Hikes'], ['bike', 'Bikes'], ['food', 'Food'], ['wine', 'Wine']];
+    const cats = catDefs.map((c) => {
+      const on = s.cat === c[0];
+      return { label: c[1], on: on, pick: () => this.setState({ cat: c[0] }), style: 'flex:none;min-height:40px;padding:0 16px;border-radius:999px;font-size:14px;font-weight:700;transition:background-color 150ms ease,color 150ms ease;border:1px solid ' + (on ? '#0F3D3E' : '#DCE5E1') + ';background:' + (on ? '#0F3D3E' : '#FBFCFB') + ';color:' + (on ? '#F6F8F7' : '#0F2A2E') };
+    });
+    const toggleFav = (id) => () => { const f = Object.assign({}, this.state.favs); if (f[id]) delete f[id]; else f[id] = true; this.setState({ favs: f }); this.say(f[id] ? 'Saved to your places' : 'Removed from saved'); };
+    const items = filtered.map((it, i) => {
+      const fav = !!s.favs[it.id];
+      return { title: it.title, sub: it.sub, icon: IC[it.icon], tileStyle: this.tileStyle(it.cat, 52), openLabel: 'Open ' + it.title, open: () => this.setState({ sheet: 'item', itemId: it.id }), fav: toggleFav(it.id), isFav: fav, favLabel: (fav ? 'Remove ' : 'Save ') + it.title, favColor: fav ? '#C2410C' : '#6F8588', favFill: fav ? 'currentColor' : 'none', rowStyle: 'display:flex;align-items:center;' + (i < filtered.length - 1 ? 'border-bottom:1px solid #E8EFEC' : '') };
+    });
+    const cur0 = D.items.find((x) => x.id === s.itemId) || D.items[0];
+    const cur = Object.assign({}, cur0, { icon: IC[cur0.icon], tileStyle: this.tileStyle(cur0.cat, 56) });
+    const curV0 = D.vouchers.find((x) => x.id === s.voucherId) || D.vouchers[0];
+    const curV = Object.assign({}, curV0, { qr: this.qr(curV0.id) });
+    const stampsDef = [['Palmiet', true], ['Harbour', true], ['Lookout', false], ['Wine', false], ['Beach', false]];
+    const stamps = stampsDef.map((x) => ({ label: x[0], icon: x[1] ? IC.check : IC.plus, style: 'width:100%;aspect-ratio:1;max-width:48px;margin:0 auto;border-radius:50%;display:flex;align-items:center;justify-content:center;' + (x[1] ? 'background:#C8F560;color:#0B1F24' : 'border:1.5px dashed #3F6A6A;color:#6F9494') }));
+    const tripsDef = [['Palmiet to Hangklip ridge', '3 Oct. 12.4 km. Replay in 3D', 'M6 48 C16 40 18 42 28 34 C38 26 36 28 46 20 C52 14 54 16 58 10'], ["Betty's Bay coastal ride", '28 Sep. 22 km. E-bike', 'M4 46 C14 42 22 44 32 36 C42 28 48 30 60 18'], ['Kleinmond lagoon walk', '21 Sep. 6 km', 'M6 44 C18 40 24 46 34 38 C44 30 50 34 58 24']];
+    const trips = tripsDef.map((t, i) => ({ title: t[0], meta: t[1], line: t[2], open: () => this.setState({ tripOpen: true, mode: '3d', sceneOn: true }), style: 'width:100%;display:flex;align-items:center;gap:14px;border:0;background:transparent;text-align:left;padding:12px 14px;color:#0F2A2E;' + (i < 2 ? 'border-bottom:1px solid #E8EFEC' : '') }));
+    const vouchers = D.vouchers.map((v) => ({ from: v.from, title: v.title, status: v.status + '. ' + v.exp, open: () => this.setState({ sheet: 'voucher', voucherId: v.id }), style: 'display:flex;border:1px solid #DCE5E1;border-radius:16px;background:#FBFCFB;padding:0;color:#0F2A2E;text-align:left;width:100%' }));
+    const seg = (on) => 'min-height:40px;min-width:56px;border:0;border-radius:999px;font-weight:700;font-size:15px;transition:background-color 150ms ease,color 150ms ease;background:' + (on ? '#C8F560' : 'transparent') + ';color:' + (on ? '#0B1F24' : '#F6F8F7');
+    const wt = (on) => 'min-height:40px;border:0;border-radius:9px;font-weight:700;font-size:14px;transition:background-color 150ms ease;background:' + (on ? '#FBFCFB' : 'transparent') + ';color:' + (on ? '#0F2A2E' : '#5B7377');
+    const sheetOpen = !!s.sheet;
+    const labels = { wifi: 'Guest Wi-Fi', item: cur0.title, voucher: curV0.title, record: 'Record a trip' };
+    return {
+      ic: IC, pal: pal, tabs: tabs,
+      isStay: s.screen === 'stay', isExplore: s.screen === 'explore', isTrips: s.screen === 'trips', isWallet: s.screen === 'wallet',
+      goTrips: go('trips'),
+      openWifi: () => this.setState({ sheet: 'wifi' }),
+      toastWa: () => this.say('Opening WhatsApp'), toastReview: () => this.say('Opening Google Reviews'), toastCall: () => this.say('Calling reception'),
+      copyWifi: () => { this.setState({ sheet: null }); this.say('Wi-Fi password copied'); },
+      openTrip: () => this.setState({ tripOpen: true, mode: '3d', sceneOn: true }),
+      q: s.q, setQ: (e) => this.setState({ q: e.target.value }),
+      cats: cats, items: items, hasItems: filtered.length > 0, noItems: filtered.length === 0,
+      countLabel: filtered.length + (filtered.length === 1 ? ' place' : ' places'),
+      clearFilters: () => this.setState({ q: '', cat: 'all' }),
+      stamps: stamps, trips: trips,
+      openRecord: () => this.setState({ sheet: 'record', consent: false }),
+      vouchers: vouchers,
+      wTabV: s.wTab === 'v', wTabP: s.wTab === 'p', wTabVStyle: wt(s.wTab === 'v'), wTabPStyle: wt(s.wTab === 'p'),
+      walletV: () => this.setState({ wTab: 'v' }), walletP: () => this.setState({ wTab: 'p' }),
+      toastPartner: () => this.say('Opening the partner site'),
+      tripOpen: s.tripOpen, sceneOn: s.sceneOn, mode: s.mode, is3d: s.mode === '3d', is2d: s.mode === '2d', seg3d: seg(s.mode === '3d'), seg2d: seg(s.mode === '2d'),
+      set3d: () => this.setState({ mode: '3d' }), set2d: () => this.setState({ mode: '2d' }),
+      closeTrip: () => this.setState({ tripOpen: false }),
+      replay: () => this.setState({ sceneOn: false }, () => this.setState({ sceneOn: true })),
+      toastShare: () => this.say('Share link copied'),
+      scrimOp: sheetOpen ? 1 : 0, scrimPE: sheetOpen ? 'auto' : 'none', scrimTab: sheetOpen ? 0 : -1,
+      closeSheet: () => this.setState({ sheet: null }),
+      sheetY: sheetOpen ? '0' : '105%', sheetLabel: labels[s.sheet] || 'Details',
+      sheetWifi: s.sheet === 'wifi', sheetItem: s.sheet === 'item', sheetVoucher: s.sheet === 'voucher', sheetRecord: s.sheet === 'record',
+      cur: cur, curV: curV,
+      curIsFav: !!s.favs[cur0.id], curFavColor: s.favs[cur0.id] ? '#C2410C' : '#6F8588', curFavFill: s.favs[cur0.id] ? 'currentColor' : 'none', curFav: toggleFav(cur0.id),
+      toastBook: () => { this.setState({ sheet: null }); this.say('Opening the operator booking page'); },
+      consent: s.consent, noConsent: !s.consent,
+      toggleConsent: () => this.setState({ consent: !s.consent }),
+      switchStyle: 'flex:none;width:52px;height:32px;border-radius:16px;border:0;padding:3px;display:flex;align-items:center;transition:background-color 150ms ease;background:' + (s.consent ? '#0F3D3E' : '#C3D2CD') + ';justify-content:' + (s.consent ? 'flex-end' : 'flex-start'),
+      knobStyle: 'width:26px;height:26px;border-radius:50%;background:#FBFCFB',
+      startStyle: 'min-height:52px;width:100%;border:0;border-radius:14px;font-weight:700;font-size:15px;background:' + (s.consent ? '#0F3D3E' : '#DCE5E1') + ';color:' + (s.consent ? '#F6F8F7' : '#7A8F92') + ';cursor:' + (s.consent ? 'pointer' : 'not-allowed'),
+      startRecord: () => { if (!s.consent) return; this.setState({ sheet: null }); this.say('Recording started. Keep this page open'); },
+      toast: s.toast, toastOp: s.toast ? 1 : 0
+    };
+  }
+}
+</script>
+</body>
+</html>

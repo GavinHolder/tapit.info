@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Trip scene component</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+</style>
+</helmet>
+
+<div style="position:absolute;inset:0;overflow:hidden;background:{{pal.ink}}">
+  <div style="position:absolute;inset:0;opacity:{{op3}};transition:opacity .6s ease">
+    <svg role="img" aria-label="Animated 3D terrain with the route being drawn and the hiker marker moving along it" viewBox="0 0 {{vw}} {{vh}}" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%;display:block">
+      <rect x="-3000" y="-3000" width="8000" height="8000" fill="{{pal.ink}}"/>
+      <g transform="translate({{v3.cx}} {{v3.cy}})">
+        <g>
+          <animateTransform attributeName="transform" type="scale" values="{{v3.scale}}" keyTimes="0;0.85;1" dur="14s" repeatCount="indefinite"/>
+          <g transform="translate({{v3.ncx}} {{v3.ncy}})">
+            <g>
+              <animateTransform attributeName="transform" type="translate" values="{{v3.pan}}" keyTimes="{{v3.kt}}" dur="14s" repeatCount="indefinite"/>
+              <sc-for list="{{v3.rows}}" as="row" hint-placeholder-count="3">
+                <path d="{{row.fillD}}" fill="{{row.fill}}" stroke="{{row.stroke}}" stroke-width="1"/>
+              </sc-for>
+              <path d="{{v3.routeD}}" fill="none" stroke="{{pal.mist}}" stroke-opacity=".45" stroke-width="{{k.thin}}" stroke-dasharray="{{k.dash}}"/>
+              <path d="{{v3.routeD}}" fill="none" stroke="#000000" stroke-opacity=".35" stroke-width="{{k.shadow}}" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1.5" stroke-dashoffset="1" transform="translate(0 {{k.drop}})">
+                <animate attributeName="stroke-dashoffset" values="1;0;0" keyTimes="0;0.85;1" dur="14s" repeatCount="indefinite"/>
+              </path>
+              <path d="{{v3.routeD}}" fill="none" stroke="{{pal.accent}}" stroke-opacity=".28" stroke-width="{{k.halo}}" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1.5" stroke-dashoffset="1">
+                <animate attributeName="stroke-dashoffset" values="1;0;0" keyTimes="0;0.85;1" dur="14s" repeatCount="indefinite"/>
+              </path>
+              <path d="{{v3.routeD}}" fill="none" stroke="{{pal.accent}}" stroke-width="{{k.line}}" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1.5" stroke-dashoffset="1">
+                <animate attributeName="stroke-dashoffset" values="1;0;0" keyTimes="0;0.85;1" dur="14s" repeatCount="indefinite"/>
+              </path>
+              <g opacity="0">
+                <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.44;0.47;1" dur="14s" repeatCount="indefinite"/>
+                <circle cx="{{v3.sx}}" cy="{{v3.sy}}" r="{{k.stamp}}" fill="{{pal.gold}}" stroke="{{pal.ink}}" stroke-width="{{k.stroke}}"/>
+                <rect x="{{v3.lx}}" y="{{v3.ly}}" width="{{k.lw}}" height="{{k.lh}}" rx="{{k.lr}}" fill="{{pal.ink}}"/>
+                <text x="{{v3.tx}}" y="{{v3.ty}}" text-anchor="middle" font-family="Manrope, Figtree, sans-serif" font-weight="600" font-size="{{k.font}}" fill="#ffffff">Stamp earned</text>
+              </g>
+              <g>
+                <animateMotion dur="14s" repeatCount="indefinite" path="{{v3.routeD}}" keyPoints="0;1;1" keyTimes="0;0.85;1" calcMode="linear"/>
+                <circle r="{{k.ring1}}" fill="{{pal.accent}}" fill-opacity=".3">
+                  <animate attributeName="r" values="{{k.ring1}};{{k.ring2}};{{k.ring1}}" dur="1.6s" repeatCount="indefinite"/>
+                </circle>
+                <circle r="{{k.dot}}" fill="#ffffff" stroke="{{pal.ink}}" stroke-width="{{k.stroke}}"/>
+              </g>
+            </g>
+          </g>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <div style="position:absolute;inset:0;opacity:{{op2}};transition:opacity .6s ease">
+    <svg role="img" aria-label="Animated flat contour map with the route being drawn and the hiker marker moving along it" viewBox="0 0 {{vw}} {{vh}}" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%;display:block">
+      <rect x="-3000" y="-3000" width="8000" height="8000" fill="{{v2.bg}}"/>
+      <g transform="translate({{v2.cx}} {{v2.cy}})">
+        <g>
+          <animateTransform attributeName="transform" type="scale" values="{{v2.scale}}" keyTimes="0;0.85;1" dur="14s" repeatCount="indefinite"/>
+          <g transform="translate({{v2.ncx}} {{v2.ncy}})">
+            <g>
+              <animateTransform attributeName="transform" type="translate" values="{{v2.pan}}" keyTimes="{{v2.kt}}" dur="14s" repeatCount="indefinite"/>
+              <sc-for list="{{v2.contours}}" as="ct" hint-placeholder-count="3">
+                <path d="{{ct.d}}" fill="none" stroke="{{ct.stroke}}" stroke-width="{{ct.w}}" stroke-linecap="round"/>
+              </sc-for>
+              <path d="{{v2.routeD}}" fill="none" stroke="{{pal.moss}}" stroke-opacity=".5" stroke-width="{{k.thin}}" stroke-dasharray="{{k.dash}}"/>
+              <path d="{{v2.routeD}}" fill="none" stroke="#ffffff" stroke-opacity=".85" stroke-width="{{k.halo}}" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1.5" stroke-dashoffset="1">
+                <animate attributeName="stroke-dashoffset" values="1;0;0" keyTimes="0;0.85;1" dur="14s" repeatCount="indefinite"/>
+              </path>
+              <path d="{{v2.routeD}}" fill="none" stroke="{{pal.ink}}" stroke-width="{{k.line}}" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1.5" stroke-dashoffset="1">
+                <animate attributeName="stroke-dashoffset" values="1;0;0" keyTimes="0;0.85;1" dur="14s" repeatCount="indefinite"/>
+              </path>
+              <g opacity="0">
+                <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.44;0.47;1" dur="14s" repeatCount="indefinite"/>
+                <circle cx="{{v2.sx}}" cy="{{v2.sy}}" r="{{k.stamp}}" fill="{{pal.gold}}" stroke="{{pal.ink}}" stroke-width="{{k.stroke}}"/>
+                <rect x="{{v2.lx}}" y="{{v2.ly}}" width="{{k.lw}}" height="{{k.lh}}" rx="{{k.lr}}" fill="{{pal.ink}}"/>
+                <text x="{{v2.tx}}" y="{{v2.ty}}" text-anchor="middle" font-family="Manrope, Figtree, sans-serif" font-weight="600" font-size="{{k.font}}" fill="#ffffff">Stamp earned</text>
+              </g>
+              <g>
+                <animateMotion dur="14s" repeatCount="indefinite" path="{{v2.routeD}}" keyPoints="0;1;1" keyTimes="0;0.85;1" calcMode="linear"/>
+                <circle r="{{k.ring1}}" fill="{{pal.accent}}" fill-opacity=".45">
+                  <animate attributeName="r" values="{{k.ring1}};{{k.ring2}};{{k.ring1}}" dur="1.6s" repeatCount="indefinite"/>
+                </circle>
+                <circle r="{{k.dot}}" fill="{{pal.accent}}" stroke="{{pal.ink}}" stroke-width="{{k.stroke}}"/>
+              </g>
+            </g>
+          </g>
+        </g>
+      </g>
+    </svg>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"pal":{"editor":null},"view":{"editor":"enum","options":["3d","2d"],"default":"3d"},"vw":{"editor":"int","default":390},"vh":{"editor":"int","default":760},"$preview":{"width":390,"height":760}}'>
+class Component extends DCLogic {
+  hf(x, z) {
+    const g = (cx, cz, s, a) => a * Math.exp(-(((x - cx) * (x - cx)) + ((z - cz) * (z - cz))) / s);
+    let v = g(0.35, 0.55, 0.07, 1.0) + g(-0.5, 0.72, 0.09, 0.85) + g(0.0, 0.95, 0.14, 0.95) + g(-0.15, 0.3, 0.05, 0.3) + g(0.8, 0.3, 0.06, 0.45) + g(-0.9, 0.2, 0.07, 0.35);
+    v += 0.05 * Math.sin(x * 9 + z * 5) + 0.04 * Math.sin(x * 17 - z * 11);
+    v += 0.1 * Math.max(0, z);
+    return Math.max(0, v);
+  }
+  mix(a, b, t) {
+    const p = (s) => [1, 3, 5].map((i) => parseInt(s.slice(i, i + 2), 16));
+    const A = p(a), B = p(b);
+    return '#' + A.map((v, i) => Math.round(v + (B[i] - v) * t).toString(16).padStart(2, '0')).join('');
+  }
+  route() {
+    const pts = [[-0.62, 0.04], [-0.42, 0.12], [-0.52, 0.26], [-0.25, 0.33], [-0.06, 0.42], [0.14, 0.41], [0.27, 0.5], [0.35, 0.56]];
+    const out = [];
+    const n = pts.length;
+    for (let i = 0; i < n - 1; i++) {
+      const p0 = pts[Math.max(0, i - 1)], p1 = pts[i], p2 = pts[i + 1], p3 = pts[Math.min(n - 1, i + 2)];
+      for (let s = 0; s < 16; s++) {
+        const t = s / 16, t2 = t * t, t3 = t2 * t;
+        const f = (a, b, c, d) => 0.5 * ((2 * b) + (-a + c) * t + (2 * a - 5 * b + 4 * c - d) * t2 + (-a + 3 * b - 3 * c + d) * t3);
+        out.push([f(p0[0], p1[0], p2[0], p3[0]), f(p0[1], p1[1], p2[1], p3[1])]);
+      }
+    }
+    out.push(pts[n - 1]);
+    return out;
+  }
+  p3(x, z, y, w, h) {
+    const s = 1 - 0.5 * z;
+    return [w / 2 + x * w * 0.62 * s, h * 0.9 - z * h * 0.5 * (1 - 0.2 * z) - y * h * 0.36 * s];
+  }
+  p2(x, z, w, h) {
+    return [w * 0.5 + x * w * 0.5, h * 0.92 - z * h * 0.84];
+  }
+  camera(pts, w, h, cy, follow, zoom) {
+    const n = pts.length;
+    const vals = [], kts = [];
+    for (let k = 0; k < 8; k++) {
+      const P = pts[Math.round((k / 7) * (n - 1))];
+      vals.push(((w / 2 - P[0]) * follow).toFixed(1) + ' ' + ((cy - P[1]) * follow).toFixed(1));
+      kts.push((k / 7 * 0.85).toFixed(3));
+    }
+    vals.push(vals[7]);
+    kts.push('1');
+    return { pan: vals.join(';'), kt: kts.join(';'), cx: w / 2, cy: cy, ncx: -w / 2, ncy: -cy, scale: '1;' + zoom + ';' + zoom };
+  }
+  d(pts) {
+    return pts.map((q, i) => (i ? 'L' : 'M') + q[0].toFixed(1) + ' ' + q[1].toFixed(1)).join('');
+  }
+  build3(w, h, pal, R) {
+    const rows = [];
+    for (let r = 27; r >= 0; r--) {
+      const z = r / 27, t = 1 - z;
+      let line = '', first = null, last = null;
+      for (let c = 0; c <= 72; c++) {
+        const x = -3.2 + 6.4 * c / 72;
+        const q = this.p3(x, z, this.hf(x, z), w, h);
+        if (c === 0) first = q;
+        last = q;
+        line += (c ? 'L' : 'M') + q[0].toFixed(0) + ' ' + q[1].toFixed(0);
+      }
+      rows.push({
+        fillD: line + 'L' + last[0].toFixed(0) + ' ' + (h * 3).toFixed(0) + 'L' + first[0].toFixed(0) + ' ' + (h * 3).toFixed(0) + 'Z',
+        fill: this.mix(pal.deep, pal.moss, Math.pow(t, 0.9)),
+        stroke: this.mix(pal.moss2, pal.mist, 0.1 + 0.35 * t)
+      });
+    }
+    const pts = R.map((q) => this.p3(q[0], q[1], this.hf(q[0], q[1]) + 0.012, w, h));
+    const sp = pts[Math.floor(0.45 * (pts.length - 1))];
+    const cam = this.camera(pts, w, h, h * 0.55, 0.6, 1.35);
+    return Object.assign({ rows: rows, routeD: this.d(pts), sx: sp[0], sy: sp[1] }, cam);
+  }
+  build2(w, h, pal, R) {
+    const N = 90, M = 70, x0 = -1.6, x1 = 1.6, z0 = -0.2, z1 = 1.2;
+    const H = [];
+    for (let j = 0; j <= M; j++) {
+      const row = [];
+      for (let i = 0; i <= N; i++) row.push(this.hf(x0 + (x1 - x0) * i / N, z0 + (z1 - z0) * j / M));
+      H.push(row);
+    }
+    const table = { 1: [[3, 2]], 2: [[2, 1]], 3: [[3, 1]], 4: [[0, 1]], 5: [[0, 3], [1, 2]], 6: [[0, 2]], 7: [[0, 3]], 8: [[0, 3]], 9: [[0, 2]], 10: [[0, 1], [2, 3]], 11: [[0, 1]], 12: [[3, 1]], 13: [[2, 1]], 14: [[3, 2]] };
+    const contours = [];
+    let li = 0;
+    for (let L = 0.15; L < 1.6; L += 0.14) {
+      let d = '';
+      for (let j = 0; j < M; j++) {
+        for (let i = 0; i < N; i++) {
+          const tl = H[j][i], tr = H[j][i + 1], br = H[j + 1][i + 1], bl = H[j + 1][i];
+          const idx = (tl > L ? 8 : 0) | (tr > L ? 4 : 0) | (br > L ? 2 : 0) | (bl > L ? 1 : 0);
+          if (idx === 0 || idx === 15) continue;
+          const e = [
+            [i + (L - tl) / (tr - tl), j],
+            [i + 1, j + (L - tr) / (br - tr)],
+            [i + (L - bl) / (br - bl), j + 1],
+            [i, j + (L - tl) / (bl - tl)]
+          ];
+          for (const sg of table[idx]) {
+            const a = e[sg[0]], b = e[sg[1]];
+            const A = this.p2(x0 + (x1 - x0) * a[0] / N, z0 + (z1 - z0) * a[1] / M, w, h);
+            const B = this.p2(x0 + (x1 - x0) * b[0] / N, z0 + (z1 - z0) * b[1] / M, w, h);
+            d += 'M' + A[0].toFixed(1) + ' ' + A[1].toFixed(1) + 'L' + B[0].toFixed(1) + ' ' + B[1].toFixed(1);
+          }
+        }
+      }
+      const idxLine = li % 3 === 0;
+      contours.push({ d: d, w: idxLine ? 1.6 : 0.8, stroke: this.mix(pal.moss2, pal.mist, idxLine ? 0.15 : 0.45) });
+      li++;
+    }
+    const pts = R.map((q) => this.p2(q[0], q[1], w, h));
+    const sp = pts[Math.floor(0.45 * (pts.length - 1))];
+    const cam = this.camera(pts, w, h, h * 0.5, 0.5, 1.22);
+    return Object.assign({ contours: contours, routeD: this.d(pts), sx: sp[0], sy: sp[1], bg: this.mix(pal.mist, '#ffffff', 0.5) }, cam);
+  }
+  renderVals() {
+    const D = { ink: '#0B1F24', deep: '#12343B', moss: '#1E5A55', moss2: '#2F6A64', mist: '#EEF3F0', accent: '#C8F560', gold: '#F4B63F' };
+    const pal = Object.assign({}, D, this.props.pal || {});
+    const w = Number(this.props.vw) || 390;
+    const h = Number(this.props.vh) || 760;
+    const u = w / 390;
+    const view = this.props.view || '3d';
+    const R = this.route();
+    const v3 = this.build3(w, h, pal, R);
+    const v2 = this.build2(w, h, pal, R);
+    const lab = (v) => {
+      v.lw = 96 * u; v.lh = 28 * u;
+      v.lx = v.sx - 48 * u; v.ly = v.sy - 52 * u;
+      v.tx = v.sx; v.ty = v.sy - 33 * u;
+    };
+    lab(v3); lab(v2);
+    const k = {
+      thin: (2 * u).toFixed(1), dash: (3 * u).toFixed(1) + ' ' + (7 * u).toFixed(1),
+      shadow: (9 * u).toFixed(1), drop: (5 * u).toFixed(1), halo: (12 * u).toFixed(1), line: (5 * u).toFixed(1),
+      stamp: (9 * u).toFixed(1), stroke: (3 * u).toFixed(1), lw: (96 * u).toFixed(1), lh: (28 * u).toFixed(1), lr: (14 * u).toFixed(1),
+      font: (13 * u).toFixed(1), ring1: (12 * u).toFixed(1), ring2: (24 * u).toFixed(1), dot: (8 * u).toFixed(1)
+    };
+    return { pal: pal, vw: w, vh: h, k: k, v3: v3, v2: v2, op3: view === '3d' ? 1 : 0, op2: view === '2d' ? 1 : 0 };
+  }
+}
+</script>
+</body>
+</html>

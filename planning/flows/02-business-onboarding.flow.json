@@ -1,0 +1,379 @@
+{
+  "id": "02-business-onboarding",
+  "title": "Business onboarding to a live stand",
+  "description": "How a guesthouse or operator goes from signed up to a working stand: who creates what, what is captured, and what goes live.",
+  "nodes": [
+    {
+      "id": "b1",
+      "type": "step",
+      "position": {
+        "x": 0,
+        "y": 136
+      },
+      "data": {
+        "title": "Admin creates the business",
+        "kind": "action",
+        "lane": "Admin",
+        "status": "draft",
+        "notes": "Name, town, contact and plan.",
+        "fields": [
+          {
+            "name": "Business name",
+            "type": "text",
+            "required": true,
+            "pii": false
+          },
+          {
+            "name": "Town",
+            "type": "text",
+            "required": true,
+            "pii": false
+          },
+          {
+            "name": "Contact email",
+            "type": "email",
+            "required": true,
+            "pii": true
+          },
+          {
+            "name": "WhatsApp number",
+            "type": "phone",
+            "required": false,
+            "pii": true
+          },
+          {
+            "name": "Plan",
+            "type": "select",
+            "required": true,
+            "pii": false
+          }
+        ],
+        "reads": "",
+        "writes": "tenants, agreements",
+        "api": "POST /api/admin/tenants",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "b2",
+      "type": "step",
+      "position": {
+        "x": 340,
+        "y": 136
+      },
+      "data": {
+        "title": "Send the invite link",
+        "kind": "backend",
+        "lane": "Backend",
+        "status": "draft",
+        "notes": "A sign-in link is emailed from our own mail server.",
+        "fields": [],
+        "reads": "",
+        "writes": "invites (token, expires)",
+        "api": "POST /api/admin/invites",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "b3",
+      "type": "step",
+      "position": {
+        "x": 680,
+        "y": 136
+      },
+      "data": {
+        "title": "Owner opens the invite link",
+        "kind": "action",
+        "lane": "Business",
+        "status": "draft",
+        "notes": "",
+        "fields": [],
+        "reads": "",
+        "writes": "",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "b4",
+      "type": "step",
+      "position": {
+        "x": 1020,
+        "y": 136
+      },
+      "data": {
+        "title": "Create the owner account",
+        "kind": "backend",
+        "lane": "Backend",
+        "status": "draft",
+        "notes": "Passwordless. A session is started.",
+        "fields": [],
+        "reads": "",
+        "writes": "users (role=owner, tenant_id), sessions",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "b5",
+      "type": "step",
+      "position": {
+        "x": 1360,
+        "y": 136
+      },
+      "data": {
+        "title": "Owner profile created",
+        "kind": "profile",
+        "lane": "Business",
+        "status": "draft",
+        "notes": "The owner accepts the terms and privacy notice on first sign-in.",
+        "fields": [
+          {
+            "name": "Display name",
+            "type": "text",
+            "required": true,
+            "pii": true
+          },
+          {
+            "name": "Email",
+            "type": "email",
+            "required": true,
+            "pii": true
+          },
+          {
+            "name": "Terms accepted at",
+            "type": "timestamp",
+            "required": true,
+            "pii": false
+          },
+          {
+            "name": "Privacy notice version",
+            "type": "text",
+            "required": true,
+            "pii": false
+          }
+        ],
+        "reads": "",
+        "writes": "",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "b6",
+      "type": "step",
+      "position": {
+        "x": 1700,
+        "y": 136
+      },
+      "data": {
+        "title": "Concierge editor",
+        "kind": "screen",
+        "lane": "Business",
+        "status": "draft",
+        "notes": "Edit welcome, hours, Wi-Fi, quick actions, content blocks and accent colour with a live phone preview.",
+        "fields": [],
+        "reads": "",
+        "writes": "pages (draft)",
+        "api": "PUT /api/portal/page",
+        "mockup": "Portal.dc.html",
+        "comments": []
+      }
+    },
+    {
+      "id": "b7",
+      "type": "step",
+      "position": {
+        "x": 2040,
+        "y": 0
+      },
+      "data": {
+        "title": "Ready to go live?",
+        "kind": "decision",
+        "lane": "Business",
+        "status": "draft",
+        "notes": "",
+        "fields": [],
+        "reads": "",
+        "writes": "",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "b8",
+      "type": "step",
+      "position": {
+        "x": 2380,
+        "y": 0
+      },
+      "data": {
+        "title": "Publish changes",
+        "kind": "action",
+        "lane": "Business",
+        "status": "draft",
+        "notes": "Confirm dialog, then a new version number. Older versions can be restored.",
+        "fields": [],
+        "reads": "",
+        "writes": "page_versions (published)",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "b9",
+      "type": "step",
+      "position": {
+        "x": 2720,
+        "y": 0
+      },
+      "data": {
+        "title": "Assign and program the stand",
+        "kind": "action",
+        "lane": "Admin",
+        "status": "draft",
+        "notes": "Link the unit code to the business and write the URL to the NFC chip.",
+        "fields": [],
+        "reads": "",
+        "writes": "units (tenant_id, code, status=active)",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "b10",
+      "type": "step",
+      "position": {
+        "x": 3060,
+        "y": 0
+      },
+      "data": {
+        "title": "Stand goes live",
+        "kind": "backend",
+        "lane": "Backend",
+        "status": "draft",
+        "notes": "The first scan is recorded and the admin is told.",
+        "fields": [],
+        "reads": "",
+        "writes": "audit_log, events",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "b11",
+      "type": "step",
+      "position": {
+        "x": 2040,
+        "y": 146
+      },
+      "data": {
+        "title": "Who writes the content for each pilot site?",
+        "kind": "question",
+        "lane": "Admin",
+        "status": "question",
+        "notes": "The owner, the client or us. Decides how much editor help we offer.",
+        "fields": [],
+        "reads": "",
+        "writes": "",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "b12",
+      "type": "step",
+      "position": {
+        "x": 2040,
+        "y": 292
+      },
+      "data": {
+        "title": "Which languages are needed at launch?",
+        "kind": "question",
+        "lane": "Business",
+        "status": "question",
+        "notes": "English, Afrikaans, German?",
+        "fields": [],
+        "reads": "",
+        "writes": "",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "b1-b2",
+      "source": "b1",
+      "target": "b2"
+    },
+    {
+      "id": "b2-b3",
+      "source": "b2",
+      "target": "b3"
+    },
+    {
+      "id": "b3-b4",
+      "source": "b3",
+      "target": "b4"
+    },
+    {
+      "id": "b4-b5",
+      "source": "b4",
+      "target": "b5"
+    },
+    {
+      "id": "b5-b6",
+      "source": "b5",
+      "target": "b6"
+    },
+    {
+      "id": "b6-b7",
+      "source": "b6",
+      "target": "b7"
+    },
+    {
+      "id": "b7-b6",
+      "source": "b7",
+      "target": "b6",
+      "label": "not yet"
+    },
+    {
+      "id": "b7-b8",
+      "source": "b7",
+      "target": "b8",
+      "label": "yes"
+    },
+    {
+      "id": "b8-b9",
+      "source": "b8",
+      "target": "b9"
+    },
+    {
+      "id": "b9-b10",
+      "source": "b9",
+      "target": "b10"
+    },
+    {
+      "id": "b6-b11",
+      "source": "b6",
+      "target": "b11"
+    },
+    {
+      "id": "b6-b12",
+      "source": "b6",
+      "target": "b12"
+    }
+  ]
+}

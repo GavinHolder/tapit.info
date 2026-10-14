@@ -1,0 +1,12 @@
+services:
+  studio:
+    build: .
+    ports:
+      - "3100:3100"
+    environment:
+      PLANNING_DIR: /planning
+      NEXT_TELEMETRY_DISABLED: "1"
+    volumes:
+      # The planning folder is the source of truth and lives in the repo.
+      - ../planning:/planning
+    restart: unless-stopped

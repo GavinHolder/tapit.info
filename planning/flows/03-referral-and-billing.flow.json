@@ -1,0 +1,402 @@
+{
+  "id": "03-referral-and-billing",
+  "title": "Referral commission and billing",
+  "description": "How a booking is traced back to a stand, verified, and turned into an invoice. TapIt only invoices businesses and never handles guest money.",
+  "nodes": [
+    {
+      "id": "r1",
+      "type": "step",
+      "position": {
+        "x": 0,
+        "y": 146
+      },
+      "data": {
+        "title": "Guest books with a partner after tapping Book",
+        "kind": "action",
+        "lane": "Guest",
+        "status": "draft",
+        "notes": "Starts in the guest tap flow.",
+        "fields": [],
+        "reads": "",
+        "writes": "",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "r2",
+      "type": "step",
+      "position": {
+        "x": 340,
+        "y": 146
+      },
+      "data": {
+        "title": "Referral recorded",
+        "kind": "backend",
+        "lane": "Backend",
+        "status": "draft",
+        "notes": "",
+        "fields": [],
+        "reads": "",
+        "writes": "referrals (status=clicked)",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "r3",
+      "type": "step",
+      "position": {
+        "x": 680,
+        "y": 146
+      },
+      "data": {
+        "title": "Partner confirms the booking",
+        "kind": "external",
+        "lane": "External",
+        "status": "draft",
+        "notes": "In their portal, or by quoting the referral code at checkout.",
+        "fields": [],
+        "reads": "",
+        "writes": "",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "r4",
+      "type": "step",
+      "position": {
+        "x": 1020,
+        "y": 146
+      },
+      "data": {
+        "title": "Match the referral",
+        "kind": "backend",
+        "lane": "Backend",
+        "status": "draft",
+        "notes": "Three signals: referral code or tagged link, partner confirmation, and spot-checks.",
+        "fields": [],
+        "reads": "referrals, partner confirmations",
+        "writes": "referrals (status=matched)",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "r5",
+      "type": "step",
+      "position": {
+        "x": 1360,
+        "y": 209
+      },
+      "data": {
+        "title": "Matched and not disputed?",
+        "kind": "decision",
+        "lane": "Backend",
+        "status": "draft",
+        "notes": "",
+        "fields": [],
+        "reads": "",
+        "writes": "",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "r6",
+      "type": "step",
+      "position": {
+        "x": 1700,
+        "y": 73
+      },
+      "data": {
+        "title": "Referral claims queue",
+        "kind": "screen",
+        "lane": "Admin",
+        "status": "draft",
+        "notes": "Admin reviews disputed or unmatched claims and asks the partner for proof.",
+        "fields": [],
+        "reads": "",
+        "writes": "",
+        "api": "",
+        "mockup": "Ledger.dc.html (first round)",
+        "comments": []
+      }
+    },
+    {
+      "id": "r7",
+      "type": "step",
+      "position": {
+        "x": 1700,
+        "y": 219
+      },
+      "data": {
+        "title": "Month-end invoice run",
+        "kind": "backend",
+        "lane": "Backend",
+        "status": "draft",
+        "notes": "Group matched referrals by business, apply the agreement rate, then add subscription and feature lines.",
+        "fields": [],
+        "reads": "agreements, referrals, subscriptions",
+        "writes": "invoices, invoice_lines",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "r8",
+      "type": "step",
+      "position": {
+        "x": 2040,
+        "y": 0
+      },
+      "data": {
+        "title": "Review and issue invoices",
+        "kind": "action",
+        "lane": "Admin",
+        "status": "draft",
+        "notes": "",
+        "fields": [],
+        "reads": "",
+        "writes": "",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "r9",
+      "type": "step",
+      "position": {
+        "x": 2380,
+        "y": 0
+      },
+      "data": {
+        "title": "Invoice emailed to the business",
+        "kind": "external",
+        "lane": "External",
+        "status": "draft",
+        "notes": "TapIt only invoices businesses. No guest money passes through TapIt.",
+        "fields": [],
+        "reads": "",
+        "writes": "",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "r10",
+      "type": "step",
+      "position": {
+        "x": 2720,
+        "y": 0
+      },
+      "data": {
+        "title": "Business pays by EFT",
+        "kind": "action",
+        "lane": "Business",
+        "status": "draft",
+        "notes": "",
+        "fields": [],
+        "reads": "",
+        "writes": "",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "r11",
+      "type": "step",
+      "position": {
+        "x": 3060,
+        "y": 0
+      },
+      "data": {
+        "title": "Record the payment",
+        "kind": "backend",
+        "lane": "Backend",
+        "status": "draft",
+        "notes": "",
+        "fields": [],
+        "reads": "",
+        "writes": "payments, invoices (status=paid)",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "r12",
+      "type": "step",
+      "position": {
+        "x": 3400,
+        "y": 0
+      },
+      "data": {
+        "title": "Statements in the business portal",
+        "kind": "screen",
+        "lane": "Business",
+        "status": "draft",
+        "notes": "Invoices, credit notes and payment history.",
+        "fields": [],
+        "reads": "",
+        "writes": "",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "r13",
+      "type": "step",
+      "position": {
+        "x": 2040,
+        "y": 146
+      },
+      "data": {
+        "title": "What is the commission rate, and is it per partner?",
+        "kind": "question",
+        "lane": "Admin",
+        "status": "question",
+        "notes": "",
+        "fields": [],
+        "reads": "",
+        "writes": "",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "r14",
+      "type": "step",
+      "position": {
+        "x": 2040,
+        "y": 292
+      },
+      "data": {
+        "title": "How are cancellations and chargebacks handled?",
+        "kind": "question",
+        "lane": "Admin",
+        "status": "question",
+        "notes": "Credit notes against the next invoice?",
+        "fields": [],
+        "reads": "",
+        "writes": "",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    },
+    {
+      "id": "r15",
+      "type": "step",
+      "position": {
+        "x": 2040,
+        "y": 438
+      },
+      "data": {
+        "title": "What does \"royalty\" mean?",
+        "kind": "question",
+        "lane": "Admin",
+        "status": "question",
+        "notes": "A share of TapIt income to the forum or partners, or member points? It must never be a share of guest money.",
+        "fields": [],
+        "reads": "",
+        "writes": "",
+        "api": "",
+        "mockup": "",
+        "comments": []
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "r1-r2",
+      "source": "r1",
+      "target": "r2"
+    },
+    {
+      "id": "r2-r3",
+      "source": "r2",
+      "target": "r3"
+    },
+    {
+      "id": "r3-r4",
+      "source": "r3",
+      "target": "r4"
+    },
+    {
+      "id": "r4-r5",
+      "source": "r4",
+      "target": "r5"
+    },
+    {
+      "id": "r5-r7",
+      "source": "r5",
+      "target": "r7",
+      "label": "yes"
+    },
+    {
+      "id": "r5-r6",
+      "source": "r5",
+      "target": "r6",
+      "label": "no"
+    },
+    {
+      "id": "r6-r4",
+      "source": "r6",
+      "target": "r4",
+      "label": "resolved"
+    },
+    {
+      "id": "r7-r8",
+      "source": "r7",
+      "target": "r8"
+    },
+    {
+      "id": "r8-r9",
+      "source": "r8",
+      "target": "r9"
+    },
+    {
+      "id": "r9-r10",
+      "source": "r9",
+      "target": "r10"
+    },
+    {
+      "id": "r10-r11",
+      "source": "r10",
+      "target": "r11"
+    },
+    {
+      "id": "r11-r12",
+      "source": "r11",
+      "target": "r12"
+    },
+    {
+      "id": "r7-r13",
+      "source": "r7",
+      "target": "r13"
+    },
+    {
+      "id": "r7-r14",
+      "source": "r7",
+      "target": "r14"
+    },
+    {
+      "id": "r7-r15",
+      "source": "r7",
+      "target": "r15"
+    }
+  ]
+}
