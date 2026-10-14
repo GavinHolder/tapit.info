@@ -10,7 +10,9 @@
     "seed": "node scripts/seed.mjs",
     "spec": "node scripts/spec.mjs",
     "typecheck": "tsc --noEmit",
-    "prototypes": "node scripts/build-prototypes.mjs"
+    "prototypes": "node scripts/build-prototypes.mjs",
+    "create-owner": "node scripts/create-owner.mjs",
+    "questions": "node scripts/build-questions.mjs"
   },
   "dependencies": {
     "@dagrejs/dagre": "^3.1.1",
