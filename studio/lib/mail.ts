@@ -1,12 +1,13 @@
 import nodemailer from 'nodemailer';
 import { getDb } from './db.js';
 import { newId } from './password.js';
+import { flushWhatsApp, waEnabled } from './whatsapp';
 
 // Optional email notifications through the owner's own SMTP server. Off unless STUDIO_SMTP_HOST is set.
 // Messages are batched: someone who gets five replies in a few minutes gets one email, not five.
 // A mail problem is logged and retried; it never stops a message from being saved.
 export const mailEnabled = () => !!process.env.STUDIO_SMTP_HOST;
-const delayMs = () => Math.max(0, Number(process.env.STUDIO_MAIL_DELAY_SECONDS ?? 120)) * 1000;
+const delayMs = () => Math.max(0, Number(process.env.STUDIO_NOTIFY_DELAY_SECONDS ?? process.env.STUDIO_MAIL_DELAY_SECONDS ?? 120)) * 1000;
 const baseUrl = () => (process.env.STUDIO_PUBLIC_URL || 'http://localhost:3100').replace(/\/$/, '');
 
 let transport: ReturnType<typeof nodemailer.createTransport> | null = null;
@@ -28,17 +29,21 @@ function getTransport() {
 
 // Called after a message is saved. Notifies the people on the other side of the conversation.
 export function enqueueNotifications(authorId: string, threadId: string, messageId: string) {
-  if (!mailEnabled()) return;
+  if (!mailEnabled() && !waEnabled()) return;
   try {
     const db = getDb();
     const author = db.prepare('SELECT role FROM users WHERE id = ?').get(authorId) as { role: string } | undefined;
     if (!author) return;
     const targetRole = author.role === 'owner' ? 'client' : 'owner';
-    const people = db.prepare('SELECT id FROM users WHERE role = ? AND disabled = 0 AND notify_email = 1 AND id != ?').all(targetRole, authorId) as { id: string }[];
+    const people = db.prepare('SELECT id, notify_email, notify_whatsapp, phone_verified FROM users WHERE role = ? AND disabled = 0 AND id != ?').all(targetRole, authorId) as { id: string; notify_email: number; notify_whatsapp: number; phone_verified: number }[];
     const now = new Date().toISOString();
-    for (const p of people) db.prepare('INSERT INTO outbox (id, user_id, thread_id, message_id, created_at) VALUES (?, ?, ?, ?, ?)').run(newId('out'), p.id, threadId, messageId, now);
+    const add = (userId: string, channel: string) => db.prepare('INSERT INTO outbox (id, user_id, thread_id, message_id, created_at, channel) VALUES (?, ?, ?, ?, ?, ?)').run(newId('out'), userId, threadId, messageId, now, channel);
+    for (const p of people) {
+      if (mailEnabled() && p.notify_email) add(p.id, 'email');
+      if (waEnabled() && p.notify_whatsapp && p.phone_verified) add(p.id, 'whatsapp');
+    }
   } catch (e) {
-    console.warn('[studio] Could not queue an email notification:', (e as Error).message);
+    console.warn('[studio] Could not queue a notification:', (e as Error).message);
   }
 }
 
@@ -48,7 +53,7 @@ export async function flushMail(): Promise<number> {
   if (!mailEnabled()) return 0;
   const db = getDb();
   const cutoff = new Date(Date.now() - delayMs()).toISOString();
-  const rows = db.prepare('SELECT id, user_id, thread_id, message_id FROM outbox WHERE sent_at IS NULL AND attempts < 5 AND created_at <= ? ORDER BY created_at').all(cutoff) as Pending[];
+  const rows = db.prepare("SELECT id, user_id, thread_id, message_id FROM outbox WHERE channel = 'email' AND sent_at IS NULL AND attempts < 5 AND created_at <= ? ORDER BY created_at").all(cutoff) as Pending[];
   if (!rows.length) return 0;
   const byUser = new Map<string, Pending[]>();
   for (const r of rows) byUser.set(r.user_id, [...(byUser.get(r.user_id) ?? []), r]);
@@ -92,9 +97,14 @@ export async function flushMail(): Promise<number> {
 
 export function startMailLoop() {
   const g = globalThis as { __studioMail?: boolean };
-  if (g.__studioMail || !mailEnabled()) return;
+  if (g.__studioMail || (!mailEnabled() && !waEnabled())) return;
   g.__studioMail = true;
-  console.log(`[studio] Email notifications on (SMTP ${process.env.STUDIO_SMTP_HOST}).`);
-  const t = setInterval(() => void flushMail().catch((e) => console.warn('[studio] Mail loop:', e.message)), Math.max(1000, Math.min(30000, delayMs() || 1000)));
+  if (mailEnabled()) console.log(`[studio] Email notifications on (SMTP ${process.env.STUDIO_SMTP_HOST}).`);
+  if (waEnabled()) console.log(`[studio] WhatsApp notifications on (OpenWA ${process.env.STUDIO_WA_URL}).`);
+  const tick = async () => {
+    await flushMail();
+    await flushWhatsApp(new Date(Date.now() - delayMs()).toISOString());
+  };
+  const t = setInterval(() => void tick().catch((e) => console.warn('[studio] Notification loop:', e.message)), Math.max(1000, Math.min(30000, delayMs() || 1000)));
   t.unref();
 }

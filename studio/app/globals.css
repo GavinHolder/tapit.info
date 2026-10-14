@@ -370,3 +370,9 @@ textarea.in { resize: vertical; line-height: 1.45; }
 .node-menu:hover { background: #eef3f0; color: var(--text); border-color: var(--deep); }
 .step-top .dot { margin-left: auto; }
 .debugpanel { position: fixed; left: 8px; right: 8px; bottom: 8px; z-index: 100; background: #0b1f24; color: #c8f560; font: 12px/1.4 ui-monospace, Consolas, monospace; padding: 8px 12px; border-radius: 8px; word-break: break-word; }
+.notify { width: min(520px, 100%); }
+.nsec { border-top: 1px solid var(--line-2); padding-top: 12px; display: grid; gap: 8px; }
+.nsec h3 { font-size: 15px; }
+.nform { display: grid; gap: 8px; }
+.inv-form { grid-template-columns: 1fr 1fr 1fr auto; }
+@media (max-width: 800px) { .inv-form { grid-template-columns: 1fr; } }

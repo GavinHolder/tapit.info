@@ -133,6 +133,33 @@ const MIGRATIONS = [
     attempts INTEGER NOT NULL DEFAULT 0
   );
   CREATE INDEX outbox_pending ON outbox(sent_at, created_at);
+  `,
+  `
+  ALTER TABLE users ADD COLUMN phone TEXT;
+  ALTER TABLE users ADD COLUMN phone_verified INTEGER NOT NULL DEFAULT 0;
+  ALTER TABLE users ADD COLUMN notify_whatsapp INTEGER NOT NULL DEFAULT 1;
+  ALTER TABLE users ADD COLUMN wa_code_hash TEXT;
+  ALTER TABLE users ADD COLUMN wa_code_expires TEXT;
+  ALTER TABLE users ADD COLUMN wa_code_tries INTEGER NOT NULL DEFAULT 0;
+  ALTER TABLE outbox ADD COLUMN channel TEXT NOT NULL DEFAULT 'email';
+  ALTER TABLE invites ADD COLUMN phone TEXT;
+  ALTER TABLE invites ADD COLUMN phone_sent INTEGER NOT NULL DEFAULT 0;
+  CREATE TABLE wa_context (
+    user_id TEXT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+    thread_id TEXT NOT NULL REFERENCES threads(id) ON DELETE CASCADE,
+    at TEXT NOT NULL
+  );
+  CREATE TABLE wa_seen (
+    key TEXT PRIMARY KEY,
+    at TEXT NOT NULL
+  );
+  CREATE TABLE wa_log (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id TEXT,
+    kind TEXT NOT NULL,
+    at TEXT NOT NULL
+  );
+  CREATE INDEX wa_log_user ON wa_log(user_id, kind, at);
   `
 ];
 
