@@ -1,0 +1,406 @@
+[
+  {
+    "id": "q01",
+    "num": 1,
+    "section": "Pilot & content",
+    "text": "How many pilot sites are confirmed (name, town, type)? Who is the contact at each?",
+    "priority": "first",
+    "why": "Decides how many stands we make and how much content we prepare before the pilot.",
+    "related": [],
+    "source": "docs/01-client-questions.md"
+  },
+  {
+    "id": "q02",
+    "num": 2,
+    "section": "Pilot & content",
+    "text": "Who will write each site's concierge content: the owner, the client, or us? (Drives the CMS editor scope.)",
+    "priority": "first",
+    "why": "Decides whether we build a simple form for owners or write the content for them.",
+    "related": [
+      {
+        "flow": "02-business-onboarding",
+        "step": "b11",
+        "title": "Who writes the content"
+      }
+    ],
+    "source": "docs/01-client-questions.md"
+  },
+  {
+    "id": "q03",
+    "num": 3,
+    "section": "Pilot & content",
+    "text": "Languages needed at launch (EN / AF / DE / other)?",
+    "priority": "normal",
+    "why": "",
+    "related": [
+      {
+        "flow": "02-business-onboarding",
+        "step": "b12",
+        "title": "Languages at launch"
+      }
+    ],
+    "source": "docs/01-client-questions.md"
+  },
+  {
+    "id": "q04",
+    "num": 4,
+    "section": "Pilot & content",
+    "text": "Can we get each pilot's logo, brand colours, 5–10 photos, Wi-Fi, breakfast/checkout times, house rules, WhatsApp number, Google Review link?",
+    "priority": "normal",
+    "why": "",
+    "related": [],
+    "source": "docs/01-client-questions.md"
+  },
+  {
+    "id": "q05",
+    "num": 5,
+    "section": "Pilot & content",
+    "text": "Is the Whale Coast Directory a site the client owns? Does it have an API, database or export we can use?",
+    "priority": "normal",
+    "why": "",
+    "related": [],
+    "source": "docs/01-client-questions.md"
+  },
+  {
+    "id": "q06",
+    "num": 6,
+    "section": "Pilot & content",
+    "text": "Who curates \"things to do\" (hikes, restaurants, events) for the pilot, and is there existing data (spreadsheet, brochure, site)?",
+    "priority": "normal",
+    "why": "",
+    "related": [],
+    "source": "docs/01-client-questions.md"
+  },
+  {
+    "id": "q07",
+    "num": 7,
+    "section": "Brand & ownership",
+    "text": "Which legal entity owns TapIt (company name, reg. number, VAT status)? Is the business forum involved, and how?",
+    "priority": "first",
+    "why": "The company name goes on the invoices, the terms and the privacy policy.",
+    "related": [],
+    "source": "docs/01-client-questions.md"
+  },
+  {
+    "id": "q08",
+    "num": 8,
+    "section": "Brand & ownership",
+    "text": "Who owns the domain, GitHub org, VPS and payment accounts?",
+    "priority": "first",
+    "why": "We need to know who holds the keys before we set anything up.",
+    "related": [],
+    "source": "docs/01-client-questions.md"
+  },
+  {
+    "id": "q09",
+    "num": 9,
+    "section": "Brand & ownership",
+    "text": "Existing brand assets (logo, colours, fonts) for TapIt, or do we design them?",
+    "priority": "normal",
+    "why": "",
+    "related": [],
+    "source": "docs/01-client-questions.md"
+  },
+  {
+    "id": "q10",
+    "num": 10,
+    "section": "Brand & ownership",
+    "text": "Tone: premium/adventurous, or friendly/local? Any competitor or site the client loves visually?",
+    "priority": "normal",
+    "why": "",
+    "related": [],
+    "source": "docs/01-client-questions.md"
+  },
+  {
+    "id": "q11",
+    "num": 11,
+    "section": "Money",
+    "text": "What will pilot sites pay: setup fee, monthly fee, free, or sponsored? Any price already promised?",
+    "priority": "first",
+    "why": "The pricing model decides how billing is built, so it must be settled early.",
+    "related": [],
+    "source": "docs/01-client-questions.md"
+  },
+  {
+    "id": "q12",
+    "num": 12,
+    "section": "Money",
+    "text": "Commission: fixed % per operator or per-booking negotiable? Who collects the guest's money: TapIt, or the operator directly?",
+    "priority": "first",
+    "why": "Commission only works if we can trace and verify bookings. This shapes the billing flow.",
+    "related": [
+      {
+        "flow": "03-referral-and-billing",
+        "step": "r13",
+        "title": "Commission rate"
+      }
+    ],
+    "source": "docs/01-client-questions.md"
+  },
+  {
+    "id": "q13",
+    "num": 13,
+    "section": "Money",
+    "text": "Payouts: how often and by what method (EFT)? Does the client want TapIt to hold funds, or only invoice commission after the fact?",
+    "priority": "normal",
+    "why": "",
+    "related": [],
+    "source": "docs/01-client-questions.md"
+  },
+  {
+    "id": "q14",
+    "num": 14,
+    "section": "Money",
+    "text": "Is TapIt VAT-registered? Which invoices/statements must the system produce?",
+    "priority": "normal",
+    "why": "",
+    "related": [],
+    "source": "docs/01-client-questions.md"
+  },
+  {
+    "id": "q15",
+    "num": 15,
+    "section": "Money",
+    "text": "Royalties: what are they exactly (e.g. share to the forum or sponsors)? Who pays whom, and on what basis?",
+    "priority": "normal",
+    "why": "",
+    "related": [
+      {
+        "flow": "03-referral-and-billing",
+        "step": "r15",
+        "title": "What royalty means"
+      }
+    ],
+    "source": "docs/01-client-questions.md"
+  },
+  {
+    "id": "q16",
+    "num": 16,
+    "section": "Money",
+    "text": "Has the client taken legal/accounting advice on acting as a booking agent or tour operator (including indemnity, cancellation, consumer protection)?",
+    "priority": "normal",
+    "why": "",
+    "related": [],
+    "source": "docs/01-client-questions.md"
+  },
+  {
+    "id": "q17",
+    "num": 17,
+    "section": "Hardware",
+    "text": "NFC stand supplier, unit cost, order lead time, and who programs/prints the units?",
+    "priority": "first",
+    "why": "Stand cost and lead time decide the setup fee and how soon pilot sites can go live.",
+    "related": [],
+    "source": "docs/01-client-questions.md"
+  },
+  {
+    "id": "q18",
+    "num": 18,
+    "section": "Hardware",
+    "text": "Stand size and materials (acrylic, wood)? Branded per site or generic TapIt plus site logo?",
+    "priority": "normal",
+    "why": "",
+    "related": [],
+    "source": "docs/01-client-questions.md"
+  },
+  {
+    "id": "q19",
+    "num": 19,
+    "section": "POPIA & operations",
+    "text": "Who is the Information Officer, and is registration with the Information Regulator done?",
+    "priority": "first",
+    "why": "POPIA requires a named Information Officer before we collect any guest data.",
+    "related": [],
+    "source": "docs/01-client-questions.md"
+  },
+  {
+    "id": "q20",
+    "num": 20,
+    "section": "POPIA & operations",
+    "text": "What guest data do we need at pilot: none (anonymous analytics), or email/phone for passport and offers?",
+    "priority": "normal",
+    "why": "",
+    "related": [],
+    "source": "docs/01-client-questions.md"
+  },
+  {
+    "id": "q21",
+    "num": 21,
+    "section": "POPIA & operations",
+    "text": "Who provides the privacy policy and terms, or do we draft them for legal review?",
+    "priority": "normal",
+    "why": "",
+    "related": [],
+    "source": "docs/01-client-questions.md"
+  },
+  {
+    "id": "q22",
+    "num": 22,
+    "section": "POPIA & operations",
+    "text": "Support: who answers a guesthouse owner when something breaks, and what hours?",
+    "priority": "normal",
+    "why": "",
+    "related": [],
+    "source": "docs/01-client-questions.md"
+  },
+  {
+    "id": "q23",
+    "num": 23,
+    "section": "Technical",
+    "text": "VPS spec/provider/location (ZA data residency preferred). Is Portainer already installed?",
+    "priority": "first",
+    "why": "We need the server details before we can deploy the pilot.",
+    "related": [],
+    "source": "docs/01-client-questions.md"
+  },
+  {
+    "id": "q24",
+    "num": 24,
+    "section": "Technical",
+    "text": "Who controls DNS for tapit.info and can it point to the VPS?",
+    "priority": "first",
+    "why": "We need control of the domain name to put the pilot site on it.",
+    "related": [],
+    "source": "docs/01-client-questions.md"
+  },
+  {
+    "id": "q25",
+    "num": 25,
+    "section": "Technical",
+    "text": "Email provider for system mail (transactional)? Any existing mailbox or domain setup?",
+    "priority": "normal",
+    "why": "",
+    "related": [],
+    "source": "docs/01-client-questions.md"
+  },
+  {
+    "id": "q26",
+    "num": 26,
+    "section": "Technical",
+    "text": "Which payment gateway does the client already have an account with?",
+    "priority": "normal",
+    "why": "",
+    "related": [],
+    "source": "docs/01-client-questions.md"
+  },
+  {
+    "id": "q27",
+    "num": 27,
+    "section": "Technical",
+    "text": "Are there existing booking systems operators use (Checkfront, Bookeo, FareHarbor, other) that we should integrate with?",
+    "priority": "normal",
+    "why": "",
+    "related": [],
+    "source": "docs/01-client-questions.md"
+  },
+  {
+    "id": "q28",
+    "num": 28,
+    "section": "Technical",
+    "text": "Is there a budget for map/tile services and for an external penetration test?",
+    "priority": "normal",
+    "why": "",
+    "related": [],
+    "source": "docs/01-client-questions.md"
+  },
+  {
+    "id": "q29",
+    "num": 29,
+    "section": "3D / \"adventure\" ambition",
+    "text": "3D = replaying a trip over 3D terrain plus phone tracking (not a 3D UI). Pilot gets a featured-trail flyover from admin-uploaded GPX; user tracking is phase 2. Agreed?",
+    "priority": "first",
+    "why": "The 3D trip replay is the most demanding feature. We want to confirm the scope.",
+    "related": [
+      {
+        "flow": "04-trip-recording-and-replay",
+        "step": "t11",
+        "title": "Trip replay"
+      }
+    ],
+    "source": "docs/01-client-questions.md"
+  },
+  {
+    "id": "q30",
+    "num": 30,
+    "section": "3D / \"adventure\" ambition",
+    "text": "Do we have GPX/route data for the trails, and are the rights cleared?",
+    "priority": "normal",
+    "why": "",
+    "related": [],
+    "source": "docs/01-client-questions.md"
+  },
+  {
+    "id": "q31",
+    "num": 31,
+    "section": "From the flow maps",
+    "text": "Who funds the Passport prizes (for example the Kogelberg Explorer prize): sponsors, partners, or the forum?",
+    "priority": "normal",
+    "why": "",
+    "related": [],
+    "source": "planning/flows"
+  },
+  {
+    "id": "q32",
+    "num": 32,
+    "section": "From the flow maps",
+    "text": "Can partners add the TapIt referral code at their own checkout, or must they confirm each booking by hand in the portal?",
+    "priority": "first",
+    "why": "This decides whether referrals can be matched automatically or need manual checking.",
+    "related": [
+      {
+        "flow": "01-guest-tap-to-concierge",
+        "step": "g13",
+        "title": "Referral code at partner checkout"
+      }
+    ],
+    "source": "planning/flows"
+  },
+  {
+    "id": "q33",
+    "num": 33,
+    "section": "From the flow maps",
+    "text": "How should cancellations and chargebacks affect commission? For example, a credit note against the next invoice.",
+    "priority": "normal",
+    "why": "",
+    "related": [
+      {
+        "flow": "03-referral-and-billing",
+        "step": "r14",
+        "title": "Cancellations and chargebacks"
+      }
+    ],
+    "source": "planning/flows"
+  },
+  {
+    "id": "q34",
+    "num": 34,
+    "section": "From the flow maps",
+    "text": "For long hikes, is it acceptable that phone tracking pauses when the screen is off, with GPX import from a watch as the fallback?",
+    "priority": "normal",
+    "why": "Browsers pause location tracking in the background. The alternative is a native app, which is a later and larger step.",
+    "related": [
+      {
+        "flow": "04-trip-recording-and-replay",
+        "step": "t15",
+        "title": "Background tracking or GPX import"
+      }
+    ],
+    "source": "planning/flows"
+  },
+  {
+    "id": "q35",
+    "num": 35,
+    "section": "From the flow maps",
+    "text": "How long may we keep a guest's recorded trip points? We propose 12 months, then delete.",
+    "priority": "first",
+    "why": "POPIA says personal information must not be kept longer than needed.",
+    "related": [
+      {
+        "flow": "04-trip-recording-and-replay",
+        "step": "t16",
+        "title": "Retention of track points"
+      }
+    ],
+    "source": "planning/flows"
+  }
+]
