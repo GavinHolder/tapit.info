@@ -20,7 +20,7 @@ export function Inspector({ readOnly }: { readOnly: boolean }) {
       <aside className="inspector">
         <div className="empty">
           <h2>Select a step</h2>
-          <p>Click any box to edit it. Drag from the dot on its right edge to connect it to another step. Press Delete to remove the selected step or arrow.</p>
+          <p>Click any box to edit it. Right-click the canvas to add a step, or right-click a step or arrow to delete it. Drag from the dot on its right edge to connect steps.</p>
         </div>
       </aside>
     );

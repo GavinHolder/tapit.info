@@ -20,6 +20,28 @@ function Canvas({ readOnly }: { readOnly: boolean }) {
   const snapshot = useStudio((s) => s.snapshot);
   const flowId = useStudio((s) => s.flowId);
   const rf = useReactFlow();
+  const addNodeAt = useStudio((s) => s.addNodeAt);
+  const removeNode = useStudio((s) => s.removeNode);
+  const removeEdge = useStudio((s) => s.removeEdge);
+  const duplicateNode = useStudio((s) => s.duplicateNode);
+  const [menu, setMenu] = useState<{ x: number; y: number; type: 'pane' | 'node' | 'edge'; id?: string; at: { x: number; y: number } } | null>(null);
+
+  const openMenu = (e: React.MouseEvent | MouseEvent, type: 'pane' | 'node' | 'edge', id?: string) => {
+    if (readOnly) return;
+    e.preventDefault();
+    const box = (e.target as HTMLElement).closest('.canvas-body')?.getBoundingClientRect();
+    setMenu({ x: e.clientX - (box?.left ?? 0), y: e.clientY - (box?.top ?? 0), type, id, at: rf.screenToFlowPosition({ x: e.clientX, y: e.clientY }) });
+  };
+
+  useEffect(() => {
+    if (!menu) return;
+    const close = () => setMenu(null);
+    const key = (e: KeyboardEvent) => { if (e.key === 'Escape') close(); };
+    window.addEventListener('click', close);
+    window.addEventListener('keydown', key);
+    window.addEventListener('blur', close);
+    return () => { window.removeEventListener('click', close); window.removeEventListener('keydown', key); window.removeEventListener('blur', close); };
+  }, [menu]);
 
   // Open at a readable zoom, starting from the first step. The Fit button still shows the whole flow.
   // A link to a specific step (?flow=&step=) centres on that step and selects it instead.
@@ -54,7 +76,15 @@ function Canvas({ readOnly }: { readOnly: boolean }) {
     [select]
   );
 
+  const kinds: NodeKind[] = ['screen', 'action', 'decision', 'data', 'backend', 'profile', 'external', 'question'];
+  const item = (label: string, run: () => void, danger = false, kind?: NodeKind) => (
+    <button key={label} type="button" role="menuitem" className={'cm-item' + (danger ? ' danger' : '')} onClick={() => { run(); setMenu(null); }}>
+      {kind && <span className="cm-dot" style={{ background: KINDS[kind].color }} />}{label}
+    </button>
+  );
+
   return (
+    <>
     <ReactFlow
       nodes={nodes}
       edges={edges}
@@ -64,6 +94,9 @@ function Canvas({ readOnly }: { readOnly: boolean }) {
       onConnect={onConnect}
       onNodeDragStart={() => snapshot()}
       onSelectionChange={onSelectionChange}
+      onPaneContextMenu={(e) => openMenu(e, 'pane')}
+      onNodeContextMenu={(e, n) => { select({ type: 'node', id: n.id }); openMenu(e, 'node', n.id); }}
+      onEdgeContextMenu={(e, ed) => { select({ type: 'edge', id: ed.id }); openMenu(e, 'edge', ed.id); }}
       deleteKeyCode={readOnly ? null : ['Delete', 'Backspace']}
       nodesDraggable={!readOnly}
       nodesConnectable={!readOnly}
@@ -76,6 +109,22 @@ function Canvas({ readOnly }: { readOnly: boolean }) {
       <Controls showInteractive={false} />
       <MiniMap pannable zoomable nodeColor={(n) => KINDS[(n.data as { kind: NodeKind }).kind]?.color ?? '#999'} maskColor="rgba(246,248,247,.7)" />
     </ReactFlow>
+    {menu && (
+      <div className="ctxmenu" role="menu" aria-label={menu.type === 'pane' ? 'Add a step' : menu.type === 'node' ? 'Step actions' : 'Arrow actions'} style={{ left: Math.min(menu.x, 9999), top: menu.y }} onClick={(e) => e.stopPropagation()} onContextMenu={(e) => e.preventDefault()}>
+        {menu.type === 'pane' && (<><div className="cm-h">Add a step here</div>{kinds.map((k) => item(KINDS[k].label, () => addNodeAt(k, menu.at), false, k))}</>)}
+        {menu.type === 'node' && menu.id && (
+          <>
+            <div className="cm-h">Add a step after this one</div>
+            {kinds.map((k) => item(KINDS[k].label, () => { const n = nodes.find((x) => x.id === menu.id); if (n) addNodeAt(k, { x: n.position.x + 330, y: n.position.y + (edges.filter((e) => e.source === n.id).length * 130) }, n.id); }, false, k))}
+            <div className="cm-sep" />
+            {item('Duplicate step', () => duplicateNode(menu.id!))}
+            {item('Delete step', () => removeNode(menu.id!), true)}
+          </>
+        )}
+        {menu.type === 'edge' && menu.id && item('Delete arrow', () => removeEdge(menu.id!), true)}
+      </div>
+    )}
+    </>
   );
 }
 

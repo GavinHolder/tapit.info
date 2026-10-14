@@ -353,3 +353,12 @@ textarea.in { resize: vertical; line-height: 1.45; }
   .top-user { margin-left: 0; }
   .nav { flex: 1; }
 }
+
+/* right-click menu on the flow canvas */
+.ctxmenu { position: absolute; z-index: 20; min-width: 210px; max-height: 80%; overflow-y: auto; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 6px; box-shadow: 0 12px 32px rgba(11, 31, 36, 0.18); display: grid; gap: 1px; }
+.cm-h { font-size: 11px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); padding: 6px 10px 4px; }
+.cm-item { display: flex; align-items: center; gap: 8px; text-align: left; border: 0; background: transparent; border-radius: 8px; padding: 8px 10px; font-weight: 600; font-size: 14px; }
+.cm-item:hover, .cm-item:focus-visible { background: #eef3f0; }
+.cm-item.danger { color: var(--danger); }
+.cm-dot { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+.cm-sep { height: 1px; background: var(--line); margin: 4px 0; }

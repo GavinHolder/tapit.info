@@ -81,6 +81,10 @@ interface State {
   updateNode: (id: string, patch: Partial<NodeData>) => void;
   updateEdgeLabel: (id: string, label: string) => void;
   removeSelected: () => void;
+  addNodeAt: (kind: NodeKind, pos: { x: number; y: number }, after?: string) => void;
+  removeNode: (id: string) => void;
+  removeEdge: (id: string) => void;
+  duplicateNode: (id: string) => void;
   select: (s: Selection) => void;
   undo: () => void;
   redo: () => void;
@@ -158,6 +162,32 @@ export const useStudio = create<State>()((set, get) => ({
     if (anchor) {
       set((s) => ({ edges: addEdge({ source: anchor.id, target: node.id, sourceHandle: null, targetHandle: null, ...edgeStyle }, s.edges) }));
     }
+  },
+
+  // Right-click actions. Unlike addNode these never depend on what is selected.
+  addNodeAt: (kind, pos, after) => {
+    get().snapshot();
+    const node: RFNode = { id: newId(), type: 'step', position: pos, data: blank(kind), selected: true };
+    set((s) => ({ nodes: [...s.nodes.map((n) => ({ ...n, selected: false })), node], selected: { type: 'node', id: node.id }, dirty: true }));
+    if (after) set((s) => ({ edges: addEdge({ source: after, target: node.id, sourceHandle: null, targetHandle: null, ...edgeStyle }, s.edges) }));
+  },
+
+  removeNode: (id) => {
+    get().snapshot();
+    set((s) => ({ nodes: s.nodes.filter((n) => n.id !== id), edges: s.edges.filter((e) => e.source !== id && e.target !== id), selected: s.selected?.id === id ? null : s.selected, dirty: true }));
+  },
+
+  removeEdge: (id) => {
+    get().snapshot();
+    set((s) => ({ edges: s.edges.filter((e) => e.id !== id), selected: s.selected?.id === id ? null : s.selected, dirty: true }));
+  },
+
+  duplicateNode: (id) => {
+    const src = get().nodes.find((n) => n.id === id);
+    if (!src) return;
+    get().snapshot();
+    const copy: RFNode = { id: newId(), type: 'step', position: { x: src.position.x + 40, y: src.position.y + 60 }, data: JSON.parse(JSON.stringify({ ...src.data, title: src.data.title + ' (copy)', comments: [] })), selected: true };
+    set((s) => ({ nodes: [...s.nodes.map((n) => ({ ...n, selected: false })), copy], selected: { type: 'node', id: copy.id }, dirty: true }));
   },
 
   updateNode: (id, patch) => {
