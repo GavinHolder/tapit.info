@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '..');
 const src = path.resolve(root, '..', 'mockups');
-const out = path.join(root, 'public', 'prototypes');
+const out = path.join(root, 'prototypes');
 const vendor = path.join(root, 'vendor');
 const boards = ['Landing', 'App', 'AppDesktop', 'Portal', 'Network', 'Scene'];
 

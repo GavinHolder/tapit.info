@@ -14,6 +14,7 @@ import {
 } from '@xyflow/react';
 import dagre from '@dagrejs/dagre';
 import type { Flow, FlowSummary, NodeData, NodeKind } from '@/lib/types';
+import { api } from '@/lib/api';
 
 export type RFNode = Node<NodeData, 'step'>;
 type Snap = { nodes: RFNode[]; edges: Edge[] };
@@ -113,14 +114,12 @@ export const useStudio = create<State>()((set, get) => ({
   },
 
   loadList: async () => {
-    const res = await fetch('/api/flows', { cache: 'no-store' });
-    set({ list: (await res.json()) as FlowSummary[] });
+    set({ list: await api<FlowSummary[]>('/api/flows') });
   },
 
   open: async (id) => {
     if (get().dirty) await get().save();
-    const res = await fetch(`/api/flows/${id}`, { cache: 'no-store' });
-    const flow = (await res.json()) as Flow;
+    const flow = await api<Flow>(`/api/flows/${id}`);
     const { nodes, edges } = toRF(flow);
     set({ flowId: flow.id, title: flow.title, description: flow.description, nodes, edges, selected: null, past: [], future: [], dirty: false });
   },
@@ -230,8 +229,7 @@ export const useStudio = create<State>()((set, get) => ({
       edges: edges.map((e) => ({ id: e.id, source: e.source, target: e.target, ...(typeof e.label === 'string' && e.label ? { label: e.label } : {}) }))
     };
     try {
-      const res = await fetch(`/api/flows/${flowId}`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
-      if (!res.ok) throw new Error('save failed');
+      await api(`/api/flows/${flowId}`, { method: 'PUT', json: body });
       set({ saving: false, dirty: false, savedAt: Date.now() });
       void get().loadList();
     } catch {
@@ -242,16 +240,13 @@ export const useStudio = create<State>()((set, get) => ({
 
   exportSpec: async () => {
     if (get().dirty) await get().save();
-    const res = await fetch('/api/spec', { method: 'POST' });
-    const data = (await res.json()) as { markdown: string };
+    const data = await api<{ markdown: string }>('/api/spec', { method: 'POST' });
     get().say('Wrote planning/SPEC.md');
     return data.markdown;
   },
 
   createFlow: async (title) => {
-    const res = await fetch('/api/flows', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ title }) });
-    if (!res.ok) return;
-    const flow = (await res.json()) as Flow;
+    const flow = await api<Flow>('/api/flows', { method: 'POST', json: { title } });
     await get().loadList();
     await get().open(flow.id);
   }

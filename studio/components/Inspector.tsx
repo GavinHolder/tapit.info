@@ -6,7 +6,7 @@ import { KINDS, LANES, STATUSES, type Field, type NodeKind, type Status } from '
 import { PROTOTYPES } from '@/lib/prototypes';
 import { useStudio } from './store';
 
-export function Inspector() {
+export function Inspector({ readOnly }: { readOnly: boolean }) {
   const selected = useStudio((s) => s.selected);
   const node = useStudio((s) => (s.selected?.type === 'node' ? s.nodes.find((n) => n.id === s.selected!.id) : undefined));
   const edge = useStudio((s) => (s.selected?.type === 'edge' ? s.edges.find((e) => e.id === s.selected!.id) : undefined));
@@ -61,8 +61,9 @@ export function Inspector() {
     <aside className="inspector">
       <div className="insp-head">
         <h2>Step</h2>
-        <button type="button" className="btn danger small" onClick={removeSelected}>Delete</button>
+        {!readOnly && <button type="button" className="btn danger small" onClick={removeSelected}>Delete</button>}
       </div>
+      <fieldset className="plainset" disabled={readOnly}>
 
       <label className="lbl">Title
         <input className="in" value={d.title} onChange={(e) => set({ title: e.target.value })} />
@@ -143,6 +144,7 @@ export function Inspector() {
         <input className="in" aria-label="Your name" placeholder="Your name" value={author} onChange={(e) => setAuthor(e.target.value)} />
         <textarea className="in" rows={3} aria-label="Add a comment" placeholder="Add a comment, a link or a question" value={text} onChange={(e) => setText(e.target.value)} />
         <button type="button" className="btn primary small" onClick={addComment} disabled={!text.trim()}>Add comment</button>
+      </fieldset>
       </fieldset>
     </aside>
   );

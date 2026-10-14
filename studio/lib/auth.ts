@@ -72,12 +72,23 @@ const WINDOW_MS = 15 * 60 * 1000;
 const MAX_FAILS = 5;
 const buckets: Map<string, Bucket> = ((globalThis as unknown as { __loginBuckets?: Map<string, Bucket> }).__loginBuckets ??= new Map());
 
-export function clientIp(req: Request): string {
+// The caller's address, only when we sit behind our own reverse proxy (Caddy) that sets it.
+// Otherwise return null: an unknown address must never be shared as one bucket, or any
+// visitor could lock everyone out by failing five times.
+export function clientIp(req: Request): string | null {
   if (process.env.STUDIO_TRUST_PROXY === '1') {
     const fwd = req.headers.get('x-forwarded-for');
     if (fwd) return fwd.split(',')[0].trim();
   }
-  return 'direct';
+  return null;
+}
+
+// Which counters a login attempt belongs to.
+// Behind the proxy: one per address, and one per address plus email, so someone elsewhere
+// cannot lock the owner out. Without it: one per email.
+export function loginKeys(req: Request, email: string): string[] {
+  const ip = clientIp(req);
+  return ip ? [`ip:${ip}`, `pair:${ip}:${email}`] : [`email:${email}`];
 }
 
 export function lockedFor(keys: string[]): number {

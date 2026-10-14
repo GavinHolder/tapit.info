@@ -1,26 +1,33 @@
-import { NextResponse } from 'next/server';
+import { guard } from '@/lib/auth';
 import { readFlow, writeFlow } from '@/lib/planning';
 import type { Flow } from '@/lib/types';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET(_req: Request, ctx: { params: Promise<{ id: string }> }) {
+export async function GET(req: Request, ctx: { params: Promise<{ id: string }> }) {
+  const g = await guard(req);
+  if (!g.ok) return g.res;
   const { id } = await ctx.params;
   try {
-    return NextResponse.json(await readFlow(id));
+    return Response.json(await readFlow(id));
   } catch {
-    return NextResponse.json({ error: 'not found' }, { status: 404 });
+    return Response.json({ error: 'not found' }, { status: 404 });
   }
 }
 
+// Only the owner can change flows. Clients discuss them in threads instead.
 export async function PUT(req: Request, ctx: { params: Promise<{ id: string }> }) {
+  const g = await guard(req, 'owner');
+  if (!g.ok) return g.res;
   const { id } = await ctx.params;
-  const flow = (await req.json()) as Flow;
-  if (flow.id !== id) return NextResponse.json({ error: 'id mismatch' }, { status: 400 });
+  const flow = (await req.json().catch(() => null)) as Flow | null;
+  if (!flow || flow.id !== id || !Array.isArray(flow.nodes) || !Array.isArray(flow.edges)) {
+    return Response.json({ error: 'bad flow' }, { status: 400 });
+  }
   try {
     await writeFlow(flow);
-    return NextResponse.json({ ok: true, savedAt: Date.now() });
+    return Response.json({ ok: true, savedAt: Date.now() });
   } catch {
-    return NextResponse.json({ error: 'could not save' }, { status: 500 });
+    return Response.json({ error: 'could not save' }, { status: 500 });
   }
 }

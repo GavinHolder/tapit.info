@@ -8,7 +8,7 @@ export function ReviewViewer({ initial }: { initial?: string }) {
   const [id, setId] = useState(first.id);
   const [nonce, setNonce] = useState(0);
   const proto = PROTOTYPES.find((p) => p.id === id) ?? PROTOTYPES[0];
-  const src = `/prototypes/${proto.file}`;
+  const src = `/api/prototypes/${proto.file}`;
 
   return (
     <div className="rv">

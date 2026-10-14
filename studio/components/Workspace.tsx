@@ -10,7 +10,7 @@ import { useStudio, type RFNode } from './store';
 
 const nodeTypes = { step: StepNode };
 
-function Canvas() {
+function Canvas({ readOnly }: { readOnly: boolean }) {
   const nodes = useStudio((s) => s.nodes);
   const edges = useStudio((s) => s.edges);
   const onNodesChange = useStudio((s) => s.onNodesChange);
@@ -52,7 +52,10 @@ function Canvas() {
       onConnect={onConnect}
       onNodeDragStart={() => snapshot()}
       onSelectionChange={onSelectionChange}
-      deleteKeyCode={['Delete', 'Backspace']}
+      deleteKeyCode={readOnly ? null : ['Delete', 'Backspace']}
+      nodesDraggable={!readOnly}
+      nodesConnectable={!readOnly}
+      edgesReconnectable={!readOnly}
       minZoom={0.2}
       maxZoom={1.6}
       proOptions={{ hideAttribution: false }}
@@ -64,7 +67,7 @@ function Canvas() {
   );
 }
 
-function Toolbar() {
+function Toolbar({ readOnly }: { readOnly: boolean }) {
   const addNode = useStudio((s) => s.addNode);
   const undo = useStudio((s) => s.undo);
   const redo = useStudio((s) => s.redo);
@@ -83,6 +86,7 @@ function Toolbar() {
 
   return (
     <>
+      {!readOnly && (
       <div className="toolbar" role="toolbar" aria-label="Flow tools">
         <div className="tgroup">
           <span className="tlabel">Add</span>
@@ -97,6 +101,7 @@ function Toolbar() {
           <button type="button" className="btn primary small" onClick={async () => setSpec(await exportSpec())}>Export spec</button>
         </div>
       </div>
+      )}
       {spec !== null && (
         <div className="modal-bg" onClick={() => setSpec(null)}>
           <div className="modal" role="dialog" aria-modal="true" aria-label="Spec preview" onClick={(e) => e.stopPropagation()}>
@@ -110,7 +115,7 @@ function Toolbar() {
   );
 }
 
-export function Workspace() {
+export function Workspace({ readOnly }: { readOnly: boolean }) {
   const list = useStudio((s) => s.list);
   const flowId = useStudio((s) => s.flowId);
   const title = useStudio((s) => s.title);
@@ -133,14 +138,15 @@ export function Workspace() {
 
   // Autosave shortly after the last change.
   useEffect(() => {
-    if (!dirty) return;
+    if (!dirty || readOnly) return;
     const t = setTimeout(() => void save(), 900);
     return () => clearTimeout(t);
-  }, [dirty, save, nodesKey()]);
+  }, [dirty, save, readOnly, nodesKey()]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement;
+      if (readOnly) return;
       if (t && ['INPUT', 'TEXTAREA', 'SELECT'].includes(t.tagName)) return;
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z') {
         e.preventDefault();
@@ -149,7 +155,7 @@ export function Workspace() {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, []);
+  }, [readOnly]);
 
   const status = useMemo(() => (saving ? 'Saving…' : dirty ? 'Unsaved changes' : savedAt ? 'Saved to planning/flows' : 'Up to date'), [saving, dirty, savedAt]);
 
@@ -167,7 +173,7 @@ export function Workspace() {
             </li>
           ))}
         </ul>
-        <form
+        {!readOnly && <form
           className="newflow"
           onSubmit={(e) => {
             e.preventDefault();
@@ -176,7 +182,7 @@ export function Workspace() {
         >
           <input className="in" aria-label="New flow name" placeholder="New flow name" value={newTitle} onChange={(e) => setNewTitle(e.target.value)} />
           <button type="submit" className="btn small" disabled={!newTitle.trim()}>Add flow</button>
-        </form>
+        </form>}
         <div className="legend">
           <h3>Status</h3>
           <p><span className="dot" style={{ background: '#B7791F' }} /> Draft</p>
@@ -188,17 +194,17 @@ export function Workspace() {
       <section className="canvas" aria-label="Flow canvas">
         <div className="canvas-head">
           <h1>{title || 'Choose a flow'}</h1>
-          <span className={'save' + (dirty ? ' dirty' : '')}>{status}</span>
+          <span className={'save' + (dirty ? ' dirty' : '')}>{readOnly ? 'View only' : status}</span>
         </div>
         <div className="canvas-body">
           <ReactFlowProvider>
-            <Toolbar />
-            <Canvas />
+            <Toolbar readOnly={readOnly} />
+            <Canvas readOnly={readOnly} />
           </ReactFlowProvider>
         </div>
       </section>
 
-      <Inspector />
+      <Inspector readOnly={readOnly} />
       <div role="status" aria-live="polite" className={'toast' + (toast ? ' show' : '')}>{toast}</div>
     </div>
   );
