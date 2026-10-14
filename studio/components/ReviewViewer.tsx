@@ -8,7 +8,7 @@ import { ThreadView } from './ThreadView';
 
 type Pt = [number, number];
 type Data = { x: number; y: number } | { x: number; y: number; w: number; h: number } | { points: Pt[]; color: string };
-type Ann = { n: number; id: string; kind: 'pin' | 'draw' | 'box'; data: Data; element: string | null; title: string; status: 'open' | 'answered' | 'resolved'; unread: number; message_count: number };
+type Ann = { n: number; id: string; kind: 'pin' | 'draw' | 'box'; data: Data; element: string | null; title: string; status: 'open' | 'answered' | 'resolved'; unread: number; message_count: number; can_delete: boolean };
 type Draft = { kind: 'pin' | 'draw' | 'box'; data: Data; element: string };
 type Mode = 'browse' | 'pin' | 'draw' | 'box';
 
@@ -65,6 +65,30 @@ export function ReviewViewer({ initial, thread, role }: { initial?: string; thre
       if (r.thread.target_type === 'mockup' && PROTOTYPES.some((p) => p.id === r.thread.target_id)) setId(r.thread.target_id);
     }).catch(() => undefined);
   }, [thread]);
+
+  async function remove(a: Ann) {
+    if (!window.confirm(a.message_count > 1 ? 'Delete this comment and its replies?' : 'Delete this comment?')) return;
+    try {
+      await api(`/api/annotations/${a.id}`, { method: 'DELETE' });
+      setSelected(null);
+      await load();
+      window.dispatchEvent(new Event('studio:inbox'));
+    } catch (e) {
+      window.alert(e instanceof Error ? e.message : 'Could not delete.');
+    }
+  }
+
+  // Delete key removes the selected comment (not while typing).
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement;
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(t?.tagName) || (e.key !== 'Delete')) return;
+      const a = anns.find((x) => x.id === selected);
+      if (a?.can_delete) void remove(a);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  });
 
   const visible = useMemo(() => anns.filter((a) => showResolved || a.status !== 'resolved' || a.id === selected), [anns, showResolved, selected]);
   const counts = { open: anns.filter((a) => a.status !== 'resolved').length, resolved: anns.filter((a) => a.status === 'resolved').length };
@@ -135,7 +159,11 @@ export function ReviewViewer({ initial, thread, role }: { initial?: string; thre
 
             {!draft && selected && (
               <div className="rv-thread">
-                <button type="button" className="btn small" onClick={() => setSelected(null)}>Back to list</button>
+                <div className="tv-actions">
+                  <button type="button" className="btn small" onClick={() => setSelected(null)}>Back to list</button>
+                  <span className="grow" />
+                  {anns.find((x) => x.id === selected)?.can_delete && <button type="button" className="btn small danger" onClick={() => remove(anns.find((x) => x.id === selected)!)}>Delete</button>}
+                </div>
                 <ThreadView id={selected} role={role} compact onChanged={() => void load().catch(() => undefined)} />
               </div>
             )}
@@ -144,7 +172,7 @@ export function ReviewViewer({ initial, thread, role }: { initial?: string; thre
               <ul className="alist">
                 {anns.length === 0 && <li className="hint">No comments on this mockup yet. Choose Pin, Draw or Box above, then click the mockup.</li>}
                 {anns.filter((a) => showResolved || a.status !== 'resolved').map((a) => (
-                  <li key={a.id}>
+                  <li key={a.id} className="aline">
                     <button type="button" className="aitem" onClick={() => setSelected(a.id)}>
                       <span className={'pinno st-' + a.status}>{a.n}</span>
                       <span className="atext">
@@ -152,6 +180,7 @@ export function ReviewViewer({ initial, thread, role }: { initial?: string; thre
                         <span>{a.element ? a.element + ' · ' : ''}{a.message_count} message{a.message_count === 1 ? '' : 's'}</span>
                       </span>
                     </button>
+                    {a.can_delete && <button type="button" className="btn small danger adel" aria-label={`Delete comment ${a.n}`} onClick={() => remove(a)}>Delete</button>}
                   </li>
                 ))}
               </ul>

@@ -362,3 +362,6 @@ textarea.in { resize: vertical; line-height: 1.45; }
 .cm-item.danger { color: var(--danger); }
 .cm-dot { width: 10px; height: 10px; border-radius: 3px; flex: none; }
 .cm-sep { height: 1px; background: var(--line); margin: 4px 0; }
+.aline { display: flex; gap: 6px; align-items: stretch; }
+.aline .aitem { flex: 1; min-width: 0; }
+.adel { align-self: center; }

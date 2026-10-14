@@ -229,14 +229,26 @@ export function createAnnotation(user: User, input: { mockup: string; kind: stri
   return id;
 }
 
+// Removes a pin, drawing or box with its conversation. The developer can remove any; a client only their own.
+export function deleteAnnotation(user: User, threadId: string) {
+  const db = getDb();
+  const row = db.prepare('SELECT a.thread_id, t.created_by FROM annotations a JOIN threads t ON t.id = a.thread_id WHERE a.thread_id = ?').get(threadId) as { thread_id: string; created_by: string | null } | undefined;
+  if (!row) throw new Problem(404, 'Not found.');
+  if (user.role !== 'owner' && row.created_by !== user.id) throw new Problem(403, 'You can only remove your own comments.');
+  const files = db.prepare('SELECT a.id, a.mime FROM attachments a JOIN messages m ON m.id = a.message_id WHERE m.thread_id = ?').all(threadId) as { id: string; mime: string }[];
+  db.prepare('DELETE FROM threads WHERE id = ?').run(threadId);
+  return files;
+}
+
 export function listAnnotations(user: User, mockup: string) {
   const threads = listThreads(user, { targetType: 'mockup', targetId: mockup });
+  const owners = new Map((getDb().prepare("SELECT id, created_by FROM threads WHERE target_type = 'mockup' AND target_id = ?").all(mockup) as { id: string; created_by: string | null }[]).map((r) => [r.id, r.created_by]));
   const rows = getDb().prepare('SELECT thread_id, kind, data, element, created_at FROM annotations WHERE mockup = ? ORDER BY created_at, rowid').all(mockup) as { thread_id: string; kind: string; data: string; element: string | null; created_at: string }[];
   const byId = new Map(threads.map((t) => [t.id, t]));
   return rows
     .map((r, i) => {
       const t = byId.get(r.thread_id);
-      return t ? { n: i + 1, id: r.thread_id, kind: r.kind, data: JSON.parse(r.data) as AnnotationData, element: r.element, title: t.title, status: t.status, unread: t.unread, message_count: t.message_count } : null;
+      return t ? { n: i + 1, id: r.thread_id, kind: r.kind, data: JSON.parse(r.data) as AnnotationData, element: r.element, title: t.title, status: t.status, unread: t.unread, message_count: t.message_count, can_delete: user.role === 'owner' || owners.get(t.id) === user.id } : null;
     })
     .filter((x): x is NonNullable<typeof x> => x !== null);
 }
