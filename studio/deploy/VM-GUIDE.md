@@ -88,7 +88,7 @@ Create a WireGuard server on the MikroTik and give the client a profile. They co
 
 ## 6. Connect the client
 
-1. In Studio open **Settings**. Under **Email connection** enter your mail server details (or press Quick fill), save, then press **Send a test email** and confirm it arrives. Adjust the wording under **Email wording and look** if you like.
+1. In Studio open **Settings**. Under **Email connection** enter your mail server details, save, then press **Send a test email** and confirm it arrives. Adjust the wording under **Email wording and look** if you like.
 2. Open **Team**, **Add a person**. Enter the client's name and email, choose **Client**, and either:
    - **Send an invite link** (tick *Also email the invitation* if email works), or
    - **Set a password now** and give them the details. They can change it with the **Password** button.
