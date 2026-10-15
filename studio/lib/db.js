@@ -162,6 +162,13 @@ const MIGRATIONS = [
     at TEXT NOT NULL
   );
   CREATE INDEX wa_log_user ON wa_log(user_id, kind, at);
+  `,
+  `
+  CREATE TABLE settings (
+    key TEXT PRIMARY KEY,
+    value TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+  );
   `
 ];
 

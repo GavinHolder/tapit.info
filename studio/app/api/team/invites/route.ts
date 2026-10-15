@@ -1,6 +1,7 @@
 import { guard } from '@/lib/auth';
 import { getDb } from '@/lib/db.js';
 import { newId, newToken, sha256 } from '@/lib/password.js';
+import { mailEnabled, sendInviteEmail, explainMailError } from '@/lib/mail';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,7 +20,7 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   const g = await guard(req, 'owner');
   if (!g.ok) return g.res;
-  const body = (await req.json().catch(() => ({}))) as { email?: string; name?: string; role?: string };
+  const body = (await req.json().catch(() => ({}))) as { email?: string; name?: string; role?: string; sendEmail?: boolean };
   const email = String(body.email || '').trim().toLowerCase();
   const name = String(body.name || '').trim();
   const role = body.role === 'owner' ? 'owner' : 'client';
@@ -40,5 +41,17 @@ export async function POST(req: Request) {
     now.toISOString(),
     new Date(now.getTime() + DAYS * 24 * 3600 * 1000).toISOString()
   );
-  return Response.json({ path: `/invite/${token}`, expiresInDays: DAYS });
+  // Optionally email the link as well (only when email is set up on the Settings page).
+  let emailed: 'off' | 'sent' | 'failed' = 'off';
+  let emailError = '';
+  if (body.sendEmail && mailEnabled()) {
+    try {
+      await sendInviteEmail(email, name, g.user.name, `/invite/${token}`, DAYS);
+      emailed = 'sent';
+    } catch (e) {
+      emailed = 'failed';
+      emailError = explainMailError(e);
+    }
+  }
+  return Response.json({ path: `/invite/${token}`, expiresInDays: DAYS, emailed, emailError });
 }

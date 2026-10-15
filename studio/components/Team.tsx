@@ -23,6 +23,9 @@ export function Team({ selfId }: { selfId: string }) {
   const [email, setEmail] = useState('');
   const [role, setRole] = useState<'client' | 'owner'>('client');
   const [how, setHow] = useState<'invite' | 'password'>('invite');
+  const [mailOn, setMailOn] = useState(false);
+  const [sendMail, setSendMail] = useState(true);
+  const [emailed, setEmailed] = useState('');
   const [password, setPassword] = useState('');
   const [show, setShow] = useState(false);
   const [link, setLink] = useState('');
@@ -39,7 +42,7 @@ export function Team({ selfId }: { selfId: string }) {
     setUsers(u.users);
     setInvites(i.invites);
   }, []);
-  useEffect(() => { void load(); }, [load]);
+  useEffect(() => { void load(); void api<{ mailEnabled: boolean }>('/api/me/prefs').then((r) => setMailOn(r.mailEnabled)).catch(() => undefined); }, [load]);
 
   async function copy(text: string, key: string) {
     try { await navigator.clipboard.writeText(text); setCopied(key); setTimeout(() => setCopied(''), 1500); } catch { setError('Copying was blocked. Select the text and copy it yourself.'); }
@@ -50,11 +53,13 @@ export function Team({ selfId }: { selfId: string }) {
     setError('');
     setLink('');
     setMade(null);
+    setEmailed('');
     setBusy(true);
     try {
       if (how === 'invite') {
-        const r = await api<{ path: string }>('/api/team/invites', { json: { name, email, role } });
+        const r = await api<{ path: string; emailed: string; emailError: string }>('/api/team/invites', { json: { name, email, role, sendEmail: mailOn && sendMail } });
         setLink(window.location.origin + r.path);
+        setEmailed(r.emailed === 'sent' ? 'The invitation was also emailed to them.' : r.emailed === 'failed' ? `The email could not be sent (${r.emailError}). Copy the link below and send it yourself.` : '');
       } else {
         await api('/api/team/users', { json: { name, email, role, password } });
         setMade({ email: email.trim().toLowerCase(), password });
@@ -113,6 +118,7 @@ export function Team({ selfId }: { selfId: string }) {
             <label className="chk"><input type="radio" name="how" checked={how === 'invite'} onChange={() => setHow('invite')} />Send an invite link (they choose their password)</label>
             <label className="chk"><input type="radio" name="how" checked={how === 'password'} onChange={() => setHow('password')} />Set a password now</label>
           </fieldset>
+          {how === 'invite' && mailOn && <label className="chk fullrow"><input type="checkbox" checked={sendMail} onChange={(e) => setSendMail(e.target.checked)} />Also email the invitation to them</label>}
           {how === 'password' && (
             <div className="pwrow">
               <label className="lbl">Password (10 or more characters)
@@ -126,6 +132,7 @@ export function Team({ selfId }: { selfId: string }) {
         </form>
         <div className="form-error" role="alert">{error}</div>
 
+        {emailed && <p className={emailed.startsWith('The email could not') ? 'form-error' : 'ok'}>{emailed}</p>}
         {link && (
           <div className="linkbox">
             <p className="hint">Send them this link (valid 7 days). It is shown only once.</p>
