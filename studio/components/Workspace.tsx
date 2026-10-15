@@ -1,11 +1,12 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Background, BackgroundVariant, Controls, MiniMap, ReactFlow, ReactFlowProvider, useReactFlow, type Edge } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { KINDS, type NodeKind } from '@/lib/types';
 import { StepNode } from './StepNode';
 import { Inspector } from './Inspector';
+import { MermaidDialog, ShortcutsDialog } from './MermaidDialog';
 import { useStudio, type RFNode } from './store';
 
 const nodeTypes = { step: StepNode };
@@ -24,7 +25,37 @@ function Canvas({ readOnly }: { readOnly: boolean }) {
   const removeNode = useStudio((s) => s.removeNode);
   const removeEdge = useStudio((s) => s.removeEdge);
   const duplicateNode = useStudio((s) => s.duplicateNode);
+  const toggleCollapse = useStudio((s) => s.toggleCollapse);
+  const expandAll = useStudio((s) => s.expandAll);
+  const addAfter = useStudio((s) => s.addAfter);
+  const connectFrom = useRef<string | null>(null);
   const [menu, setMenu] = useState<{ x: number; y: number; type: 'pane' | 'node' | 'edge'; id?: string; at: { x: number; y: number } } | null>(null);
+
+  // A collapsed step hides everything after it.
+  const { shownNodes, shownEdges, anyCollapsed } = useMemo(() => {
+    const out = new Map<string, string[]>();
+    edges.forEach((e) => out.set(e.source, [...(out.get(e.source) ?? []), e.target]));
+    const hidden = new Set<string>();
+    const counts = new Map<string, number>();
+    for (const n of nodes) {
+      if (!n.data.collapsed) continue;
+      const seen = new Set<string>();
+      const stack = [...(out.get(n.id) ?? [])];
+      while (stack.length) {
+        const id = stack.pop()!;
+        if (seen.has(id) || id === n.id) continue;
+        seen.add(id);
+        stack.push(...(out.get(id) ?? []));
+      }
+      seen.forEach((id) => hidden.add(id));
+      counts.set(n.id, seen.size);
+    }
+    return {
+      shownNodes: nodes.map((n) => (hidden.has(n.id) ? { ...n, hidden: true } : counts.has(n.id) ? { ...n, data: { ...n.data, hiddenCount: counts.get(n.id) } } : n)),
+      shownEdges: edges.map((e) => (hidden.has(e.source) || hidden.has(e.target) ? { ...e, hidden: true } : e)),
+      anyCollapsed: nodes.some((n) => n.data.collapsed)
+    };
+  }, [nodes, edges]);
 
   const openMenu = (e: React.MouseEvent | MouseEvent, type: 'pane' | 'node' | 'edge', id?: string) => {
     if (readOnly) return;
@@ -101,12 +132,21 @@ function Canvas({ readOnly }: { readOnly: boolean }) {
   return (
     <>
     <ReactFlow
-      nodes={nodes}
-      edges={edges}
+      nodes={shownNodes}
+      edges={shownEdges}
       nodeTypes={nodeTypes}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
+      onConnectStart={(_, p) => { connectFrom.current = p.handleType === 'source' ? p.nodeId : null; }}
+      onConnectEnd={(event, state) => {
+        const from = connectFrom.current;
+        connectFrom.current = null;
+        if (readOnly || !from || state.toHandle) return;
+        const pt = 'changedTouches' in event ? event.changedTouches[0] : event;
+        const at = rf.screenToFlowPosition({ x: pt.clientX, y: pt.clientY });
+        addNodeAt('action', { x: Math.round(at.x - 20), y: Math.round(at.y - 20) }, from);
+      }}
       onNodeDragStart={() => snapshot()}
       onSelectionChange={onSelectionChange}
       onPaneContextMenu={(e) => openMenu(e, 'pane')}
@@ -126,12 +166,13 @@ function Canvas({ readOnly }: { readOnly: boolean }) {
     </ReactFlow>
     {menu && (
       <div className="ctxmenu" role="menu" aria-label={menu.type === 'pane' ? 'Add a step' : menu.type === 'node' ? 'Step actions' : 'Arrow actions'} style={{ left: Math.min(menu.x, 9999), top: menu.y }} onClick={(e) => e.stopPropagation()} onContextMenu={(e) => e.preventDefault()}>
-        {menu.type === 'pane' && (<><div className="cm-h">Add a step here</div>{kinds.map((k) => item(KINDS[k].label, () => addNodeAt(k, menu.at), false, k))}</>)}
+        {menu.type === 'pane' && (<><div className="cm-h">Add a step here</div>{kinds.map((k) => item(KINDS[k].label, () => addNodeAt(k, menu.at), false, k))}{anyCollapsed && (<><div className="cm-sep" />{item('Expand all collapsed steps', () => expandAll())}</>)}</>)}
         {menu.type === 'node' && menu.id && (
           <>
             <div className="cm-h">Add a step after this one</div>
             {kinds.map((k) => item(KINDS[k].label, () => { const n = nodes.find((x) => x.id === menu.id); if (n) addNodeAt(k, { x: n.position.x + 330, y: n.position.y + (edges.filter((e) => e.source === n.id).length * 130) }, n.id); }, false, k))}
             <div className="cm-sep" />
+            {item(nodes.find((x) => x.id === menu.id)?.data.collapsed ? 'Expand the steps after this' : 'Collapse the steps after this', () => toggleCollapse(menu.id!))}
             {item('Duplicate step', () => duplicateNode(menu.id!))}
             {item('Delete step', () => removeNode(menu.id!), true)}
           </>
@@ -153,6 +194,8 @@ function Toolbar({ readOnly }: { readOnly: boolean }) {
   const exportSpec = useStudio((s) => s.exportSpec);
   const rf = useReactFlow();
   const [spec, setSpec] = useState<string | null>(null);
+  const [mermaid, setMermaid] = useState(false);
+  const [keys, setKeys] = useState(false);
 
   const add = (k: NodeKind) => {
     const c = rf.screenToFlowPosition({ x: window.innerWidth / 2 - 100, y: window.innerHeight / 2 - 60 });
@@ -174,10 +217,14 @@ function Toolbar({ readOnly }: { readOnly: boolean }) {
           <button type="button" className="btn small" onClick={undo} disabled={!canUndo}>Undo</button>
           <button type="button" className="btn small" onClick={redo} disabled={!canRedo}>Redo</button>
           <button type="button" className="btn small" onClick={() => { tidy(); setTimeout(() => void rf.fitView({ padding: 0.15, duration: 300 }), 50); }}>Tidy layout</button>
+          <button type="button" className="btn small" onClick={() => setMermaid(true)}>Mermaid</button>
+          <button type="button" className="btn small" onClick={() => setKeys(true)} aria-label="Keyboard shortcuts" title="Keyboard shortcuts">?</button>
           <button type="button" className="btn primary small" onClick={async () => setSpec(await exportSpec())}>Export spec</button>
         </div>
       </div>
       )}
+      {mermaid && <MermaidDialog onClose={() => setMermaid(false)} onDone={() => { setMermaid(false); setTimeout(() => void rf.fitView({ padding: 0.15, duration: 300 }), 50); }} />}
+      {keys && <ShortcutsDialog onClose={() => setKeys(false)} />}
       {spec !== null && (
         <div className="modal-bg" onClick={() => setSpec(null)}>
           <div className="modal" role="dialog" aria-modal="true" aria-label="Spec preview" onClick={(e) => e.stopPropagation()}>
@@ -256,13 +303,25 @@ export function Workspace({ readOnly }: { readOnly: boolean }) {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      const t = e.target as HTMLElement;
       if (readOnly) return;
-      if (t && ['INPUT', 'TEXTAREA', 'SELECT'].includes(t.tagName)) return;
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z') {
-        e.preventDefault();
-        if (e.shiftKey) useStudio.getState().redo(); else useStudio.getState().undo();
-      }
+      const t = e.target as HTMLElement;
+      const typing = !!t && (['INPUT', 'TEXTAREA', 'SELECT'].includes(t.tagName) || t.isContentEditable);
+      const st = useStudio.getState();
+      const mod = e.metaKey || e.ctrlKey;
+      const key = e.key.toLowerCase();
+      if (mod && key === 's') { e.preventDefault(); void st.save(); return; }
+      if (typing || document.querySelector('.modal-bg')) return;
+      const node = st.selected?.type === 'node' ? st.selected.id : null;
+      if (mod && key === 'z') { e.preventDefault(); if (e.shiftKey) st.redo(); else st.undo(); return; }
+      if (mod && key === 'y') { e.preventDefault(); st.redo(); return; }
+      if (mod && key === 'd' && node) { e.preventDefault(); st.duplicateNode(node); return; }
+      if (mod || e.altKey) return;
+      if (key === 'tab' && node) { e.preventDefault(); st.addAfter(node); return; }
+      if ((key === 'enter' || key === 'f2') && node) { e.preventDefault(); document.getElementById('insp-title')?.focus(); return; }
+      if (key === 'c' && node) { e.preventDefault(); st.toggleCollapse(node); return; }
+      if (key === 'escape') { st.selectNode(null); return; }
+      const dir = ({ arrowright: 'right', arrowleft: 'left', arrowup: 'up', arrowdown: 'down' } as const)[key as 'arrowright'];
+      if (dir) { e.preventDefault(); st.selectRelative(dir); }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);

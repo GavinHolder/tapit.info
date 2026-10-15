@@ -27,6 +27,7 @@ export function StepNode({ id, data, selected }: NodeProps<RFNode>) {
         )}
       </div>
       <div className="step-title">{data.title}</div>
+      {data.collapsed === true && <div className="step-collapsed">{typeof data.hiddenCount === 'number' && data.hiddenCount > 0 ? `+${data.hiddenCount} hidden steps` : 'collapsed'}</div>}
       {(data.fields.length > 0 || data.comments.length > 0 || data.mockup) && (
         <div className="step-meta">
           {data.fields.length > 0 && <span>{data.fields.length} field{data.fields.length === 1 ? '' : 's'}</span>}

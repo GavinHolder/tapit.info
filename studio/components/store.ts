@@ -14,6 +14,7 @@ import {
 } from '@xyflow/react';
 import dagre from '@dagrejs/dagre';
 import type { Flow, FlowSummary, NodeData, NodeKind } from '@/lib/types';
+import { parseMermaid } from '@/lib/mermaid';
 import { api } from '@/lib/api';
 
 export type RFNode = Node<NodeData, 'step'>;
@@ -87,6 +88,12 @@ interface State {
   removeNode: (id: string) => void;
   removeEdge: (id: string) => void;
   duplicateNode: (id: string) => void;
+  addAfter: (id: string, kind?: NodeKind) => void;
+  selectNode: (id: string | null) => void;
+  selectRelative: (dir: 'left' | 'right' | 'up' | 'down') => void;
+  toggleCollapse: (id: string) => void;
+  expandAll: () => void;
+  importMermaid: (text: string, mode: 'add' | 'replace') => { nodes: number; edges: number; skipped: number };
   select: (s: Selection) => void;
   undo: () => void;
   redo: () => void;
@@ -98,6 +105,7 @@ interface State {
 }
 
 let toastTimer: ReturnType<typeof setTimeout> | null = null;
+let lastSnapAt = 0;
 
 export const useStudio = create<State>()((set, get) => ({
   list: [],
@@ -137,16 +145,23 @@ export const useStudio = create<State>()((set, get) => ({
   },
 
   snapshot: () => {
+    // A single user action can reach here twice (steps and their arrows). Count it once.
+    const nowMs = Date.now();
+    if (nowMs - lastSnapAt < 60) return;
+    lastSnapAt = nowMs;
     const { nodes, edges, past } = get();
     set({ past: [...past.slice(-99), { nodes, edges }], future: [] });
   },
 
   onNodesChange: (changes) => {
+    // Deleting with the Delete key arrives here, not through removeSelected, so remember the state for undo.
+    if (changes.some((c) => c.type === 'remove')) get().snapshot();
     const meaningful = changes.some((c) => c.type === 'position' || c.type === 'remove' || c.type === 'add' || c.type === 'replace');
     set((s) => ({ nodes: applyNodeChanges(changes, s.nodes), dirty: s.dirty || meaningful }));
   },
 
   onEdgesChange: (changes) => {
+    if (changes.some((c) => c.type === 'remove')) get().snapshot();
     const meaningful = changes.some((c) => c.type === 'remove' || c.type === 'add' || c.type === 'replace');
     set((s) => ({ edges: applyEdgeChanges(changes, s.edges), dirty: s.dirty || meaningful }));
   },
@@ -192,6 +207,72 @@ export const useStudio = create<State>()((set, get) => ({
     get().snapshot();
     const copy: RFNode = { id: newId(), type: 'step', position: { x: src.position.x + 40, y: src.position.y + 60 }, data: JSON.parse(JSON.stringify({ ...src.data, title: src.data.title + ' (copy)', comments: [] })), selected: true };
     set((s) => ({ nodes: [...s.nodes.map((n) => ({ ...n, selected: false })), copy], selected: { type: 'node', id: copy.id }, dirty: true }));
+  },
+
+  // Keyboard and menu helpers.
+  addAfter: (id, kind = 'action') => {
+    const n = get().nodes.find((x) => x.id === id);
+    if (!n) return;
+    const taken = get().edges.filter((e) => e.source === id).length;
+    get().addNodeAt(kind, { x: n.position.x + NODE_W + 80, y: n.position.y + taken * (NODE_H + 30) }, id);
+  },
+
+  selectNode: (id) => {
+    set((s) => ({ nodes: s.nodes.map((n) => ({ ...n, selected: n.id === id })), selected: id ? { type: 'node', id } : null }));
+  },
+
+  // Arrow keys walk the flow: right = next step, left = previous, up and down = neighbours in the same column.
+  selectRelative: (dir) => {
+    const { nodes, edges, selected } = get();
+    const cur = selected?.type === 'node' ? nodes.find((n) => n.id === selected.id) : undefined;
+    if (!cur) { if (nodes[0]) get().selectNode(nodes[0].id); return; }
+    const byId = new Map(nodes.map((n) => [n.id, n]));
+    let pick: RFNode | undefined;
+    if (dir === 'right') pick = edges.filter((e) => e.source === cur.id).map((e) => byId.get(e.target)).filter((x): x is RFNode => !!x).sort((a, b) => a.position.y - b.position.y)[0];
+    else if (dir === 'left') pick = edges.filter((e) => e.target === cur.id).map((e) => byId.get(e.source)).filter((x): x is RFNode => !!x).sort((a, b) => a.position.y - b.position.y)[0];
+    else {
+      const col = nodes.filter((n) => Math.abs(n.position.x - cur.position.x) < NODE_W / 2 && n.id !== cur.id);
+      pick = col
+        .filter((n) => (dir === 'down' ? n.position.y > cur.position.y : n.position.y < cur.position.y))
+        .sort((a, b) => Math.abs(a.position.y - cur.position.y) - Math.abs(b.position.y - cur.position.y))[0];
+    }
+    if (pick) get().selectNode(pick.id);
+  },
+
+  toggleCollapse: (id) => {
+    get().snapshot();
+    set((s) => ({ nodes: s.nodes.map((n) => (n.id === id ? { ...n, data: { ...n.data, collapsed: !n.data.collapsed } } : n)), dirty: true }));
+  },
+
+  expandAll: () => {
+    get().snapshot();
+    set((s) => ({ nodes: s.nodes.map((n) => (n.data.collapsed ? { ...n, data: { ...n.data, collapsed: false } } : n)), dirty: true }));
+  },
+
+  importMermaid: (text, mode) => {
+    const p = parseMermaid(text);
+    if (!p.nodes.length) return { nodes: 0, edges: 0, skipped: p.skipped.length };
+    get().snapshot();
+    const idMap = new Map(p.nodes.map((n) => [n.id, newId()]));
+    // Lay the imported steps out on their own, then place them (below the existing ones when adding).
+    const g = new dagre.graphlib.Graph();
+    g.setDefaultEdgeLabel(() => ({}));
+    g.setGraph({ rankdir: 'LR', nodesep: 36, ranksep: 90 });
+    p.nodes.forEach((n) => g.setNode(n.id, { width: NODE_W, height: NODE_H }));
+    p.edges.forEach((e) => g.setEdge(e.source, e.target));
+    dagre.layout(g);
+    const existing = mode === 'add' ? get().nodes : [];
+    const baseX = existing.length ? Math.min(...existing.map((n) => n.position.x)) : 40;
+    const baseY = existing.length ? Math.max(...existing.map((n) => n.position.y)) + NODE_H + 140 : 40;
+    const minX = Math.min(...p.nodes.map((n) => g.node(n.id).x - NODE_W / 2));
+    const minY = Math.min(...p.nodes.map((n) => g.node(n.id).y - NODE_H / 2));
+    const nodes: RFNode[] = p.nodes.map((n) => {
+      const pos = g.node(n.id);
+      return { id: idMap.get(n.id)!, type: 'step', position: { x: Math.round(baseX + pos.x - NODE_W / 2 - minX), y: Math.round(baseY + pos.y - NODE_H / 2 - minY) }, data: { ...blank(n.kind), title: n.title.slice(0, 120) } };
+    });
+    const edges: Edge[] = p.edges.map((e) => ({ id: `e${newId()}`, source: idMap.get(e.source)!, target: idMap.get(e.target)!, label: e.label, ...edgeStyle }));
+    set((s) => (mode === 'replace' ? { nodes, edges, selected: null, dirty: true } : { nodes: [...s.nodes, ...nodes], edges: [...s.edges, ...edges], dirty: true }));
+    return { nodes: nodes.length, edges: edges.length, skipped: p.skipped.length };
   },
 
   updateNode: (id, patch) => {

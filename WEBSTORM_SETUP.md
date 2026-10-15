@@ -22,10 +22,18 @@ Run from the Run menu: Edit Configurations, add an **npm** configuration (comman
 |---|---|
 | Inbox | Questions for the client and every message, with unread counts |
 | Decisions | Look and layout choices the client approves |
-| Flows | The application flows. Right-click the canvas or click a step's ⋯ to add, duplicate or delete steps |
+| Flows | The application flows (see below) |
 | Mockups | 17 interactive mockups. Pin, draw or box a comment on any of them |
 | Finalize | Builds a numbered handoff with a Claude Code prompt and a Claude Design brief |
 | Team | Invite the client. They choose their own password. |
+
+### Editing flows
+
+- **Add:** right-click empty canvas, press **Tab** on a selected step (adds a connected step), or drag from a step's right-hand dot onto empty space.
+- **Change or remove:** right-click a step or arrow, or click the **⋯** on a step (add after, duplicate, collapse, delete). **Delete** removes the selected step or arrow.
+- **Move around:** arrow keys walk the flow. **Enter** edits the title. **C** collapses or expands the steps after the selected one.
+- **Undo and redo:** Ctrl+Z, Ctrl+Shift+Z. **Ctrl+S** saves now (it also saves automatically).
+- **Mermaid:** the **Mermaid** button exports the flow as a Mermaid flowchart or imports one as new steps. The **?** button lists every shortcut.
 
 Accounts, messages and uploads are stored in `studio/data` (git-ignored). Flows and handoffs are files in `planning/` (commit them).
 

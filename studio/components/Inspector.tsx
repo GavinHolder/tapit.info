@@ -52,7 +52,7 @@ export function Inspector({ readOnly }: { readOnly: boolean }) {
       <fieldset className="plainset" disabled={readOnly}>
 
       <label className="lbl">Title
-        <input className="in" value={d.title} onChange={(e) => set({ title: e.target.value })} />
+        <input id="insp-title" className="in" value={d.title} onChange={(e) => set({ title: e.target.value })} />
       </label>
 
       <div className="row3">
