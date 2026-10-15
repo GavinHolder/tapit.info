@@ -1,7 +1,7 @@
 import { getDb } from './db.js';
 import { newId } from './password.js';
 import type { User } from './auth';
-import { PROTOTYPES } from './prototypes';
+import { isMockupId } from './mockups';
 import { enqueueNotifications } from './mail';
 
 export type ThreadRow = {
@@ -217,7 +217,7 @@ function cleanAnnotation(kind: string, raw: unknown): AnnotationData {
 }
 
 export function createAnnotation(user: User, input: { mockup: string; kind: string; data: unknown; element?: string; body: string; attachmentIds?: string[] }) {
-  if (!PROTOTYPES.some((p) => p.id === input.mockup)) throw new Problem(400, 'Unknown mockup.');
+  if (!isMockupId(input.mockup)) throw new Problem(400, 'Unknown mockup.');
   const data = cleanAnnotation(input.kind, input.data);
   const body = input.body.trim();
   const element = (input.element ?? '').trim().slice(0, 160) || null;

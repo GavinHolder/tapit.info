@@ -3,8 +3,10 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { api } from '@/lib/api';
-import { GROUPS, PROTOTYPES, type Prototype } from '@/lib/prototypes';
+import { BUILTIN, GROUPS, groupTitle, type Prototype } from '@/lib/prototypes';
+import { MockupDialog } from './MockupDialog';
 import { ThreadView } from './ThreadView';
+import { useMockups } from './useMockups';
 
 type Pt = [number, number];
 type Data = { x: number; y: number } | { x: number; y: number; w: number; h: number } | { points: Pt[]; color: string };
@@ -30,8 +32,11 @@ function describe(el: Element | null): string {
 }
 
 export function ReviewViewer({ initial, thread, role }: { initial?: string; thread?: string; role: 'owner' | 'client' }) {
-  const first = PROTOTYPES.find((p) => p.id === initial) ?? PROTOTYPES[0];
-  const [id, setId] = useState(first.id);
+  const { list, hidden, reload } = useMockups();
+  const [id, setId] = useState(initial ?? BUILTIN[0].id);
+  const [dialog, setDialog] = useState<'import' | 'edit' | null>(null);
+  const [notice, setNotice] = useState<string[]>([]);
+  const owner = role === 'owner';
   const [nonce, setNonce] = useState(0);
   const [mode, setMode] = useState<Mode>('browse');
   const [color, setColor] = useState(COLORS[0]);
@@ -41,13 +46,15 @@ export function ReviewViewer({ initial, thread, role }: { initial?: string; thre
   const [showResolved, setShowResolved] = useState(false);
   const [links, setLinks] = useState<Record<string, { flow: string; flowTitle: string; step: string; title: string }[]>>({});
   useEffect(() => { void api<{ links: typeof links }>('/api/mockup-links').then((r) => setLinks(r.links)).catch(() => undefined); }, []);
-  const proto: Prototype = PROTOTYPES.find((p) => p.id === id) ?? PROTOTYPES[0];
-  const src = `/api/prototypes/${proto.file}`;
+  const proto: Prototype | undefined = list.find((p) => p.id === id) ?? list[0];
+  const protoId = proto?.id ?? '';
+  const src = proto ? `/api/prototypes/${proto.file}` : '';
 
   const load = useCallback(async () => {
-    const r = await api<{ annotations: Ann[] }>(`/api/annotations?mockup=${proto.id}`);
+    if (!protoId) return;
+    const r = await api<{ annotations: Ann[] }>(`/api/annotations?mockup=${protoId}`);
     setAnns(r.annotations);
-  }, [proto.id]);
+  }, [protoId]);
 
   useEffect(() => {
     setAnns([]);
@@ -62,7 +69,7 @@ export function ReviewViewer({ initial, thread, role }: { initial?: string; thre
   useEffect(() => {
     if (!thread) return;
     void api<{ thread: { target_type: string; target_id: string } }>(`/api/threads/${thread}`).then((r) => {
-      if (r.thread.target_type === 'mockup' && PROTOTYPES.some((p) => p.id === r.thread.target_id)) setId(r.thread.target_id);
+      if (r.thread.target_type === 'mockup') setId(r.thread.target_id);
     }).catch(() => undefined);
   }, [thread]);
 
@@ -92,7 +99,38 @@ export function ReviewViewer({ initial, thread, role }: { initial?: string; thre
 
   const visible = useMemo(() => anns.filter((a) => showResolved || a.status !== 'resolved' || a.id === selected), [anns, showResolved, selected]);
   const counts = { open: anns.filter((a) => a.status !== 'resolved').length, resolved: anns.filter((a) => a.status === 'resolved').length };
-  const groups = (Object.keys(GROUPS) as (keyof typeof GROUPS)[]).map((g) => ({ key: g, ...GROUPS[g], items: PROTOTYPES.filter((p) => p.group === g) }));
+  const keys = [...new Set(list.map((p) => p.group))];
+  const groups = keys.map((g) => ({ key: g, title: groupTitle(g), note: GROUPS[g]?.note ?? 'Imported while Studio was running.', items: list.filter((p) => p.group === g) }));
+
+  async function removeMockup() {
+    if (!proto) return;
+    let msg: string;
+    if (proto.builtin) {
+      msg = `Remove “${proto.title}” from the list?\n\nIt is one of the built-in mockups, so it is only hidden. Its comments are kept and you can bring it back with “Restore built-in mockups”.`;
+    } else {
+      const c = await api<{ comments: number }>(`/api/mockups/${proto.id}`).then((r) => r.comments).catch(() => 0);
+      msg = `Delete “${proto.title}” for good?\n\nThe file${c ? ` and its ${c} comment${c === 1 ? '' : 's'} (with replies and attached images)` : ''} will be removed. This cannot be undone.`;
+    }
+    if (!window.confirm(msg)) return;
+    try {
+      await api(`/api/mockups/${proto.id}`, { method: 'DELETE' });
+      setSelected(null);
+      const next = await reload();
+      setId((next.find((x) => x.id !== proto.id) ?? next[0])?.id ?? '');
+      window.dispatchEvent(new Event('studio:inbox'));
+    } catch (e) {
+      window.alert(e instanceof Error ? e.message : 'Could not delete.');
+    }
+  }
+
+  async function restore() {
+    try {
+      await api('/api/mockups/all/restore', { method: 'POST', json: {} });
+      await reload();
+    } catch (e) {
+      window.alert(e instanceof Error ? e.message : 'Could not restore.');
+    }
+  }
 
   return (
     <div className="rv">
@@ -103,15 +141,34 @@ export function ReviewViewer({ initial, thread, role }: { initial?: string; thre
             <p className="hint">{g.note}</p>
             {g.items.map((p) => (
               <button key={p.id} type="button" className={'rv-item' + (p.id === id ? ' on' : '')} onClick={() => { setId(p.id); setSelected(null); }}>
-                <b>{p.title}</b>
+                <b>{p.title}{!p.builtin && <i className="tag">Imported</i>}</b>
                 <span>{p.note}</span>
               </button>
             ))}
           </section>
         ))}
+        {owner && (
+          <div className="rv-tools">
+            <button type="button" className="btn primary small" onClick={() => setDialog('import')}>Import a mockup</button>
+            {hidden.length > 0 && <button type="button" className="btn small" onClick={() => void restore()}>Restore built-in mockups ({hidden.length})</button>}
+          </div>
+        )}
       </aside>
 
       <section className="rv-main">
+        {!proto ? (
+          <div className="rv-empty">
+            <b>No mockups yet.</b>
+            <span>{owner ? 'Import one to start collecting comments on it.' : 'The developer has not added any mockups yet.'}</span>
+            {owner && <button type="button" className="btn primary" onClick={() => setDialog('import')}>Import a mockup</button>}
+          </div>
+        ) : (<>
+        {notice.length > 0 && (
+          <div className="importnote" role="status">
+            {notice.map((n) => <div key={n}>{n}</div>)}
+            <button type="button" className="btn small" onClick={() => setNotice([])}>Dismiss</button>
+          </div>
+        )}
         <div className="rv-bar">
           <h1>{proto.title}</h1>
           <div className="rv-modes" role="toolbar" aria-label="Review tools">
@@ -129,12 +186,14 @@ export function ReviewViewer({ initial, thread, role }: { initial?: string; thre
           <div className="sp">
             <button type="button" className="btn small" onClick={() => setNonce((n) => n + 1)}>Restart</button>
             <a className="btn small" href={src} target="_blank" rel="noreferrer">Open full screen</a>
+            {owner && !proto.builtin && <button type="button" className="btn small" onClick={() => setDialog('edit')}>Edit details</button>}
+            {owner && <button type="button" className="btn small danger" onClick={() => void removeMockup()}>{proto.builtin ? 'Remove' : 'Delete'}</button>}
           </div>
         </div>
 
         <div className="rv-body">
           <div className="rv-stage">
-            <Stage key={id + nonce} proto={proto} src={src} mode={mode} color={color} anns={visible} selected={selected} onSelect={(a) => { setSelected(a); setDraft(null); }} onDraft={(d) => { setDraft(d); setSelected(null); }} draft={draft} onMode={(m) => { setMode(m); setDraft(null); }} onDelete={(a) => void remove(a)} />
+            <Stage key={protoId + nonce} proto={proto} src={src} mode={mode} color={color} anns={visible} selected={selected} onSelect={(a) => { setSelected(a); setDraft(null); }} onDraft={(d) => { setDraft(d); setSelected(null); }} draft={draft} onMode={(m) => { setMode(m); setDraft(null); }} onDelete={(a) => void remove(a)} />
           </div>
 
           <aside className="rv-panel" aria-label="Comments on this mockup">
@@ -155,7 +214,7 @@ export function ReviewViewer({ initial, thread, role }: { initial?: string; thre
               </details>
             )}
 
-            {draft && <DraftForm key={JSON.stringify(draft.data)} draft={draft} mockup={proto.id} onCancel={() => setDraft(null)} onDone={async (newId) => { setDraft(null); await load(); setSelected(newId); }} color={color} />}
+            {draft && <DraftForm key={JSON.stringify(draft.data)} draft={draft} mockup={protoId} onCancel={() => setDraft(null)} onDone={async (newId) => { setDraft(null); await load(); setSelected(newId); }} color={color} />}
 
             {!draft && selected && (
               <div className="rv-thread">
@@ -187,7 +246,16 @@ export function ReviewViewer({ initial, thread, role }: { initial?: string; thre
             )}
           </aside>
         </div>
+        </>)}
       </section>
+      {dialog && (
+        <MockupDialog
+          existing={dialog === 'edit' ? proto : undefined}
+          groups={keys.filter((k) => !GROUPS[k])}
+          onClose={() => setDialog(null)}
+          onDone={async (newId, warnings) => { setDialog(null); await reload(); setNotice(warnings); setId(newId); setSelected(null); }}
+        />
+      )}
     </div>
   );
 }
@@ -352,7 +420,7 @@ function Stage({ proto, src, mode, color, anns, selected, draft, onSelect, onDra
   return (
     <div ref={holder} className="rv-scaler" style={{ width: W * scale, height: H * scale, margin: '0 auto', position: 'relative' }}>
     <div className={'rv-wrap ' + proto.device} style={{ width: W, height: H, transform: `scale(${scale})`, transformOrigin: 'top left' }}>
-      <iframe ref={frame} className="rv-frame" src={src} title={proto.title} width={W} height={H} />
+      <iframe ref={frame} className="rv-frame" sandbox={proto.builtin ? undefined : 'allow-scripts allow-same-origin allow-forms allow-popups'} src={src} title={proto.title} width={W} height={H} />
       <div
         ref={overlay}
         className={'rv-overlay mode-' + mode}

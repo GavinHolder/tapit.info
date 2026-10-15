@@ -410,3 +410,17 @@ kbd { font: 600 12px ui-monospace, Menlo, Consolas, monospace; background: var(-
 .wordingdetails[open] summary { margin-bottom: 8px; }
 .advgrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 10px; }
 @media (max-width: 1000px) { .advgrid { grid-template-columns: 1fr; } }
+
+/* Mockup library */
+.mdlg { width: min(620px, 100%); overflow-y: auto; }
+.dropzone { border: 2px dashed #9fb5ae; border-radius: 14px; padding: 22px 16px; display: grid; gap: 4px; text-align: center; cursor: pointer; background: var(--bg); transition: border-color 150ms ease, background-color 150ms ease; }
+.dropzone:hover, .dropzone.on { border-color: var(--deep); background: #e3f3c2; }
+.dropzone span { font-size: 12px; color: var(--muted); }
+.warnnote { background: #fbe6c8; border-radius: 10px; padding: 8px 10px; color: #5c3a0b; }
+.mrow { display: grid; grid-template-columns: 2fr 1.2fr 1fr 1fr; gap: 10px; }
+.mactions { display: flex; justify-content: flex-end; gap: 8px; }
+.rv-tools { display: grid; gap: 6px; margin-top: 6px; }
+.rv-item .tag { display: inline-block; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--deep); background: #d9ece6; border-radius: 6px; padding: 1px 6px; margin-left: 6px; vertical-align: middle; }
+.rv-empty { padding: 48px 24px; text-align: center; color: var(--muted); display: grid; gap: 10px; justify-items: center; }
+.importnote { font-size: 13px; background: #fbe6c8; color: #5c3a0b; border-radius: 10px; padding: 8px 12px; margin: 8px 16px 0; }
+@media (max-width: 640px) { .mrow { grid-template-columns: 1fr 1fr; } }

@@ -2,11 +2,12 @@
 
 import Link from 'next/link';
 import { KINDS, LANES, STATUSES, type Field, type NodeKind, type Status } from '@/lib/types';
-import { PROTOTYPES } from '@/lib/prototypes';
+import { useMockups } from './useMockups';
 import { useStudio } from './store';
 import { StepDiscussion } from './StepDiscussion';
 
 export function Inspector({ readOnly }: { readOnly: boolean }) {
+  const { list: mockups } = useMockups();
   const selected = useStudio((s) => s.selected);
   const node = useStudio((s) => (s.selected?.type === 'node' ? s.nodes.find((n) => n.id === s.selected!.id) : undefined));
   const edge = useStudio((s) => (s.selected?.type === 'edge' ? s.edges.find((e) => e.id === s.selected!.id) : undefined));
@@ -108,14 +109,14 @@ export function Inspector({ readOnly }: { readOnly: boolean }) {
       </fieldset>
 
       <label className="lbl">Mockup
-        <select className="in" value={PROTOTYPES.some((p) => p.file === d.mockup) ? d.mockup : d.mockup ? '__other' : ''} onChange={(e) => set({ mockup: e.target.value === '__other' ? d.mockup : e.target.value })}>
+        <select className="in" value={mockups.some((p) => p.file === d.mockup) ? d.mockup : d.mockup ? '__other' : ''} onChange={(e) => set({ mockup: e.target.value === '__other' ? d.mockup : e.target.value })}>
           <option value="">None</option>
-          {PROTOTYPES.map((p) => <option key={p.id} value={p.file}>{p.title}</option>)}
-          {d.mockup && !PROTOTYPES.some((p) => p.file === d.mockup) && <option value="__other">{d.mockup}</option>}
+          {mockups.map((p) => <option key={p.id} value={p.file}>{p.title}</option>)}
+          {d.mockup && !mockups.some((p) => p.file === d.mockup) && <option value="__other">{d.mockup}</option>}
         </select>
       </label>
-      {PROTOTYPES.some((p) => p.file === d.mockup) && (
-        <Link className="link" href={`/review?board=${PROTOTYPES.find((p) => p.file === d.mockup)!.id}`}>Open this mockup</Link>
+      {mockups.some((p) => p.file === d.mockup) && (
+        <Link className="link" href={`/review?board=${mockups.find((p) => p.file === d.mockup)!.id}`}>Open this mockup</Link>
       )}
       </fieldset>
 

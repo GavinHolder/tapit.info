@@ -169,6 +169,23 @@ const MIGRATIONS = [
     value TEXT NOT NULL,
     updated_at TEXT NOT NULL
   );
+  `,
+  `
+  -- Mockups imported while the app runs. The built-in ones stay in code; hiding one just records its id here.
+  CREATE TABLE mockups (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    note TEXT NOT NULL DEFAULT '',
+    group_name TEXT NOT NULL DEFAULT 'Imported',
+    kind TEXT NOT NULL CHECK (kind IN ('dc', 'html', 'image')),
+    mime TEXT,
+    device TEXT NOT NULL DEFAULT 'desktop',
+    w INTEGER NOT NULL,
+    h INTEGER NOT NULL,
+    created_by TEXT,
+    created_at TEXT NOT NULL
+  );
+  CREATE TABLE mockups_hidden (id TEXT PRIMARY KEY, hidden_at TEXT NOT NULL);
   `
 ];
 

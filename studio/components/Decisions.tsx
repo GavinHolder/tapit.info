@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import { api } from '@/lib/api';
-import { PROTOTYPES } from '@/lib/prototypes';
+import { useMockups } from './useMockups';
 import { ThreadView } from './ThreadView';
 
 type Option = { id: string; label: string; note?: string; mockup?: string };
@@ -87,6 +87,7 @@ export function Decisions({ role }: { role: 'owner' | 'client' }) {
 }
 
 function Card({ d, role, onChanged, onEdit, setError }: { d: Decision; role: 'owner' | 'client'; onChanged: () => Promise<void>; onEdit: () => void; setError: (s: string) => void }) {
+  const { list: mockups } = useMockups();
   const [pick, setPick] = useState<string>(d.chosen ?? '');
   const [msg, setMsg] = useState('');
   const [asking, setAsking] = useState(false);
@@ -132,7 +133,7 @@ function Card({ d, role, onChanged, onEdit, setError }: { d: Decision; role: 'ow
         <fieldset className="dopts" disabled={owner || d.status === 'superseded'}>
           <legend className="sr">Options for {d.title}</legend>
           {d.options.map((o) => {
-            const proto = o.mockup ? PROTOTYPES.find((p) => p.id === o.mockup) : undefined;
+            const proto = o.mockup ? mockups.find((p) => p.id === o.mockup) : undefined;
             const chosen = d.chosen === o.id && d.status === 'approved';
             return (
               <label key={o.id} className={'dopt' + (pick === o.id ? ' on' : '') + (chosen ? ' chosen' : '')}>
@@ -178,6 +179,7 @@ function Card({ d, role, onChanged, onEdit, setError }: { d: Decision; role: 'ow
 }
 
 function EditForm({ initial, onCancel, onDone }: { initial: Decision | null; onCancel: () => void; onDone: () => void | Promise<void> }) {
+  const { list: mockups } = useMockups();
   const [title, setTitle] = useState(initial?.title ?? '');
   const [area, setArea] = useState(initial?.area ?? 'Look and feel');
   const [description, setDescription] = useState(initial?.description ?? '');
@@ -212,7 +214,7 @@ function EditForm({ initial, onCancel, onDone }: { initial: Decision | null; onC
       <label className="lbl">Options, one per line: name | short note | mockup id (optional)
         <textarea className="in mono" rows={5} value={options} onChange={(e) => setOptions(e.target.value)} placeholder={'Version 2 | Clean and calm | Landing\nVersion 1 | First concept | Main'} />
       </label>
-      <p className="hint">Mockup ids: {PROTOTYPES.map((p) => p.id).join(', ')}.</p>
+      <p className="hint">Mockup ids: {mockups.map((p) => p.id).join(', ')}.</p>
       <div className="form-error" role="alert">{error}</div>
       <div className="tv-actions">
         <button type="button" className="btn" onClick={onCancel}>Cancel</button>

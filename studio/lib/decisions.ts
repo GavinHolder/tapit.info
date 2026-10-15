@@ -1,7 +1,7 @@
 import { getDb } from './db.js';
 import { newId } from './password.js';
 import type { User } from './auth';
-import { PROTOTYPES } from './prototypes';
+import { isMockupId } from './mockups';
 import { Problem, addMessage, listThreads } from './threads';
 
 export type Option = { id: string; label: string; note?: string; mockup?: string };
@@ -41,7 +41,7 @@ function cleanOptions(raw: unknown): Option[] {
     let id = String(r.id ?? '').replace(/[^a-z0-9_-]/gi, '').slice(0, 30) || `o${i + 1}`;
     while (seen.has(id)) id += 'x';
     seen.add(id);
-    const mockup = typeof r.mockup === 'string' && PROTOTYPES.some((p) => p.id === r.mockup) ? r.mockup : undefined;
+    const mockup = typeof r.mockup === 'string' && isMockupId(r.mockup) ? r.mockup : undefined;
     const note = String(r.note ?? '').trim().slice(0, 300);
     return { id, label, ...(note ? { note } : {}), ...(mockup ? { mockup } : {}) };
   });

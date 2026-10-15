@@ -113,6 +113,12 @@ Backups land in `/opt/tapit-backups` (14 kept). **Copy them off the VM now and t
 
 The planning files (flows, questions, decisions and the finalized handoffs) are in `/opt/tapit/planning`. Copy a handoff folder to your PC to give to Claude Code, or download its zip from the **Finalize** page.
 
+### Adding and removing mockups (no update needed)
+
+On the **Mockups** page, the developer account has **Import a mockup**: drop an `.html` file (a Claude Design `.dc.html` works) or a PNG/JPEG/GIF/WebP screenshot, name it, pick a group, and it is live for the client straight away. **Delete** removes an imported mockup for good, including its comments. The built-in mockups are only hidden, and **Restore built-in mockups** brings them back.
+
+Imported files live in the data folder, so the nightly backup and the update script already carry them, and Finalize copies them into the handoff. Imported HTML runs inside Studio with outside requests blocked, so include fonts and images in the file itself, and only import files you made or trust.
+
 ## 8. Security checklist
 
 - [ ] Use a long developer password. Delete the `STUDIO_OWNER_PASSWORD` line from `/opt/tapit/studio/.env` after the first start.

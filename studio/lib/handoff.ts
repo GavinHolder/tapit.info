@@ -5,7 +5,7 @@ import { newId } from './password.js';
 import { PLANNING_DIR, readFlows } from './planning';
 import { buildSpec } from './spec.js';
 import { UPLOAD_DIR } from './uploads';
-import { PROTOTYPES } from './prototypes';
+import { importedFiles, listMockups } from './mockups';
 import { zip } from './zip';
 import type { User } from './auth';
 import type { Flow } from './types';
@@ -75,7 +75,7 @@ const where = (t: T, flows: Flow[]) => {
     return f && n ? `Flow “${f.title}”, step “${n.data.title}”` : `Flow step ${t.target_id}`;
   }
   if (t.target_type === 'flow') return `Flow “${flows.find((f) => f.id === t.target_id)?.title ?? t.target_id}”`;
-  if (t.target_type === 'mockup') return `Mockup “${PROTOTYPES.find((p) => p.id === t.target_id)?.title ?? t.target_id}”`;
+  if (t.target_type === 'mockup') return `Mockup “${listMockups().find((p) => p.id === t.target_id)?.title ?? t.target_id}”`;
   return 'General';
 };
 
@@ -214,7 +214,7 @@ function designPrompt(a: { version: number; date: string; flows: Flow[]; threads
   L.push('## Change requests from review', '');
   const onMockups = threads.filter((t) => t.target_type === 'mockup' && t.status !== 'resolved');
   if (!onMockups.length) L.push('No open comments on the mockups.');
-  for (const m of PROTOTYPES) {
+  for (const m of listMockups()) {
     const list = onMockups.filter((t) => t.target_id === m.id);
     if (!list.length) continue;
     L.push(`### ${m.title}`, '');
@@ -279,7 +279,7 @@ function discussionsDoc(threads: T[], flows: Flow[]) {
 
 function mockupDoc(threads: T[]) {
   const L = ['# Mockup feedback', '', 'Positions are fractions of the mockup (0 to 1, from the top left) at its design size, so they hold at any screen size.', ''];
-  for (const m of PROTOTYPES) {
+  for (const m of listMockups()) {
     const list = threads.filter((t) => t.target_type === 'mockup' && t.target_id === m.id);
     if (!list.length) continue;
     L.push(`## ${m.title} (\`${m.file}\`)`, '');
@@ -331,7 +331,7 @@ export async function finalize(user: User, input: { note: string; acknowledged: 
     'design-decisions.md': decisionsDoc(decisions),
     'discussions.md': discussionsDoc(threads, flows),
     'mockup-feedback.md': mockupDoc(threads),
-    'mockups.json': JSON.stringify(PROTOTYPES.map(({ id, file, title, note: n, w, h, device, group }) => ({ id, file: `mockups/${file}`, title, note: n, width: w, height: h, device, group })), null, 2) + '\n'
+    'mockups.json': JSON.stringify(listMockups().map(({ id, file, title, note: n, w, h, device, group, builtin }) => ({ id, file: `mockups/${file}`, title, note: n, width: w, height: h, device, group, imported: !builtin })), null, 2) + '\n'
   };
   if (pre.last && since) files['changes-since-previous.md'] = changesDoc(threads, since, pre.last.version);
   for (const f of flows) files[`flows/${f.id}.flow.json`] = JSON.stringify(f, null, 2) + '\n';
@@ -347,13 +347,19 @@ export async function finalize(user: User, input: { note: string; acknowledged: 
     '- `CLAUDE_DESIGN_PROMPT.md`: the brief for Claude Design.',
     '- `SPEC.md`, `flows/`: the agreed application flow.',
     '- `client-answers.md`, `design-decisions.md`, `discussions.md`, `mockup-feedback.md`: everything the client and developer discussed and decided.',
-    '- `mockups.json`: the list of mockups (sources are in `mockups/` in the repository).',
+    '- `mockups.json`: the list of mockups. Built-in sources are in `mockups/` in the repository; any marked `"imported": true` are in this folder\'s `mockups/`.',
     '- `uploads/`: images attached to messages.', '',
     '## State at hand-off', '', ...Object.entries(stats).map(([k, v]) => `- ${k}: ${v}`), ''
   ].join('\n');
   files['manifest.json'] = JSON.stringify({ version, folder: folderName, createdAt: new Date().toISOString(), createdBy: user.email, note, stats }, null, 2) + '\n';
 
   for (const [name, content] of Object.entries(files)) await fs.writeFile(path.join(dir, name), content, 'utf8');
+  // Mockups imported in Studio exist only in its data folder, so they travel with the handoff.
+  const imported = await importedFiles();
+  if (imported.length) {
+    await fs.mkdir(path.join(dir, 'mockups'), { recursive: true });
+    for (const f of imported) await fs.writeFile(path.join(dir, 'mockups', f.name), f.data);
+  }
   // Images attached to messages.
   const atts = db.prepare('SELECT id, mime FROM attachments WHERE message_id IS NOT NULL').all() as { id: string; mime: string }[];
   for (const a of atts) {
