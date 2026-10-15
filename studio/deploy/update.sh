@@ -20,13 +20,18 @@ else
   command -v rsync >/dev/null 2>&1 || { apt-get update -y >/dev/null && apt-get install -y rsync >/dev/null; }
   # The app code is replaced exactly (old files that no longer exist are removed). Settings and data are untouched.
   rsync -a --delete --exclude '.env' --exclude 'node_modules' --exclude '.next' --exclude 'data' "$SRC/studio/" "$STUDIO_DIR/"
-  # Planning: add new files, never overwrite your flows, questions, decisions or handoffs.
-  rsync -a --ignore-existing "$SRC/planning/" "$ROOT/planning/"
+  # Planning: your flows, handoffs and generated SPEC.md are never overwritten (new flow files are added);
+  # the question and decision lists and other notes are brought up to date.
+  rsync -a --exclude 'flows' --exclude 'handoffs' --exclude 'SPEC.md' "$SRC/planning/" "$ROOT/planning/"
+  rsync -a --ignore-existing "$SRC/planning/flows/" "$ROOT/planning/flows/"
+  [ -f "$ROOT/planning/SPEC.md" ] || cp "$SRC/planning/SPEC.md" "$ROOT/planning/SPEC.md" 2>/dev/null || true
   chown -R 1000:1000 "$ROOT/planning"
 fi
 
 echo "3/3  Rebuilding and restarting..."
 cd "$STUDIO_DIR"
-docker compose up -d --build
+if [ "${STUDIO_NO_BUILD:-0}" = 1 ]; then docker compose up -d; else docker compose up -d --build; fi
+# Restart so the app picks up new question and decision lists too.
+docker compose restart studio >/dev/null
 docker image prune -f >/dev/null 2>&1 || true
 echo "Updated. Your accounts, messages and flows were kept."

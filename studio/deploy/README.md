@@ -1,5 +1,7 @@
 # Deploying TapIt Studio (Portainer, HTTPS, MikroTik)
 
+**New here? Start with `VM-GUIDE.md`.** It walks from a blank Ubuntu VM to the client signed in, using `setup.sh` (one-command installer), `backup.sh`, `restore.sh` and `update.sh`. This file is the reference for the pieces underneath (Portainer, router rules, HTTPS options).
+
 Studio runs as two containers: **studio** (the app, never exposed directly) and **caddy** (the HTTPS front door). Data lives in a Docker volume, so rebuilding or restarting never loses accounts, messages or uploads.
 
 This setup was built and tested with Docker here: HTTPS, secure login cookie, login lockout behind the proxy, IP allow-list, data surviving a restart, and Finalize writing handoffs. It has **not** been run on your VM, MikroTik or Portainer, so follow the checks at the bottom.

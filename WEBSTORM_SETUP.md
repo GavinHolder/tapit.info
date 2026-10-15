@@ -25,7 +25,8 @@ Run from the Run menu: Edit Configurations, add an **npm** configuration (comman
 | Flows | The application flows (see below) |
 | Mockups | 17 interactive mockups. Pin, draw or box a comment on any of them |
 | Finalize | Builds a numbered handoff with a Claude Code prompt and a Claude Design brief |
-| Team | Invite the client. They choose their own password. |
+| Settings | Email connection (with a test button) and the wording and look of the emails |
+| Team | Add clients and developers: send an invite link or set a password. Reset passwords, switch people off, change roles |
 
 ### Editing flows
 
@@ -47,7 +48,7 @@ Never extract a new zip over the old folder. Use `UPDATE-TEST-PROJECT.bat` (Wind
 
 ## Deploying
 
-See `studio/deploy/README.md` (Docker, Portainer, HTTPS, MikroTik). A GitHub Actions workflow in `.github/workflows/studio.yml` type-checks and builds on every push and publishes the image when `main` changes. The workflow has not been run on GitHub yet.
+Start with `START-HERE.md` (blank VM to client connected, with a one-command installer). `studio/deploy/README.md` has the reference for Portainer, HTTPS and MikroTik. A GitHub Actions workflow in `.github/workflows/studio.yml` type-checks and builds on every push and publishes the image when `main` changes. The workflow has not been run on GitHub yet.
 
 ## If something does not start
 

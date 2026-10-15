@@ -10,7 +10,8 @@ read -r -p "This replaces the current data with $FILE. Type YES to continue: " O
 [ "$OK" = "YES" ] || { echo "Cancelled."; exit 0; }
 docker compose stop studio
 CID="$(docker compose ps -aq studio)"
-docker run --rm --volumes-from "$CID" -v "$(dirname "$(readlink -f "$FILE")")":/backup alpine \
-  sh -c "rm -rf /data/* /data/.[!.]* 2>/dev/null; tar xzf /backup/$(basename "$FILE") -C /data && chown -R 1000:1000 /data"
+IMG="$(docker inspect -f '{{.Config.Image}}' "$CID")"
+docker run --rm --user 0 --entrypoint sh --volumes-from "$CID" -v "$(dirname "$(readlink -f "$FILE")")":/backup "$IMG" \
+  -c "rm -rf /data/* /data/.[!.]* 2>/dev/null; tar xzf /backup/$(basename "$FILE") -C /data && chown -R 1000:1000 /data"
 docker compose start studio
 echo "Restored. Check the site and sign in."

@@ -20,6 +20,9 @@ COPY --from=build /app/.next/standalone ./
 COPY --from=build /app/.next/static ./.next/static
 # The mockups are served through the login-protected API, not from /public.
 COPY --from=build /app/prototypes ./prototypes
+# Account recovery scripts (list-users, reset-password, create-owner) can be run inside the container.
+COPY --from=build /app/scripts ./scripts
+COPY --from=build /app/lib ./lib
 # /data holds the database and uploads (mount a volume). /planning is the repo's planning folder.
 RUN mkdir -p /data /planning && chown -R node:node /data /planning /app
 USER node

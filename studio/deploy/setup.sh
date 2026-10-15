@@ -39,7 +39,8 @@ askpw() { # hidden input
   if [ "$ASSUME_YES" = 1 ]; then REPLY=""; return; fi
   read -r -s -p "  $1: " REPLY || true; echo
 }
-randpw() { LC_ALL=C tr -dc 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789' </dev/urandom | head -c 18; }
+# (tr is stopped by head, which pipefail reports as a failure, so it is allowed to "fail" here)
+randpw() { LC_ALL=C tr -dc 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789' </dev/urandom | head -c 18 || true; }
 
 [ "$(id -u)" = 0 ] || die "Run this as root: sudo bash studio/deploy/setup.sh"
 [ -f "$STUDIO_DIR/docker-compose.yml" ] || die "docker-compose.yml not found in $STUDIO_DIR. Run this from the extracted TapIt package."
@@ -75,7 +76,7 @@ else
     [ -n "$DOMAIN" ] || die "A domain is needed for option 1."
     CADDYFILE="Caddyfile"; PUBLIC="https://$DOMAIN"
   else
-    DEFAULT_HOST="$(hostname -I 2>/dev/null | awk '{print $1}')"; DEFAULT_HOST="${DEFAULT_HOST:-localhost}"
+    DEFAULT_HOST="$( (hostname -I 2>/dev/null || true) | awk '{print $1}' || true)"; DEFAULT_HOST="${DEFAULT_HOST:-localhost}"
     ask "Address people will type (the VM's IP or a name)" "${STUDIO_DOMAIN:-$DEFAULT_HOST}"; DOMAIN="$REPLY"
     CADDYFILE="Caddyfile.internal"; PUBLIC="https://$DOMAIN"
   fi
@@ -128,8 +129,10 @@ cd "$STUDIO_DIR"
 if [ "$BUILD" = 1 ]; then docker compose up -d --build; else docker compose up -d; fi
 echo "  Waiting for it to answer..."
 UP=0
+CHECK_HOST="$(grep '^STUDIO_DOMAIN=' "$ENV_FILE" | cut -d= -f2-)"
 for _ in $(seq 1 60); do
-  if curl -ksf "https://127.0.0.1:$HTTPS_PORT/api/health" -H "Host: $(grep '^STUDIO_DOMAIN=' "$ENV_FILE" | cut -d= -f2)" >/dev/null 2>&1; then UP=1; break; fi
+  # Connect by the real name (so the certificate matches) but to this machine.
+  if curl -ksf --resolve "$CHECK_HOST:$HTTPS_PORT:127.0.0.1" "https://$CHECK_HOST:$HTTPS_PORT/api/health" >/dev/null 2>&1; then UP=1; break; fi
   sleep 3
 done
 [ "$UP" = 1 ] || { docker compose ps; die "Studio did not answer in time. See the logs with: cd $STUDIO_DIR && docker compose logs --tail 50"; }
