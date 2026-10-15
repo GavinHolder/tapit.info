@@ -12,7 +12,9 @@
     "typecheck": "tsc --noEmit",
     "prototypes": "node scripts/build-prototypes.mjs",
     "create-owner": "node scripts/create-owner.mjs",
-    "questions": "node scripts/build-questions.mjs"
+    "questions": "node scripts/build-questions.mjs",
+    "reset-password": "node scripts/reset-password.mjs",
+    "list-users": "node scripts/list-users.mjs"
   },
   "dependencies": {
     "@dagrejs/dagre": "^3.1.1",

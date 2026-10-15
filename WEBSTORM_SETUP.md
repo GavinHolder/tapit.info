@@ -54,5 +54,8 @@ See `studio/deploy/README.md` (Docker, Portainer, HTTPS, MikroTik). A GitHub Act
 - **Port 3100 busy:** another copy is running (often an older folder). Stop it, or find it with `netstat -ano | findstr :3100` then `taskkill /PID <number> /F`.
 - **`'next' is not recognized`:** run `npm install` in the `studio` folder first.
 - **Page looks old after an update:** delete `studio\.next` and hard-refresh (Ctrl+Shift+R).
-- **Forgot the login:** `npm run create-owner -- you@example.com "Name" "password"` creates one (if the email already exists, delete `studio\data\studio.db` and start again; this also removes messages).
+- **Can't sign in / the login is gone:** run these in the `studio` folder.
+  - `npm run list-users` shows which database is in use and who can sign in. If it says "No logins yet" or shows a different path than you expect, you are running a folder with its own empty data (use the update script to carry your data across).
+  - `npm run create-owner -- you@example.com "Your Name" "a long password"` creates a developer login. Add `client` at the end for a client login.
+  - `npm run reset-password -- you@example.com "a new long password"` sets a new password for an existing login.
 - `studio/vendor/dc-runtime.js` is a small runtime the mockups need, taken from the design tool they were made in. Check its terms before sharing outside your team.
