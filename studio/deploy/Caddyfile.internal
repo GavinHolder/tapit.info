@@ -1,0 +1,21 @@
+# HTTPS with a certificate Caddy makes itself (no domain, no Let's Encrypt, no port 80).
+# Browsers show a one-time "not trusted" warning unless the client installs Caddy's root certificate
+# (see deploy/README.md). Use this for a private test, or together with a VPN.
+{$STUDIO_DOMAIN:localhost} {
+	tls internal
+
+	@denied not remote_ip {$STUDIO_ALLOW_IPS:0.0.0.0/0 ::/0}
+	respond @denied 403
+
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options nosniff
+		Referrer-Policy same-origin
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+		-Server
+	}
+
+	reverse_proxy studio:3100
+}

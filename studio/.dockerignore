@@ -2,3 +2,8 @@ node_modules
 .next
 .git
 *.tsbuildinfo
+data
+.env
+.env.*
+!.env.example
+_update-backup-*

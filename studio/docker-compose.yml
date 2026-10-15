@@ -1,12 +1,46 @@
+# TapIt Studio behind an HTTPS proxy. Works from Portainer (Stacks, Repository) or `docker compose up -d`.
+# Copy deploy/stack.env.example to a file called .env next to this one, or paste its lines into the Portainer stack's environment variables.
 services:
   studio:
     build: .
-    ports:
-      - "3100:3100"
-    environment:
-      PLANNING_DIR: /planning
-      NEXT_TELEMETRY_DISABLED: "1"
-    volumes:
-      # The planning folder is the source of truth and lives in the repo.
-      - ../planning:/planning
     restart: unless-stopped
+    environment:
+      STUDIO_COOKIE_SECURE: "1"          # session cookie only over HTTPS
+      STUDIO_TRUST_PROXY: "1"            # the login limiter reads the visitor address from Caddy
+      STUDIO_OWNER_EMAIL: ${STUDIO_OWNER_EMAIL:-}
+      STUDIO_OWNER_NAME: ${STUDIO_OWNER_NAME:-Owner}
+      STUDIO_OWNER_PASSWORD: ${STUDIO_OWNER_PASSWORD:-}
+      STUDIO_PUBLIC_URL: ${STUDIO_PUBLIC_URL:-https://localhost}
+      STUDIO_SMTP_HOST: ${STUDIO_SMTP_HOST:-}
+      STUDIO_SMTP_PORT: ${STUDIO_SMTP_PORT:-587}
+      STUDIO_SMTP_SECURE: ${STUDIO_SMTP_SECURE:-0}
+      STUDIO_SMTP_USER: ${STUDIO_SMTP_USER:-}
+      STUDIO_SMTP_PASS: ${STUDIO_SMTP_PASS:-}
+      STUDIO_MAIL_FROM: ${STUDIO_MAIL_FROM:-}
+      STUDIO_NOTIFY_DELAY_SECONDS: ${STUDIO_NOTIFY_DELAY_SECONDS:-120}
+    volumes:
+      - studio-data:/data                 # database, accounts, uploads: back this up
+      - ${PLANNING_HOST_DIR:-../planning}:/planning   # flows, questions, decisions, handoffs (a git checkout of the repo's planning folder)
+    expose:
+      - "3100"                            # not published: only Caddy can reach it
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      - studio
+    ports:
+      - "${HTTP_PORT:-80}:80"
+      - "${HTTPS_PORT:-443}:443"
+    environment:
+      STUDIO_DOMAIN: ${STUDIO_DOMAIN:-localhost}
+      STUDIO_ALLOW_IPS: ${STUDIO_ALLOW_IPS:-0.0.0.0/0 ::/0}
+    volumes:
+      - ./deploy/${CADDYFILE:-Caddyfile}:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data                  # certificates
+      - caddy-config:/config
+
+volumes:
+  studio-data:
+  caddy-data:
+  caddy-config:

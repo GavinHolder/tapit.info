@@ -1,41 +1,50 @@
 # Open this in WebStorm
 
-This is TapIt Studio (the planning workspace) plus the mockups, planning files and notes.
+TapIt Studio (the planning workspace) plus the mockups, planning files and notes.
 
-## First run (about 3 minutes)
+## First run
 
-1. **Node 22 or newer.** Check with `node --version`. WebStorm: Settings, Languages & Frameworks, Node.js, set the interpreter to Node 22+.
-2. **Open the `studio` folder** in WebStorm (File, Open, pick `tapit.info/studio`). Opening the parent folder also works.
-3. In the WebStorm terminal (inside `studio`):
+1. **Node 22 or newer** (`node --version`). WebStorm: Settings, Languages & Frameworks, Node.js, pick Node 22+.
+2. **Open the `studio` folder** in WebStorm (File, Open). Make sure it is the folder you want: `package.json` should show the version number you expect.
+3. In the terminal inside `studio`:
    ```
    npm install
+   npm run create-owner -- you@example.com "Your Name" "a long password"
    npm run dev
    ```
-4. Open http://localhost:3100. You get:
-   - **Flows**: four seeded application flows (click a box to edit, drag from the dot on its right edge to connect).
-   - **Mockups**: the interactive version 2 mockups, running fully offline.
-5. **Export spec** (top of the flow canvas) writes `planning/SPEC.md`. Edits to flows are saved automatically into `planning/flows/*.flow.json`.
+4. Open http://localhost:3100 and sign in. The top bar shows the Studio version next to the logo.
 
-To run it from WebStorm's Run menu: Run, Edit Configurations, add an **npm** configuration with command `run` and script `dev`.
+Run from the Run menu: Edit Configurations, add an **npm** configuration (command `run`, script `dev`). Check its **working directory** is this `studio` folder.
 
-## What is where
+## What you get
 
-| Folder | What it is |
+| Page | What |
 |---|---|
-| `studio/` | The Studio app (Next.js, React Flow). |
-| `planning/` | Flow files, the generated SPEC.md, and `REQUIREMENTS.md` (what is still to be built). |
-| `mockups/` | The mockup source files. Version 2 is current. They are plain HTML, so do not reformat them. |
-| `docs/` | Client questions, research and the billing and membership rules. |
-| `CLAUDE.md` | The project rules, so Claude Code knows them when you start building. |
+| Inbox | Questions for the client and every message, with unread counts |
+| Decisions | Look and layout choices the client approves |
+| Flows | The application flows. Right-click the canvas or click a step's ⋯ to add, duplicate or delete steps |
+| Mockups | 17 interactive mockups. Pin, draw or box a comment on any of them |
+| Finalize | Builds a numbered handoff with a Claude Code prompt and a Claude Design brief |
+| Team | Invite the client. They choose their own password. |
 
-## Current state (be aware)
+Accounts, messages and uploads are stored in `studio/data` (git-ignored). Flows and handoffs are files in `planning/` (commit them).
 
-- This is Studio **version 0**: it has **no login yet**. Run it on your own machine only. Do not port-forward it until login and HTTPS are added (in progress).
-- Not built yet: login, client and developer messaging, pin and draw comments on mockups, the Finalize button. They are listed in `planning/REQUIREMENTS.md`.
-- Docker files are included but untested.
-- `studio/vendor/dc-runtime.js` is a small runtime the mockups need, taken from the design tool they were made in. Check its terms before sharing outside your team.
+## Updating without losing your setup
+
+Never extract a new zip over the old folder. Use `UPDATE-TEST-PROJECT.bat` (Windows, copies a new version into your test project after making a backup) or `node update-studio.mjs "<old>" "<new>"`. See `studio/UPDATING.md`.
+
+## Tests
+
+`npm run typecheck` checks the code. The browser and API test scripts are not part of the repository.
+
+## Deploying
+
+See `studio/deploy/README.md` (Docker, Portainer, HTTPS, MikroTik). A GitHub Actions workflow in `.github/workflows/studio.yml` type-checks and builds on every push and publishes the image when `main` changes. The workflow has not been run on GitHub yet.
 
 ## If something does not start
 
-- `npm run dev` says the port is busy: stop the other process on port 3100, or change the port in `studio/package.json`.
-- Blank page after an update: stop the server, delete `studio/.next`, run `npm run dev` again.
+- **Port 3100 busy:** another copy is running (often an older folder). Stop it, or find it with `netstat -ano | findstr :3100` then `taskkill /PID <number> /F`.
+- **`'next' is not recognized`:** run `npm install` in the `studio` folder first.
+- **Page looks old after an update:** delete `studio\.next` and hard-refresh (Ctrl+Shift+R).
+- **Forgot the login:** `npm run create-owner -- you@example.com "Name" "password"` creates one (if the email already exists, delete `studio\data\studio.db` and start again; this also removes messages).
+- `studio/vendor/dc-runtime.js` is a small runtime the mockups need, taken from the design tool they were made in. Check its terms before sharing outside your team.

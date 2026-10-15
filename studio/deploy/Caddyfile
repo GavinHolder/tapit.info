@@ -1,0 +1,21 @@
+# HTTPS reverse proxy for TapIt Studio (automatic certificates).
+# STUDIO_DOMAIN must be a real domain that points at your public IP, with ports 80 and 443 forwarded to this machine.
+# Caddy gets a free certificate from Let's Encrypt, which needs port 80 once to prove you own the domain.
+# STUDIO_ALLOW_IPS (optional): space-separated addresses or ranges allowed in, for example "41.1.2.3 10.0.0.0/8".
+{$STUDIO_DOMAIN:localhost} {
+	@denied not remote_ip {$STUDIO_ALLOW_IPS:0.0.0.0/0 ::/0}
+	respond @denied 403
+
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options nosniff
+		Referrer-Policy same-origin
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+		-Server
+	}
+
+	# Studio sees the real visitor address only through this proxy, so the login limiter works per person.
+	reverse_proxy studio:3100
+}
