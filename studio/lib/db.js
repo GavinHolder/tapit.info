@@ -135,6 +135,8 @@ const MIGRATIONS = [
   CREATE INDEX outbox_pending ON outbox(sent_at, created_at);
   `,
   `
+  -- Reserved: these columns came from a WhatsApp experiment that was removed from this planning app.
+  -- They are unused. The migration stays so databases that already ran it keep a consistent version number.
   ALTER TABLE users ADD COLUMN phone TEXT;
   ALTER TABLE users ADD COLUMN phone_verified INTEGER NOT NULL DEFAULT 0;
   ALTER TABLE users ADD COLUMN notify_whatsapp INTEGER NOT NULL DEFAULT 1;

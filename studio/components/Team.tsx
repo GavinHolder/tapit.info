@@ -11,8 +11,6 @@ export function Team({ selfId }: { selfId: string }) {
   const [invites, setInvites] = useState<I[]>([]);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [wa, setWa] = useState('');
   const [link, setLink] = useState('');
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
@@ -28,11 +26,8 @@ export function Team({ selfId }: { selfId: string }) {
     e.preventDefault();
     setError('');
     setLink('');
-    setWa('');
     try {
-      const r = await api<{ path: string; whatsapp: string }>('/api/team/invites', { json: { name, email, role: 'client', phone: phone || undefined } });
-      setWa(r.whatsapp);
-      setPhone('');
+      const r = await api<{ path: string }>('/api/team/invites', { json: { name, email, role: 'client' } });
       setLink(window.location.origin + r.path);
       setName('');
       setEmail('');
@@ -55,12 +50,9 @@ export function Team({ selfId }: { selfId: string }) {
         <form onSubmit={invite} className="inv-form">
           <label className="lbl">Name<input className="in" value={name} onChange={(e) => setName(e.target.value)} required /></label>
           <label className="lbl">Email<input className="in" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required /></label>
-          <label className="lbl">Mobile (optional, sends the link on WhatsApp)<input className="in" inputMode="tel" placeholder="082 123 4567" value={phone} onChange={(e) => setPhone(e.target.value)} /></label>
           <button type="submit" className="btn primary" disabled={!name || !email}>Create invite link</button>
         </form>
         <div className="form-error" role="alert">{error}</div>
-        {wa === 'sent' && <p className="ok">The invite link was sent to them on WhatsApp.</p>}
-        {wa === 'failed' && <p className="form-error">WhatsApp could not deliver it. Copy the link below and send it yourself.</p>}
         {link && (
           <div className="linkbox">
             <p className="hint">Copy this now. It is shown only once.</p>

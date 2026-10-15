@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
-import { NotifyPanel } from './NotifyPanel';
 
 type Props = { user: { name: string; role: 'owner' | 'client'; email: string } };
 
@@ -13,7 +12,18 @@ export function TopBar({ user }: Props) {
   const owner = user.role === 'owner';
   const [unread, setUnread] = useState(0);
   const [decisions, setDecisions] = useState(0);
-  const [notify, setNotify] = useState(false);
+  const [mail, setMail] = useState<{ enabled: boolean; on: boolean } | null>(null);
+
+  useEffect(() => {
+    void api<{ mailEnabled: boolean; notifyEmail: boolean }>('/api/me/prefs').then((r) => setMail({ enabled: r.mailEnabled, on: r.notifyEmail })).catch(() => undefined);
+  }, []);
+
+  async function toggleMail() {
+    if (!mail) return;
+    const next = !mail.on;
+    setMail({ ...mail, on: next });
+    try { await api('/api/me/prefs', { method: 'PATCH', json: { notifyEmail: next } }); } catch { setMail(mail); }
+  }
 
   useEffect(() => {
     let live = true;
@@ -54,10 +64,9 @@ export function TopBar({ user }: Props) {
       </nav>
       <div className="top-user">
         <span className="who">{user.name}<em>{owner ? 'Developer' : 'Client'}</em></span>
-        <button type="button" className="btn small" onClick={() => setNotify(true)} title="Email and WhatsApp notifications">Notifications</button>
+        {mail?.enabled && <button type="button" className="btn small" aria-pressed={mail.on} onClick={toggleMail} title="Email me when someone replies">{mail.on ? 'Email on' : 'Email off'}</button>}
         <button type="button" className="btn small" onClick={signOut}>Sign out</button>
       </div>
-    {notify && <NotifyPanel onClose={() => setNotify(false)} />}
     </header>
   );
 }
