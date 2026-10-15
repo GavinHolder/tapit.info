@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
+import { PasswordPanel } from './PasswordPanel';
 
 type Props = { user: { name: string; role: 'owner' | 'client'; email: string } };
 
@@ -12,6 +13,7 @@ export function TopBar({ user }: Props) {
   const owner = user.role === 'owner';
   const [unread, setUnread] = useState(0);
   const [decisions, setDecisions] = useState(0);
+  const [pw, setPw] = useState(false);
   const [mail, setMail] = useState<{ enabled: boolean; on: boolean } | null>(null);
 
   useEffect(() => {
@@ -65,8 +67,10 @@ export function TopBar({ user }: Props) {
       <div className="top-user">
         <span className="who">{user.name}<em>{owner ? 'Developer' : 'Client'}</em></span>
         {mail?.enabled && <button type="button" className="btn small" aria-pressed={mail.on} onClick={toggleMail} title="Email me when someone replies">{mail.on ? 'Email on' : 'Email off'}</button>}
+        <button type="button" className="btn small" onClick={() => setPw(true)}>Password</button>
         <button type="button" className="btn small" onClick={signOut}>Sign out</button>
       </div>
+    {pw && <PasswordPanel onClose={() => setPw(false)} />}
     </header>
   );
 }
