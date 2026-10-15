@@ -405,3 +405,8 @@ kbd { font: 600 12px ui-monospace, Menlo, Consolas, monospace; background: var(-
 .emailframe { width: 100%; height: 560px; border: 1px solid var(--line); border-radius: 12px; background: #f1f5f3; }
 @media (max-width: 1000px) { .mailform { grid-template-columns: 1fr; } .wording { grid-template-columns: 1fr; } .wpreview { position: static; } }
 .seg { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.adv summary, .wordingdetails summary { cursor: pointer; font-weight: 700; }
+.wordingdetails summary h2 { display: inline; font-size: 17px; }
+.wordingdetails[open] summary { margin-bottom: 8px; }
+.advgrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 10px; }
+@media (max-width: 1000px) { .advgrid { grid-template-columns: 1fr; } }

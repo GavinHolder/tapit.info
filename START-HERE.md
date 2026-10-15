@@ -134,5 +134,5 @@ The planning files (flows, questions, decisions and the finalized handoffs) are 
 | "403" for the client | Their address is not in `STUDIO_ALLOW_IPS`, or their IP changed. |
 | Forgot the developer password | `cd /opt/tapit/studio && sudo docker compose exec studio node scripts/reset-password.mjs you@example.com "new long password"` |
 | Need another developer or client login | In Studio, **Team**, **Add a person**. |
-| Emails do not arrive | **Settings**, **Send a test email** shows the reason. Gmail and Microsoft need an app password. Check spam. |
+| Emails do not arrive | **Settings**, **Send a test email** shows the reason. Check your spam folder too. |
 | Disk full | `sudo docker system prune -f`, and remove old files in `/opt/tapit-backups`. |

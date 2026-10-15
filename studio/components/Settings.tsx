@@ -7,13 +7,6 @@ type Cfg = { source: 'saved' | 'environment' | 'none'; enabled: boolean; host: s
 type T = Record<string, string>;
 type Result = { ok: boolean; text: string } | null;
 
-const PRESETS: Record<string, { host: string; port: number; security: 'starttls' | 'ssl' }> = {
-  gmail: { host: 'smtp.gmail.com', port: 587, security: 'starttls' },
-  office365: { host: 'smtp.office365.com', port: 587, security: 'starttls' },
-  outlook: { host: 'smtp-mail.outlook.com', port: 587, security: 'starttls' },
-  zoho: { host: 'smtp.zoho.com', port: 465, security: 'ssl' }
-};
-
 export function Settings({ email: myEmail }: { email: string }) {
   return (
     <div className="plain settings">
@@ -76,21 +69,12 @@ function EmailConnection({ myEmail }: { myEmail: string }) {
     <section className="card">
       <h2>Email connection</h2>
       <p className="hint">
-        Studio emails people when new messages arrive and can email invite links. It sends through your own mail server (SMTP), so nothing goes through a third party we choose.
+        Studio sends its emails through your own mail server, using an address on your own domain.
         {cfg.source === 'environment' && ' Right now it is using settings from the server configuration. Saving here replaces them.'}
         {cfg.source === 'none' && ' Email is not set up yet.'}
       </p>
       <form onSubmit={save} className="mailform">
-        <label className="lbl">Quick fill
-          <select className="in" defaultValue="" onChange={(e) => { const p = PRESETS[e.target.value]; if (p) set({ ...p }); e.target.value = ''; }}>
-            <option value="">Choose a provider (optional)</option>
-            <option value="gmail">Gmail (needs an app password)</option>
-            <option value="office365">Microsoft 365</option>
-            <option value="outlook">Outlook.com</option>
-            <option value="zoho">Zoho Mail</option>
-          </select>
-        </label>
-        <label className="lbl">Mail server<input className="in" value={f.host} onChange={(e) => set({ host: e.target.value })} placeholder="smtp.example.com" autoComplete="off" /></label>
+        <label className="lbl">Mail server<input className="in" value={f.host} onChange={(e) => set({ host: e.target.value })} placeholder="mail.yourdomain.co.za" autoComplete="off" /></label>
         <label className="lbl">Port<input className="in" type="number" min={1} max={65535} value={f.port} onChange={(e) => set({ port: Number(e.target.value) })} /></label>
         <label className="lbl">Security
           <select className="in" value={f.security} onChange={(e) => set({ security: e.target.value })}>
@@ -99,17 +83,22 @@ function EmailConnection({ myEmail }: { myEmail: string }) {
             <option value="none">None (only for a trusted local relay)</option>
           </select>
         </label>
-        <label className="lbl">Username<input className="in" value={f.user} onChange={(e) => set({ user: e.target.value })} autoComplete="off" /></label>
+        <label className="lbl">Username<input className="in" value={f.user} onChange={(e) => set({ user: e.target.value })} autoComplete="off" placeholder="studio@yourdomain.co.za" /></label>
         <label className="lbl">Password
           <input className="in" type="password" value={f.password} onChange={(e) => set({ password: e.target.value, clearPassword: false })} autoComplete="new-password" placeholder={cfg.hasPassword && !f.clearPassword ? '•••••••• saved. Type to replace.' : ''} />
         </label>
+        <label className="lbl">Send from (email address)<input className="in" type="email" value={f.fromAddress} onChange={(e) => set({ fromAddress: e.target.value })} placeholder="studio@yourdomain.co.za" /></label>
         {cfg.hasPassword && <label className="chk fullrow"><input type="checkbox" checked={f.clearPassword} onChange={(e) => set({ clearPassword: e.target.checked, password: '' })} />Remove the saved password</label>}
-        <label className="lbl">“From” name<input className="in" value={f.fromName} onChange={(e) => set({ fromName: e.target.value })} /></label>
-        <label className="lbl">“From” address<input className="in" type="email" value={f.fromAddress} onChange={(e) => set({ fromAddress: e.target.value })} placeholder="studio@yourcompany.co.za" /></label>
-        <label className="lbl">Studio address used in email links<input className="in" value={f.publicUrl} onChange={(e) => set({ publicUrl: e.target.value })} placeholder="https://studio.yourcompany.co.za" /></label>
-        <label className="lbl">Wait before emailing (seconds)<input className="in" type="number" min={0} max={3600} value={f.delaySeconds} onChange={(e) => set({ delaySeconds: Number(e.target.value) })} /></label>
         <label className="chk fullrow"><input type="checkbox" checked={f.enabled} onChange={(e) => set({ enabled: e.target.checked })} />Send email notifications</label>
-        <p className="hint fullrow">The wait lets several replies become one email. The password is stored encrypted and is never shown again. Gmail and Microsoft accounts usually need an “app password” created in their security settings, not your normal password.</p>
+        <details className="fullrow adv">
+          <summary>More options</summary>
+          <div className="advgrid">
+            <label className="lbl">Sender name shown to the reader<input className="in" value={f.fromName} onChange={(e) => set({ fromName: e.target.value })} /></label>
+            <label className="lbl">Studio address used in email links<input className="in" value={f.publicUrl} onChange={(e) => set({ publicUrl: e.target.value })} placeholder="https://studio.yourdomain.co.za" /></label>
+            <label className="lbl">Wait before emailing (seconds)<input className="in" type="number" min={0} max={3600} value={f.delaySeconds} onChange={(e) => set({ delaySeconds: Number(e.target.value) })} /></label>
+          </div>
+          <p className="hint">The wait lets several replies become one email. The password is stored encrypted and is never shown again.</p>
+        </details>
         <div className="fullrow tv-actions">
           <button type="submit" className="btn primary" disabled={busy}>Save</button>
           {saved && <span className="ok">Saved.</span>}
@@ -193,7 +182,8 @@ function EmailWording({ myEmail }: { myEmail: string }) {
 
   return (
     <section className="card">
-      <h2>Email wording and look</h2>
+      <details className="wordingdetails">
+        <summary><h2>Email wording and look <span className="hint">(optional)</span></h2></summary>
       <p className="hint">Change what the emails say and how they look. The preview updates as you type. Placeholders in double curly brackets are filled in per email.</p>
       <div className="tabs" role="tablist">
         <button type="button" role="tab" aria-selected={kind === 'notify'} className={'tabbtn' + (kind === 'notify' ? ' on' : '')} onClick={() => setKind('notify')}>New message notification</button>
@@ -246,6 +236,7 @@ function EmailWording({ myEmail }: { myEmail: string }) {
         <button type="button" className="btn" disabled={busy || !to} onClick={sendMe}>Send me this email</button>
       </div>
       {msg && <p className={msg.ok ? 'ok' : 'form-error'} role="status">{msg.text}</p>}
+      </details>
     </section>
   );
 }
